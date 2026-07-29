@@ -69,9 +69,7 @@ const Header = () => {
             <span>🔥</span>
           </a>
 
-          <a href="#" className="hover:text-black">
-            Contact us
-          </a>
+          <Link to="/contact" className="hover:text-black">Contact</Link>
         </nav>
 
         {/* Right Side */}

@@ -9,7 +9,7 @@ function Home() {
 
   return (
     <div className="min-h-screen from-white to-gray-200 bg-gradient-to-b">
-    <div className="container mx-auto px-4 py-8 mt-18">
+    <div className="container mx-auto px-4 py-8">
       <Banner />
       <CategoryBar />
       <Product productType="New products" tag="New Product"/>
