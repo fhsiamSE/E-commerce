@@ -84,9 +84,9 @@ const Header = () => {
             />
           </label>
 
-          <button className="rounded-full p-2 hover:bg-gray-100">❤</button>
-          <button className="rounded-full p-2 hover:bg-gray-100">🛒</button>
-          <button className="rounded-full p-2 hover:bg-gray-100">👤</button>
+          <Link to="/wishlist" className="rounded-full p-2 hover:bg-gray-100">❤</Link>
+          <Link to="/cart" className="rounded-full p-2 hover:bg-gray-100">🛒</Link>
+          <Link to="/profile" className="rounded-full p-2 hover:bg-gray-100">👤</Link>
 
           {/* Mobile Menu Button */}
           <button
@@ -153,6 +153,14 @@ const Header = () => {
               </a>
             </div>
           </div>
+
+          <Link
+            to="/profile"
+            onClick={() => setMobileMenu(false)}
+            className="block rounded px-2 py-2 hover:bg-gray-100"
+          >
+            Profile
+          </Link>
 
           <a
             href="#"
