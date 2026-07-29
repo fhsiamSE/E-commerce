@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [showHeader, setShowHeader] = useState(true);
@@ -43,14 +44,12 @@ const Header = () => {
 
         {/* Desktop Menu */}
         <nav className="hidden items-center gap-6 text-sm font-semibold text-gray-700 md:flex">
-          <a href="#" className="hover:text-black">
-            Home
-          </a>
+          <Link to="/" className="hover:text-black">Home</Link>
 
           <div className="group relative">
-            <button className="hover:text-black">Products</button>
+            <Link to="/products" className="hover:text-black">Products</Link>
 
-            <div className="absolute left-0 top-full mt-2 hidden w-44 rounded-md border border-gray-200 bg-white p-2 shadow-lg group-hover:block">
+            {/* <div className="absolute left-0 top-full mt-2 hidden w-44 rounded-md border border-gray-200 bg-white p-2 shadow-lg group-hover:block">
               <a href="#" className="block rounded px-3 py-2 hover:bg-gray-100">
                 Men
               </a>
@@ -62,7 +61,7 @@ const Header = () => {
               <a href="#" className="block rounded px-3 py-2 hover:bg-gray-100">
                 Kids
               </a>
-            </div>
+            </div> */}
           </div>
 
           <a href="#" className="flex items-center gap-1 hover:text-black">
