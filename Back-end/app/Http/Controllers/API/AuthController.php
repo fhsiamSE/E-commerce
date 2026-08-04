@@ -89,4 +89,16 @@ class AuthController extends Controller
 
         return is_array($parsed) ? $parsed : $request->all();
     }
+
+    public function logout(Request $request)
+    {
+        $user = $request->user();
+
+        if ($user) {
+            $user->tokens()->delete();
+            return response()->json(['message' => 'User logged out successfully'], 200);
+        }
+
+        return response()->json(['message' => 'User not authenticated'], 401);
+    }
 }
