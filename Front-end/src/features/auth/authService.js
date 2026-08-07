@@ -1,24 +1,35 @@
 import api from "../../axios";
 
-export const getCsrfCookie = async () => {
-    await api.get("/sanctum/csrf-cookie");
-};
 
 export const login = async (userData) => {
-
-    await getCsrfCookie();
-
     const response = await api.post("/login", userData);
 
     return response.data;
 };
 
-export const logout = async () => {
-    await api.post("/logout");
+
+export const register = async (userData) => {
+    const response = await api.post("/register", userData);
+
+    return response.data;
 };
 
+
+export const logout = async () => {
+    const response = await api.post("/logout");
+
+    return response.data;
+};
+
+
 export const getUser = async () => {
-    const response = await api.get("/api/user");
+    const token = localStorage.getItem("token");
+
+    const response = await api.get("/user", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
 
     return response.data;
 };

@@ -26,7 +26,7 @@ function App() {
     location.pathname === "/register";
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+    <div className="flex flex-col min-h-screen ">
       
       {!hideLayout && <Header />}
 
