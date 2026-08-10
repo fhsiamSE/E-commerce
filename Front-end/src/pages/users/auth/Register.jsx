@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../../../features/auth/authSlice";
+import { register } from "../../../store/auth/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import authLogo from "../../../assets/images/authLogo.png";
 
@@ -32,7 +32,7 @@ function Register() {
         name,
         email,
         password,
-        password_confirmation: confirm_password,
+        confirm_password: confirm_password,
       })
     );
 

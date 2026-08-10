@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { logout } from "../features/auth/authSlice";
+import { logout } from "../store/auth/authSlice.js";
 
 const Header = () => {
   const [showHeader, setShowHeader] = useState(true);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loginUser } from "../../../features/auth/authAPI";
+import { loginUser } from "../../../store/auth/authApi.js";
 import { useNavigate } from "react-router-dom";
 import authLogo from "../../../assets/images/authLogo.png";
 

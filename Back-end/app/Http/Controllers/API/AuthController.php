@@ -6,99 +6,82 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $payload = $this->parsePayload($request);
-
-        $validator = Validator::make($payload, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'confirm_password' => 'required|string|same:password',
+        $validateUser = validator::make(
+            $request->all(),
+            [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+                'confirm_password' => 'required|string|same:password',
+            ]
+        );
+        if($validateUser->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation error',
+                'errors' => $validateUser->errors()
+            ], 401);
+        }
+        $user = User::create([
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'password'=>$request->password,
         ]);
 
-        if ($validator->fails()) 
-            {
-            return response()
-            ->json
-            (['errors' => $validator->errors()], 422);
-            }   
-
-        $user = \App\Models\User::create([
-            'name' => $payload['name'],
-            'email' => $payload['email'],
-            'password' => bcrypt($payload['password']),
-        ]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'User registered successfully',
-            'email' => $payload['email'],
-            'token' => $token,
-        ], 201);
+         return response()->json([
+                'status' => true,
+                'message' => 'User created successfully',
+                'user'=> $user,
+            ], 200);
     }
 
-    public function login(Request $request)
+     public function login(Request $request)
     {
-        $payload = $this->parsePayload($request);
-
-        $validator = Validator::make($payload, [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+         $validateUser = validator::make(
+            $request->all(),
+            [
+                'email' => 'required|string|email|max:255',
+                'password' => 'required|string|min:8',
+            ]
+        );
+         if($validateUser->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'Authentication Fails',
+                'errors' => $validateUser->errors()
+            ], 404);
+        }
+        if(Auth::attempt([ 'email' => $request->email, 'password' => $request->password])){
+            $authUser = Auth::user();
+            return response()->json([
+                'status' => true,
+                'message' => 'User logged in successfully',
+                'token' => $authUser->createToken('MyApp')->plainTextToken,
+                'token_type' => 'bearer'
+            ], 200);
+        }else{
+             return response()->json([
+                'status' => false,
+                'message' => 'Email id and password dose not matched',
+                'errors' => $validateUser->errors()
+            ], 404);
         }
 
-        if (!Auth::attempt($payload)) {
-            return response()->json(['message' => 'Invalid login credentials'], 401);
-        }
-
-        $user = Auth::user();
-        $token = method_exists($user, 'createToken')
-            ? $user->createToken('auth_token')->plainTextToken
-            : null;
-
-        return response()->json([
-            'message' => 'User logged in successfully',
-            'user' => $user,
-            'token' => $token,
-        ], 200);
     }
-
-    private function parsePayload(Request $request): array
-    {
-        $content = $request->getContent();
-
-        if (empty(trim($content))) {
-            return $request->all();
-        }
-
-        $decoded = json_decode($content, true);
-
-        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-            return $decoded;
-        }
-
-        parse_str($content, $parsed);
-
-        return is_array($parsed) ? $parsed : $request->all();
-    }
-
-    public function logout(Request $request)
+     public function logout(Request $request)
     {
         $user = $request->user();
+        $user->tokens()->delete();
 
-        if ($user) {
-            $user->tokens()->delete();
-            return response()->json(['message' => 'User logged out successfully'], 200);
-        }
-
-        return response()->json(['message' => 'User not authenticated'], 401);
+        return response()->json([
+            'status' => true,
+            'message' => 'User logged out successfully'
+        ], 200);
     }
 }
