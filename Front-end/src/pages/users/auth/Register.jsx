@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../../../store/auth/authSlice.js";
+import { registerUser } from "../../../store/auth/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import authLogo from "../../../assets/images/authLogo.png";
 
 function Register() {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -13,52 +12,38 @@ function Register() {
     (state) => state.auth
   );
 
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm_password, setPasswordConfirmation] = useState("");
 
-
-
-
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
+    try {
+      const result = await dispatch(
+        registerUser({
+          name,
+          email,
+          password,
+          confirm_password,
+        })
+      ).unwrap();
 
-    const result = await dispatch(
-      register({
-        name,
-        email,
-        password,
-        confirm_password: confirm_password,
-      })
-    );
-
-
-
-    if (register.fulfilled.match(result)) {
+      console.log("Registration successful:", result);
 
       navigate("/login");
-
+    } catch (error) {
+      console.error("Registration failed:", error);
     }
-
   };
 
-
-
-
   return (
-
     <div className="min-h-screen flex bg-[#fff5ef]">
-
-
 
       {/* LEFT REGISTER SECTION */}
 
       <div className="flex w-full items-center justify-center px-6 lg:w-1/2">
-
 
         <div
           className="
@@ -72,8 +57,6 @@ function Register() {
           "
         >
 
-
-
           {/* Logo */}
 
           <h1
@@ -86,9 +69,6 @@ function Register() {
             Logo Here
           </h1>
 
-
-
-
           <p
             className="
               mt-8
@@ -98,8 +78,6 @@ function Register() {
           >
             Create your account
           </p>
-
-
 
           <h2
             className="
@@ -112,13 +90,9 @@ function Register() {
             Sign up
           </h2>
 
-
-
-
-
+          {/* Error */}
 
           {error && (
-
             <div
               className="
                 mt-5
@@ -131,13 +105,7 @@ function Register() {
             >
               {error.message || "Registration failed"}
             </div>
-
           )}
-
-
-
-
-
 
           <form
             onSubmit={handleSubmit}
@@ -146,9 +114,6 @@ function Register() {
               space-y-4
             "
           >
-
-
-
 
             {/* Name */}
 
@@ -163,22 +128,14 @@ function Register() {
                 Name
               </label>
 
-
               <input
-
                 type="text"
-
                 placeholder="Enter your name"
-
                 value={name}
-
                 onChange={(e) =>
                   setName(e.target.value)
                 }
-
                 required
-
-
                 className="
                   mt-2
                   w-full
@@ -192,21 +149,13 @@ function Register() {
                   focus:ring-2
                   focus:ring-[#ff7357]
                 "
-
               />
 
             </div>
 
-
-
-
-
-
-
             {/* Email */}
 
             <div>
-
 
               <label
                 className="
@@ -217,22 +166,14 @@ function Register() {
                 Email
               </label>
 
-
               <input
-
                 type="email"
-
                 placeholder="Enter your email"
-
                 value={email}
-
                 onChange={(e) =>
                   setEmail(e.target.value)
                 }
-
                 required
-
-
                 className="
                   mt-2
                   w-full
@@ -246,22 +187,13 @@ function Register() {
                   focus:ring-2
                   focus:ring-[#ff7357]
                 "
-
               />
 
             </div>
 
-
-
-
-
-
-
-
             {/* Password */}
 
             <div>
-
 
               <label
                 className="
@@ -272,22 +204,14 @@ function Register() {
                 Password
               </label>
 
-
               <input
-
                 type="password"
-
                 placeholder="Enter your password"
-
                 value={password}
-
                 onChange={(e) =>
                   setPassword(e.target.value)
                 }
-
                 required
-
-
                 className="
                   mt-2
                   w-full
@@ -301,24 +225,13 @@ function Register() {
                   focus:ring-2
                   focus:ring-[#ff7357]
                 "
-
               />
 
-
             </div>
-
-
-
-
-
-
-
-
 
             {/* Confirm Password */}
 
             <div>
-
 
               <label
                 className="
@@ -329,25 +242,16 @@ function Register() {
                 Confirm Password
               </label>
 
-
-
               <input
-
                 type="password"
-
                 placeholder="Confirm password"
-
                 value={confirm_password}
-
                 onChange={(e) =>
                   setPasswordConfirmation(
                     e.target.value
                   )
                 }
-
                 required
-
-
                 className="
                   mt-2
                   w-full
@@ -361,28 +265,15 @@ function Register() {
                   focus:ring-2
                   focus:ring-[#ff7357]
                 "
-
               />
 
-
             </div>
-
-
-
-
-
-
-
 
             {/* Button */}
 
             <button
-
               disabled={loading}
-
               type="submit"
-
-
               className="
                 mx-auto
                 mt-5
@@ -401,7 +292,6 @@ function Register() {
                 hover:bg-[#ff6244]
                 disabled:opacity-50
               "
-
             >
 
               {loading
@@ -409,24 +299,13 @@ function Register() {
                 : "SIGN UP"
               }
 
-
               <span>
                 →
               </span>
 
-
             </button>
 
-
-
-
           </form>
-
-
-
-
-
-
 
           <p
             className="
@@ -449,29 +328,15 @@ function Register() {
               Sign in
             </a>
 
-
           </p>
-
-
-
 
         </div>
 
-
       </div>
-
-
-
-
-
-
-
 
       {/* RIGHT IMAGE SECTION */}
 
-
       <div
-
         className="
           hidden
           lg:flex
@@ -480,36 +345,21 @@ function Register() {
           justify-center
           bg-[#fff0e8]
         "
-
       >
 
-
-
         <img
-
           src={authLogo}
-
           alt="Register"
-
           className="
             max-w-lg
             object-contain
           "
-
         />
-
-
 
       </div>
 
-
-
-
     </div>
-
   );
-
 }
-
 
 export default Register;

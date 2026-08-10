@@ -1,72 +1,46 @@
 import { useState } from "react";
-import { loginUser } from "../../../store/auth/authApi.js";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../../store/auth/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import authLogo from "../../../assets/images/authLogo.png";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { loading, error } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setError("");
-    setLoading(true);
-
     try {
-      const data = await loginUser({
-        email,
-        password,
-      });
+      const result = await dispatch(
+        loginUser({
+          email,
+          password,
+        })
+      ).unwrap();
 
-      // Save token
-      localStorage.setItem("token", data.token);
-
-      // Save user
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      console.log("Login success:", data);
+      console.log("Login success:", result);
 
       navigate("/");
     } catch (error) {
-      setError(
-        error.response?.data?.message ||
-          "Invalid email or password"
-      );
-    } finally {
-      setLoading(false);
+      console.log("Login error:", error);
     }
   };
 
   return (
-    <div className="min-h-screen flex bg-[#fff5ef]">
+    <div className="flex min-h-screen w-full">
       {/* LEFT LOGIN SECTION */}
-      <div className="flex w-full items-center justify-center px-6 lg:w-1/2">
-        <div
-          className="
-            w-full
-            max-w-md
-            rounded-2xl
-            bg-white
-            px-10
-            py-12
-            shadow-xl
-          "
-        >
+      <div className="flex w-full items-center justify-center lg:w-1/2">
+        <div className="w-full max-w-md px-8 py-10">
           {/* Logo */}
-          <h1
-            className="
-              text-2xl
-              font-bold
-              text-[#ff7357]
-            "
-          >
+          <div>
             Logo Here
-          </h1>
+          </div>
 
           <p
             className="
@@ -101,7 +75,7 @@ function Login() {
                 text-red-600
               "
             >
-              {error}
+              {error.message || "Invalid email or password"}
             </div>
           )}
 
