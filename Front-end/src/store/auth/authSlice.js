@@ -1,7 +1,14 @@
+
+// src/features/auth/authSlice.js
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axios.js";
 
-// Register
+/*
+|--------------------------------------------------------------------------
+| Register User
+|--------------------------------------------------------------------------
+*/
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
@@ -19,7 +26,12 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// Login
+
+/*
+|--------------------------------------------------------------------------
+| Login User
+|--------------------------------------------------------------------------
+*/
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
@@ -28,7 +40,10 @@ export const loginUser = createAsyncThunk(
 
       const data = response.data;
 
-      localStorage.setItem("token", data.token);
+      // Save token to localStorage
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
 
       return data;
     } catch (error) {
@@ -41,7 +56,12 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Get current user
+
+/*
+|--------------------------------------------------------------------------
+| Get Current User
+|--------------------------------------------------------------------------
+*/
 export const getCurrentUser = createAsyncThunk(
   "auth/getCurrentUser",
   async (_, { rejectWithValue }) => {
@@ -59,14 +79,17 @@ export const getCurrentUser = createAsyncThunk(
   }
 );
 
-// Logout
+
+/*
+|--------------------------------------------------------------------------
+| Logout User
+|--------------------------------------------------------------------------
+*/
 export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.post("/logout");
-
-      localStorage.removeItem("token");
 
       return response.data;
     } catch (error) {
@@ -75,102 +98,277 @@ export const logoutUser = createAsyncThunk(
           message: "Logout failed",
         }
       );
+    } finally {
+      // Always remove token from localStorage
+      localStorage.removeItem("token");
     }
   }
 );
 
+
+/*
+|--------------------------------------------------------------------------
+| Initial State
+|--------------------------------------------------------------------------
+*/
+const token = localStorage.getItem("token");
+
 const initialState = {
   user: null,
-  token: localStorage.getItem("token"),
-  isAuthenticated: !!localStorage.getItem("token"),
+  token: token,
+  isAuthenticated: !!token,
+
   loading: false,
+
   error: null,
   message: null,
 };
 
+
+/*
+|--------------------------------------------------------------------------
+| Auth Slice
+|--------------------------------------------------------------------------
+*/
 const authSlice = createSlice({
   name: "auth",
 
   initialState,
 
-  reducers: {},
+  reducers: {
+    /*
+    |--------------------------------------------------------------------------
+    | Clear Auth Error
+    |--------------------------------------------------------------------------
+    */
+    clearAuthError: (state) => {
+      state.error = null;
+    },
 
+    /*
+    |--------------------------------------------------------------------------
+    | Clear Auth Message
+    |--------------------------------------------------------------------------
+    */
+    clearAuthMessage: (state) => {
+      state.message = null;
+    },
+
+    /*
+    |--------------------------------------------------------------------------
+    | Clear Auth State
+    |--------------------------------------------------------------------------
+    */
+    clearAuthState: (state) => {
+      state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
+      state.loading = false;
+      state.error = null;
+      state.message = null;
+
+      localStorage.removeItem("token");
+    },
+  },
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Extra Reducers
+  |--------------------------------------------------------------------------
+  */
   extraReducers: (builder) => {
-    // REGISTER
+
+    /*
+    |--------------------------------------------------------------------------
+    | REGISTER
+    |--------------------------------------------------------------------------
+    */
+
     builder
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.message = null;
       })
 
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.message = action.payload.message;
+
+        state.message =
+          action.payload?.message || "Registration successful";
+
+        state.error = null;
       })
 
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+
+        state.error =
+          action.payload || {
+            message: "Registration failed",
+          };
       });
 
-    // LOGIN
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOGIN
+    |--------------------------------------------------------------------------
+    */
+
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.message = null;
       })
 
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload.token;
-        state.isAuthenticated = true;
-        state.message = action.payload.message;
+
+        // Token
+        state.token = action.payload?.token || null;
+
+        // User
+        state.user = action.payload?.user || null;
+
+        // Authentication
+        state.isAuthenticated = !!action.payload?.token;
+
+        // Message
+        state.message =
+          action.payload?.message || "Login successful";
+
+        state.error = null;
       })
 
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
+
+        state.user = null;
+        state.token = null;
         state.isAuthenticated = false;
-        state.error = action.payload;
+
+        state.error =
+          action.payload || {
+            message: "Login failed",
+          };
       });
 
-    // CURRENT USER
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET CURRENT USER
+    |--------------------------------------------------------------------------
+    */
+
     builder
       .addCase(getCurrentUser.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
 
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+
+        /*
+        Laravel response:
+
+        {
+          status: true,
+          user: {...}
+        }
+        */
+
+        state.user = action.payload?.user || null;
+
         state.isAuthenticated = true;
+
+        state.error = null;
       })
 
       .addCase(getCurrentUser.rejected, (state, action) => {
         state.loading = false;
+
         state.user = null;
+        state.token = null;
         state.isAuthenticated = false;
-        state.error = action.payload;
+
+        state.error =
+          action.payload || {
+            message: "Failed to get user",
+          };
+
+        // Invalid/expired token
+        localStorage.removeItem("token");
       });
 
-    // LOGOUT
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOGOUT
+    |--------------------------------------------------------------------------
+    */
+
     builder
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
 
       .addCase(logoutUser.fulfilled, (state, action) => {
         state.loading = false;
+
         state.user = null;
         state.token = null;
         state.isAuthenticated = false;
-        state.message = action.payload.message;
+
+        state.message =
+          action.payload?.message || "Logout successful";
+
+        state.error = null;
       })
 
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+
+        /*
+        Logout API fail করলেও
+        frontend থেকে user logout করে দেব।
+        */
+
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+
+        state.error =
+          action.payload || {
+            message: "Logout failed",
+          };
       });
   },
 });
 
+
+/*
+|--------------------------------------------------------------------------
+| Export Actions
+|--------------------------------------------------------------------------
+*/
+
+export const {
+  clearAuthError,
+  clearAuthMessage,
+  clearAuthState,
+} = authSlice.actions;
+
+
+/*
+|--------------------------------------------------------------------------
+| Export Reducer
+|--------------------------------------------------------------------------
+*/
+
 export default authSlice.reducer;
+
