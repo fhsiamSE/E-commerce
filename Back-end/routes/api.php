@@ -4,12 +4,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\HomeController;
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/products/{id}', [ProductController::class, 'show']);
+Route::get('/home', [HomeController::class, 'index']);
+
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/new', [ProductController::class, 'newProducts']);
+    Route::get('/popular', [ProductController::class, 'popularProducts']);
+    Route::get('/top-selling', [ProductController::class, 'topSellingProducts']);
+    Route::get('/{id}', [ProductController::class, 'show']);
+});
+
 
 //Protected routes
 Route::middleware('auth:sanctum')->group(function () {

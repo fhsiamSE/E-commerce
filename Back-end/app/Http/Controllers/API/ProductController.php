@@ -19,8 +19,8 @@ class ProductController extends Controller
             'images',
             'variants'
         ])
-        ->latest()
-        ->get();
+            ->latest()
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -168,7 +168,6 @@ class ProductController extends Controller
                     'variants'
                 ])
             ], 201);
-
         } catch (\Throwable $e) {
 
             DB::rollBack();
@@ -360,7 +359,6 @@ class ProductController extends Controller
                                 'price' => $variant['price'] ?? null,
                             ]);
                         }
-
                     } else {
 
                         /*
@@ -409,7 +407,6 @@ class ProductController extends Controller
                     'variants'
                 ])
             ], 200);
-
         } catch (\Throwable $e) {
 
             DB::rollBack();
@@ -423,6 +420,53 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+    //New Products
+
+    public function newProducts()
+    {
+        $products = Product::with('images')
+            ->latest('created_at')
+            ->take(10)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'New products fetched successfully',
+            'data' => $products
+        ]);
+    }
+
+    //Popular Products
+    public function popularProducts()
+    {
+        $products = Product::with('images')
+            ->orderByDesc('views_count')
+            ->take(10)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Popular products fetched successfully',
+            'data' => $products
+        ]);
+    }
+
+    //Top Selling
+    public function topSellingProducts()
+    {
+        $products = Product::with('images')
+            ->orderByDesc('sales_count')
+            ->take(10)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Top selling products fetched successfully',
+            'data' => $products
+        ]);
+    }
+
 
 
     /**
@@ -486,7 +530,6 @@ class ProductController extends Controller
 
                 'message' => 'Product deleted successfully'
             ], 200);
-
         } catch (\Throwable $e) {
 
             DB::rollBack();
