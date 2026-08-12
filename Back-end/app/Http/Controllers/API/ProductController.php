@@ -193,6 +193,7 @@ class ProductController extends Controller
             'variants'
         ])->find($id);
 
+        $product->increment('views_count');
 
         if (!$product) {
 
