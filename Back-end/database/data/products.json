@@ -1,0 +1,668 @@
+[
+  {
+    "product_name": "Premium Cotton T-Shirt",
+    "description": "Premium quality cotton t-shirt with a comfortable regular fit.",
+    "price": 1200,
+    "category": "Men",
+    "images": [
+      {
+        "image": "product_images/t-shart_black_1.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/t-shart_black_2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      },
+      {
+        "image": "product_images/t-shart_black_3.jpg",
+        "is_primary": true,
+        "sort_order": 2
+      },
+      {
+        "image": "product_images/t-shart_black_4.jpg",
+        "is_primary": false,
+        "sort_order": 3
+      }
+    ],
+    "variants": [
+      {
+        "size": "S",
+        "color": "Black",
+        "sku": "TS-BLK-S",
+        "stock": 10,
+        "price": 1200
+      },
+      {
+        "size": "M",
+        "color": "Black",
+        "sku": "TS-BLK-M",
+        "stock": 15,
+        "price": 1200
+      },
+      {
+        "size": "L",
+        "color": "Black",
+        "sku": "TS-BLK-L",
+        "stock": 12,
+        "price": 1200
+      }
+    ]
+  },
+  {
+    "product_name": "Classic Hoodie",
+    "description": "Soft and warm hoodie designed for everyday casual wear.",
+    "price": 2200,
+    "category": "Men",
+    "images": [
+      {
+        "image": "product_images/hoodie_black-1.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/hoodie_black-2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      },
+      {
+        "image": "product_images/hoodie_gray-1.jpg",
+        "is_primary": true,
+        "sort_order": 2
+      },
+      {
+        "image": "product_images/hoodie_gray-2.jpg",
+        "is_primary": false,
+        "sort_order": 3
+      }
+    ],
+    "variants": [
+      {
+        "size": "M",
+        "color": "Black",
+        "sku": "HD-BLK-M",
+        "stock": 10,
+        "price": 2200
+      },
+      {
+        "size": "L",
+        "color": "Black",
+        "sku": "HD-BLK-L",
+        "stock": 15,
+        "price": 2200
+      },
+      {
+        "size": "XL",
+        "color": "Black",
+        "sku": "HD-BLK-XL",
+        "stock": 8,
+        "price": 2200
+      },
+      {
+        "size": "L",
+        "color": "Gray",
+        "sku": "HD-GRY-L",
+        "stock": 10,
+        "price": 2300
+      }
+    ]
+  },
+  {
+    "product_name": "Party silk Saree",
+    "description": "A party silk saree is a rich, graceful outfit made from soft and shiny silk.",
+    "price": 4500,
+    "category": "Woman",
+    "images": [
+      {
+        "image": "product_images/party_saree_red-1.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/t-shart_black_1.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      },
+      {
+        "image": "product_images/party_saree_red-2.jpg",
+        "is_primary": true,
+        "sort_order": 2
+      },
+      {
+        "image": "product_images/party_saree_blue-1.jpg",
+        "is_primary": false,
+        "sort_order": 3
+      }
+    ],
+    "variants": [
+      {
+        "size": "40",
+        "color": "Red",
+        "sku": "SN-RED-40",
+        "stock": 5,
+        "price": 4500
+      },
+      {
+        "size": "41",
+        "color": "Red",
+        "sku": "SN-RED-41",
+        "stock": 8,
+        "price": 4500
+      },
+      {
+        "size": "42",
+        "color": "Red",
+        "sku": "SN-RED-42",
+        "stock": 10,
+        "price": 4500
+      },
+      {
+        "size": "43",
+        "color": "Black",
+        "sku": "SN-BLK-43",
+        "stock": 7,
+        "price": 4700
+      },
+      {
+        "size": "43",
+        "color": "Blue",
+        "sku": "SN-BLU-43",
+        "stock": 7,
+        "price": 4700
+      }
+    ]
+  },
+  {
+    "product_name": "Salwar kameez",
+    "description": "Traditional three-piece South Asian outfit",
+    "price": 2800,
+    "category": "Woman",
+    "images": [
+      {
+        "image": "product_images/salwar_kameez-1.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/salwar_kameez-2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "30",
+        "color": "Blue",
+        "sku": "JN-BLU-30",
+        "stock": 8,
+        "price": 2800
+      },
+      {
+        "size": "32",
+        "color": "Blue",
+        "sku": "JN-BLU-32",
+        "stock": 12,
+        "price": 2800
+      },
+      {
+        "size": "34",
+        "color": "Blue",
+        "sku": "JN-BLU-34",
+        "stock": 10,
+        "price": 2800
+      }
+    ]
+  },
+  {
+    "product_name": "Stretch",
+    "description": "Women's Stretch Pleated Midi Long Skirt Female Korean Fashion",
+    "price": 1600,
+    "category": "Polo Shirts",
+    "images": [
+      {
+        "image": "product_images/Stretch-1.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/Stretch-2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "S",
+        "color": "White",
+        "sku": "PO-WHT-S",
+        "stock": 8,
+        "price": 1600
+      },
+      {
+        "size": "M",
+        "color": "White",
+        "sku": "PO-WHT-M",
+        "stock": 14,
+        "price": 1600
+      },
+      {
+        "size": "L",
+        "color": "White",
+        "sku": "PO-WHT-L",
+        "stock": 10,
+        "price": 1600
+      },
+      {
+        "size": "XL",
+        "color": "White",
+        "sku": "PO-WHT-XL",
+        "stock": 7,
+        "price": 1700
+      }
+    ]
+  },
+  {
+    "product_name": "Oversized Graphic Shirt",
+    "description": "Trendy oversized shirt featuring a minimal graphic print.",
+    "price": 1400,
+    "category": "Men",
+    "images": [
+      {
+        "image": "product_images/shart-1.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/shart-2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "M",
+        "color": "Blue",
+        "sku": "OT-BLU-M",
+        "stock": 15,
+        "price": 1400
+      },
+      {
+        "size": "L",
+        "color": "Blue",
+        "sku": "OT-BLU-L",
+        "stock": 12,
+        "price": 1400
+      },
+      {
+        "size": "XL",
+        "color": "Blue",
+        "sku": "OT-BLU-XL",
+        "stock": 10,
+        "price": 1400
+      }
+    ]
+  },
+  {
+    "product_name": "Tops",
+    "description": "Womens Cotton Linen Shirts Tops Oversized 3/4 Roll Sleeve Crewneck Buttoned Pullovers Blouses 2024 Summer Flowy Light Beach Shirts",
+    "price": 2100,
+    "category": "Shirts",
+    "images": [
+      {
+        "image": "product_images/womens_tops_pink.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/womens_tops_red.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      },
+      {
+        "image": "product_images/womens_tops_yellow.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/womens_tops_skyblow.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "S",
+        "color": "Pink",
+        "sku": "LS-PNK-S",
+        "stock": 7,
+        "price": 2100
+      },
+      {
+        "size": "M",
+        "color": "Blue",
+        "sku": "LS-BLU-M",
+        "stock": 13,
+        "price": 2100
+      },
+      {
+        "size": "L",
+        "color": "Red",
+        "sku": "LS-RED-L",
+        "stock": 9,
+        "price": 2100
+      },
+      {
+        "size": "L",
+        "color": "Yellow",
+        "sku": "LS-YEL-L",
+        "stock": 9,
+        "price": 2100
+      }
+    ]
+  },
+  {
+    "product_name": "Scarp",
+    "description": "HURESON Lightweight Silk Scarf Elegant Soft Shawls and Wraps for Evening Dresses glitter Scarves for Women for All Seasons",
+    "price": 3800,
+    "category": "Woman",
+    "images": [
+      {
+        "image": "product_images/scarp_black.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/scarp_blue.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      },
+      {
+        "image": "product_images/scarp_green.jpg",
+        "is_primary": false,
+        "sort_order": 2
+      }
+    ],
+    "variants": [
+      {
+        "size": "M",
+        "color": "Black",
+        "sku": "BJ-BLK-M",
+        "stock": 6,
+        "price": 3800
+      },
+      {
+        "size": "L",
+        "color": "Black",
+        "sku": "BJ-BLK-L",
+        "stock": 9,
+        "price": 3800
+      },
+      {
+        "size": "XL",
+        "color": "Blue",
+        "sku": "BJ-BLU-XL",
+        "stock": 5,
+        "price": 3900
+      },
+      {
+        "size": "XL",
+        "color": "Green",
+        "sku": "BJ-GRN-XL",
+        "stock": 5,
+        "price": 3900
+      }
+    ]
+  },
+  {
+    "product_name": "Lahanga",
+    "description": "Bollywood Style Wedding Party Wear Designer Fancy New Lehenga Choli And Dupatta",
+    "price": 2600,
+    "category": "Pants",
+    "images": [
+      {
+        "image": "product_images/lahanga-1.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/lahanga-2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "30",
+        "color": "Pink",
+        "sku": "CP-PNK-30",
+        "stock": 10,
+        "price": 2600
+      },
+      {
+        "size": "32",
+        "color": "Pink",
+        "sku": "CP-PNK-32",
+        "stock": 14,
+        "price": 2600
+      },
+      {
+        "size": "34",
+        "color": "Pink",
+        "sku": "CP-PNK-34",
+        "stock": 8,
+        "price": 2700
+      }
+    ]
+  },
+  {
+    "product_name": "Borkha",
+    "description": "Dubai Stylish Abaya – Elegant, Comfortable & Premium Quality",
+    "price": 7000,
+    "category": "Woman",
+    "images": [
+      {
+        "image": "product_images/borkha-1.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/borkha-2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "30",
+        "color": "Black",
+        "sku": "CH-BLK-30",
+        "stock": 8,
+        "price": 2400
+      },
+      {
+        "size": "32",
+        "color": "Black",
+        "sku": "CH-BLK-32",
+        "stock": 12,
+        "price": 2400
+      },
+      {
+        "size": "34",
+        "color": "Black",
+        "sku": "CH-BLK-34",
+        "stock": 9,
+        "price": 2500
+      }
+    ]
+  },
+  {
+    "product_name": "Hijab",
+    "description": "Women Solid Chiffon Headscarf Ready To Wear Instant Hijab Scarf Muslim Shawl Islamic Hijabs Arab Wrap Head Scarves",
+    "price": 1100,
+    "category": "Woman",
+    "images": [
+      {
+        "image": "product_images/hijab_black.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/hijab_green.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      },
+      {
+        "image": "product_images/hijab_nevyblue.jpg",
+        "is_primary": false,
+        "sort_order": 2
+      }
+    ],
+    "variants": [
+      {
+        "size": "40",
+        "color": "Blue",
+        "sku": "LC-BLU-40",
+        "stock": 5,
+        "price": 5200
+      },
+      {
+        "size": "41",
+        "color": "Black",
+        "sku": "LC-BLK-41",
+        "stock": 8,
+        "price": 5200
+      },
+      {
+        "size": "42",
+        "color": "Blue",
+        "sku": "LC-BLU-42",
+        "stock": 7,
+        "price": 5300
+      }
+    ]
+  },
+  {
+    "product_name": "Canvas Slip-On Shoes",
+    "description": "Comfortable canvas slip-on shoes designed for casual everyday use.",
+    "price": 2200,
+    "category": "Shoes",
+    "images": [
+      {
+        "image": "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "40",
+        "color": "Black",
+        "sku": "CS-BLK-40",
+        "stock": 9,
+        "price": 2200
+      },
+      {
+        "size": "41",
+        "color": "Black",
+        "sku": "CS-BLK-41",
+        "stock": 11,
+        "price": 2200
+      },
+      {
+        "size": "42",
+        "color": "White",
+        "sku": "CS-WHT-42",
+        "stock": 8,
+        "price": 2200
+      }
+    ]
+  },
+  {
+    "product_name": "Goggles",
+    "description": "Fashion Sunglasses Women Metal Female Vintage Ladies Stylish Design Oversized Square Sunglasses For Women.",
+    "price": 1300,
+    "category": "accessories",
+    "images": [
+      {
+        "image": "product_images/goggles-1.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/goggles-2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "M",
+        "color": "Black",
+        "sku": "RS-BLK-M",
+        "stock": 12,
+        "price": 1300
+      },
+      {
+        "size": "L",
+        "color": "Black",
+        "sku": "RS-BLK-L",
+        "stock": 15,
+        "price": 1300
+      },
+      {
+        "size": "XL",
+        "color": "Gray",
+        "sku": "RS-GRY-XL",
+        "stock": 9,
+        "price": 1400
+      }
+    ]
+  },
+  {
+    "product_name": "Activewear Joggers",
+    "description": "Stretchable joggers made for workouts, travel, and everyday comfort.",
+    "price": 1900,
+    "category": "Shoes",
+    "images": [
+      {
+        "image": "product_images/shoes-1.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/shoes-2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "M",
+        "color": "Blue",
+        "sku": "AJ-BLU-M",
+        "stock": 10,
+        "price": 1900
+      },
+      {
+        "size": "L",
+        "color": "Blue",
+        "sku": "AJ-BLU-L",
+        "stock": 13,
+        "price": 1900
+      },
+      {
+        "size": "XL",
+        "color": "Blue",
+        "sku": "AJ-BLU-XL",
+        "stock": 8,
+        "price": 2000
+      }
+    ]
+  }
+]

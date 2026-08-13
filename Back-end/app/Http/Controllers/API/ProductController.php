@@ -103,7 +103,7 @@ class ProductController extends Controller
 
                 foreach ($request->file('images') as $index => $image) {
 
-                    $path = $image->store('products', 'public');
+                    $path = $image->store('product_images', 'public');
 
                     $product->images()->create([
                         'image' => $path,
@@ -313,7 +313,7 @@ class ProductController extends Controller
 
                 foreach ($request->file('images') as $index => $image) {
 
-                    $path = $image->store('products', 'public');
+                    $path = $image->store('product_images', 'public');
 
                     $product->images()->create([
                         'image' => $path,
