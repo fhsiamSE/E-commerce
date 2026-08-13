@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\OrderController;
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -45,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //wish list route
     
     //order route
+     Route::post('/orders', [OrderController::class, 'store']);
      
 });
 
