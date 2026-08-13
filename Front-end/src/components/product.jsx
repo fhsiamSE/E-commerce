@@ -12,7 +12,7 @@ function Products({
 
   const navigate = useNavigate();
 
-  
+
   return (
     <section className="max-w-7xl mx-auto px-4 py-8">
 
@@ -99,10 +99,6 @@ function Products({
                 className="w-full rounded-full bg-black px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-gray-800 sm:px-4 sm:py-2 sm:text-xs"
               >
                 Show Details
-              </button>
-
-              <button className="w-full rounded-full border border-gray-300 px-3 py-1.5 text-[11px] font-semibold text-gray-700 transition hover:border-black hover:text-black sm:px-4 sm:py-2 sm:text-xs">
-                Buy Now
               </button>
 
             </div>

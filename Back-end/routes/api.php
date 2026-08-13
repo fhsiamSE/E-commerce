@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\HomeController;
+use App\Http\Controllers\API\CartController;
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -31,6 +32,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/{id}', [ProductController::class, 'update']);
     Route::delete('/{id}', [ProductController::class, 'destroy']);
     });
+
+
+    //cart route
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [CartController::class, 'index']);
+        Route::post('/', [CartController::class, 'store']);
+        Route::put('/{id}', [CartController::class, 'update']);
+        Route::delete('/{id}', [CartController::class, 'destroy']);
+    });
+
+    //wish list route
+    
+    //order route
      
 });
 
