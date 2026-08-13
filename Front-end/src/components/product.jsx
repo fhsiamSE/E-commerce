@@ -1,9 +1,18 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 function Products({
   products = [],
   productType = "Products",
+
 }) {
+
+  const navigate = useNavigate();
+
+  
   return (
     <section className="max-w-7xl mx-auto px-4 py-8">
 
@@ -85,7 +94,10 @@ function Products({
             {/* Action Buttons */}
             <div className="mt-4 flex flex-col gap-1.5">
 
-              <button className="w-full rounded-full bg-black px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-gray-800 sm:px-4 sm:py-2 sm:text-xs">
+              <button
+                onClick={() => navigate(`/products/${product.id}`)}
+                className="w-full rounded-full bg-black px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-gray-800 sm:px-4 sm:py-2 sm:text-xs"
+              >
                 Show Details
               </button>
 

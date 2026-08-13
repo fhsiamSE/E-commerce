@@ -10,6 +10,8 @@ import WishList from "./pages/users/product/WishList";
 import Cart from "./pages/users/product/Cart";
 import Login from "./pages/users/auth/Login";
 import Register from "./pages/users/auth/Register";
+import ProductDetails from "./pages/users/product/ProductDetails";
+
 
 function ProtectedRoute({ children }) {
   const isLoggedIn = !!localStorage.getItem("token");
@@ -82,6 +84,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/products/:id" element={<ProductDetails />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
