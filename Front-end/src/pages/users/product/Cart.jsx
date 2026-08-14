@@ -6,13 +6,16 @@ import {
   removeFromCart,
 } from "../../../store/cartSlice.js";
 import api from "../../../api/axios.js";
+import CheckoutModal from "../../../components/CheckoutModal.jsx";
 
 function Cart() {
   const dispatch = useDispatch();
 
-  const { items: cartItems, loading, error } = useSelector(
-    (state) => state.cart
-  );
+  const {
+    items: cartItems,
+    loading,
+    error,
+  } = useSelector((state) => state.cart);
 
   const [showCheckout, setShowCheckout] = useState(false);
   const [placingOrder, setPlacingOrder] = useState(false);
@@ -125,6 +128,14 @@ function Cart() {
     setShowCheckout(true);
   };
 
+  const handleCloseCheckout = () => {
+    if (placingOrder) {
+      return;
+    }
+
+    setShowCheckout(false);
+  };
+
   const handleConfirmOrder = async () => {
     if (!cartItems.length) {
       return;
@@ -192,6 +203,7 @@ function Cart() {
             </div>
           )}
 
+          {/* Loading */}
           {loading && cartItems.length === 0 ? (
             <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-stone-200">
               <p className="text-sm text-stone-500">
@@ -199,6 +211,7 @@ function Cart() {
               </p>
             </div>
           ) : cartItems.length === 0 ? (
+            /* Empty Cart */
             <div className="rounded-[2rem] bg-white p-12 text-center shadow-sm ring-1 ring-stone-200">
               <h2 className="text-2xl font-semibold text-stone-900">
                 Your cart is empty
@@ -234,7 +247,6 @@ function Cart() {
 
                           {/* Product */}
                           <div className="flex items-center gap-4">
-
                             <img
                               src={getProductImage(item)}
                               alt={getProductName(item)}
@@ -263,8 +275,8 @@ function Cart() {
                           {/* Actions */}
                           <div className="flex items-center justify-between gap-4 sm:w-72">
 
+                            {/* Quantity */}
                             <div className="flex items-center rounded-full border border-stone-200 bg-stone-50 px-3 py-2">
-
                               <button
                                 onClick={() => handleDecrease(item)}
                                 disabled={quantity <= 1 || loading}
@@ -286,9 +298,9 @@ function Cart() {
                               >
                                 +
                               </button>
-
                             </div>
 
+                            {/* Remove */}
                             <button
                               onClick={() => handleRemove(item)}
                               disabled={loading}
@@ -352,7 +364,7 @@ function Cart() {
 
                 </section>
 
-                {/* Promo */}
+                {/* Promo Code */}
                 <section className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-stone-200">
 
                   <h3 className="text-lg font-semibold text-stone-900">
@@ -389,177 +401,24 @@ function Cart() {
       </div>
 
       {/* Checkout Modal */}
-      {showCheckout && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl">
-
-            {!orderSuccess ? (
-              <>
-                {/* Modal Header */}
-                <div className="flex items-start justify-between">
-
-                  <div>
-                    <p className="text-sm uppercase tracking-[0.3em] text-stone-500">
-                      Checkout
-                    </p>
-
-                    <h2 className="mt-2 text-2xl font-semibold text-stone-900">
-                      Confirm your order
-                    </h2>
-
-                    <p className="mt-2 text-sm text-stone-500">
-                      Please review your order before placing it.
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => setShowCheckout(false)}
-                    disabled={placingOrder}
-                    className="rounded-full bg-stone-100 px-3 py-2 text-sm text-stone-600 hover:bg-stone-200"
-                    type="button"
-                  >
-                    ✕
-                  </button>
-
-                </div>
-
-                {/* Items */}
-                <div className="mt-6 rounded-2xl border border-stone-200">
-
-                  <div className="bg-stone-100 px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-stone-600">
-                    Your order
-                  </div>
-
-                  <div className="divide-y divide-stone-200">
-
-                    {cartItems.map((item) => {
-                      const price = getProductPrice(item);
-                      const quantity = getQuantity(item);
-                      const color = getColor(item);
-                      const size = getSize(item);
-
-                      return (
-                        <div
-                          key={item.id}
-                          className="flex items-center justify-between gap-4 p-4"
-                        >
-
-                          <div className="flex items-center gap-3">
-
-                            <img
-                              src={getProductImage(item)}
-                              alt={getProductName(item)}
-                              className="h-16 w-16 rounded-2xl object-cover"
-                            />
-
-                            <div>
-
-                              <p className="text-sm font-semibold text-stone-900">
-                                {getProductName(item)}
-                              </p>
-
-                              {(color || size) && (
-                                <p className="mt-1 text-xs text-stone-500">
-                                  {color && `Color: ${color}`}
-                                  {color && size && " · "}
-                                  {size && `Size: ${size}`}
-                                </p>
-                              )}
-
-                              <p className="mt-1 text-xs text-stone-500">
-                                Qty: {quantity}
-                              </p>
-
-                            </div>
-                          </div>
-
-                          <p className="text-sm font-semibold text-stone-900">
-                            ${(price * quantity).toFixed(2)}
-                          </p>
-
-                        </div>
-                      );
-                    })}
-
-                  </div>
-                </div>
-
-                {/* Summary */}
-                <div className="mt-6 rounded-2xl bg-stone-50 p-5">
-
-                  <div className="space-y-3">
-
-                    <div className="flex justify-between text-sm text-stone-600">
-                      <span>Subtotal</span>
-                      <span>${subtotal.toFixed(2)}</span>
-                    </div>
-
-                    <div className="flex justify-between text-sm text-stone-600">
-                      <span>Shipping</span>
-                      <span>${shipping.toFixed(2)}</span>
-                    </div>
-
-                    <div className="flex justify-between text-sm text-stone-600">
-                      <span>Discount</span>
-                      <span className="text-emerald-700">
-                        -${discount.toFixed(2)}
-                      </span>
-                    </div>
-
-                    <div className="flex justify-between border-t border-stone-200 pt-3 text-lg font-semibold text-stone-900">
-                      <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
-                    </div>
-
-                  </div>
-                </div>
-
-                {/* Buttons */}
-                <div className="mt-6 flex gap-3">
-
-                  <button
-                    onClick={() => setShowCheckout(false)}
-                    disabled={placingOrder}
-                    className="w-full rounded-full border border-stone-300 px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-black hover:text-black disabled:opacity-50"
-                    type="button"
-                  >
-                    Back to cart
-                  </button>
-
-                  <button
-                    onClick={handleConfirmOrder}
-                    disabled={placingOrder}
-                    className="w-full rounded-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-900 disabled:cursor-not-allowed disabled:opacity-60"
-                    type="button"
-                  >
-                    {placingOrder ? "Placing order..." : "Confirm order"}
-                  </button>
-
-                </div>
-              </>
-            ) : (
-              /* Success */
-              <div className="py-12 text-center">
-
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl">
-                  ✓
-                </div>
-
-                <h2 className="mt-5 text-2xl font-semibold text-stone-900">
-                  Order placed successfully!
-                </h2>
-
-                <p className="mt-2 text-sm text-stone-500">
-                  Thank you for your order.
-                </p>
-
-              </div>
-            )}
-
-          </div>
-        </div>
-      )}
+      <CheckoutModal
+        isOpen={showCheckout}
+        onClose={handleCloseCheckout}
+        cartItems={cartItems}
+        subtotal={subtotal}
+        shipping={shipping}
+        discount={discount}
+        total={total}
+        getProductName={getProductName}
+        getProductImage={getProductImage}
+        getProductPrice={getProductPrice}
+        getQuantity={getQuantity}
+        getColor={getColor}
+        getSize={getSize}
+        onConfirm={handleConfirmOrder}
+        placingOrder={placingOrder}
+        orderSuccess={orderSuccess}
+      />
     </>
   );
 }

@@ -26,6 +26,7 @@ Route::prefix('products')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+    Route::put('/user', [AuthController::class, 'update']);
 
     //product CRUD routes
     Route::prefix('products')->group(function () {
