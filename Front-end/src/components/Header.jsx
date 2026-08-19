@@ -303,6 +303,17 @@ const Header = () => {
                   View Profile
                 </Link>
 
+                
+                <Link
+                  to="/orders"
+                  onClick={() =>
+                    setProfileMenu(false)
+                  }
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Order List
+                </Link>
+
                 <button
                   type="button"
                   onClick={handleLogout}

@@ -10,6 +10,38 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Get Logged-in User Orders
+    |--------------------------------------------------------------------------
+    */
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+
+        $orders = Order::with([
+            'items.product.images',
+            'items.variant',
+        ])
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Orders fetched successfully.',
+            'data' => $orders,
+        ]);
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Store Order
+    |--------------------------------------------------------------------------
+    */
+
     public function store(Request $request)
     {
         $user = $request->user();
@@ -19,12 +51,24 @@ class OrderController extends Controller
             'discount' => 'nullable|numeric|min:0',
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Get User Cart
+        |--------------------------------------------------------------------------
+        */
+
         $cartItems = Cart::with([
             'product',
             'variant'
         ])
-        ->where('user_id', $user->id)
-        ->get();
+            ->where('user_id', $user->id)
+            ->get();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Check Cart
+        |--------------------------------------------------------------------------
+        */
 
         if ($cartItems->isEmpty()) {
             return response()->json([
@@ -36,23 +80,53 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Calculate Subtotal
+            |--------------------------------------------------------------------------
+            */
+
             $subtotal = 0;
 
             foreach ($cartItems as $item) {
+
                 $price = $item->variant?->price
                     ?? $item->product->price;
 
                 $subtotal += $price * $item->quantity;
             }
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Shipping / Discount
+            |--------------------------------------------------------------------------
+            */
+
             $shipping = $request->shipping ?? 0;
+
             $discount = $request->discount ?? 0;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Calculate Total
+            |--------------------------------------------------------------------------
+            */
 
             $total = $subtotal + $shipping - $discount;
 
             if ($total < 0) {
                 $total = 0;
             }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Create Order
+            |--------------------------------------------------------------------------
+            */
 
             $order = Order::create([
                 'user_id' => $user->id,
@@ -63,7 +137,15 @@ class OrderController extends Controller
                 'status' => 'pending',
             ]);
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Create Order Items
+            |--------------------------------------------------------------------------
+            */
+
             foreach ($cartItems as $item) {
+
                 $price = $item->variant?->price
                     ?? $item->product->price;
 
@@ -75,22 +157,43 @@ class OrderController extends Controller
                 ]);
             }
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Empty Cart
+            |--------------------------------------------------------------------------
+            */
+
             Cart::where('user_id', $user->id)->delete();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Commit Transaction
+            |--------------------------------------------------------------------------
+            */
 
             DB::commit();
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Load Order Data
+            |--------------------------------------------------------------------------
+            */
+
             $order->load([
                 'user',
-                'items.product',
+                'items.product.images',
                 'items.variant',
             ]);
+
 
             return response()->json([
                 'success' => true,
                 'message' => 'Order placed successfully.',
                 'data' => $order,
             ], 201);
-
         } catch (\Throwable $e) {
 
             DB::rollBack();

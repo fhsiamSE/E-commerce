@@ -6,11 +6,12 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ContactUs from "./pages/users/companyInfo/ContactUs";
 import Profile from "./pages/users/user/Profile";
-import WishList from "./pages/users/product/WishList";
+import WishList from "./pages/users/user/WishList";
 import Cart from "./pages/users/product/Cart";
 import Login from "./pages/users/auth/Login";
 import Register from "./pages/users/auth/Register";
 import ProductDetails from "./pages/users/product/ProductDetails";
+import OrderList from "./pages/users/user/OrderList";
 
 
 function ProtectedRoute({ children }) {
@@ -29,7 +30,7 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen mt-12">
-      
+
       {!hideLayout && <Header />}
 
       <main className="flex-grow">
@@ -81,6 +82,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Cart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <OrderList />
               </ProtectedRoute>
             }
           />
