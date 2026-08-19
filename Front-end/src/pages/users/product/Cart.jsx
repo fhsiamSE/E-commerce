@@ -1,10 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getCart,
-  updateCart,
-  removeFromCart,
-} from "../../../store/cartSlice.js";
+import {getCart,updateCart, removeFromCart,} from "../../../store/cartSlice.js";
 import api from "../../../api/axios.js";
 import CheckoutModal from "../../../components/CheckoutModal.jsx";
 
