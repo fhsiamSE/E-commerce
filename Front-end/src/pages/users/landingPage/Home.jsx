@@ -8,9 +8,7 @@ import Review from "../../../components/ReviewSlider";
 
 import { getHomeData } from "../../../store/homeSlice";
 
-
 function Home() {
-
   const dispatch = useDispatch();
 
   const {
@@ -21,11 +19,9 @@ function Home() {
     error,
   } = useSelector((state) => state.home);
 
-
   useEffect(() => {
     dispatch(getHomeData());
   }, [dispatch]);
-
 
   if (loading) {
     return (
@@ -34,7 +30,6 @@ function Home() {
       </div>
     );
   }
-
 
   if (error) {
     return (
@@ -46,7 +41,6 @@ function Home() {
     );
   }
 
-
   return (
     <div className="min-h-screen from-white to-gray-200 bg-gradient-to-b">
 
@@ -57,24 +51,38 @@ function Home() {
         <CategoryBar />
 
 
-        {/* New Products */}
+        {/* =====================================
+            NEW PRODUCTS
+            Maximum 10
+            5 products per screen
+        ====================================== */}
         <Product
           productType="New Products"
           products={newProducts}
+          slider={true}
+          limit={10}
         />
 
 
-        {/* Popular Products */}
+        {/* =====================================
+            POPULAR PRODUCTS
+        ====================================== */}
         <Product
           productType="Popular Products"
           products={popularProducts}
+          slider={true}
+          limit={10}
         />
 
 
-        {/* Top Selling */}
+        {/* =====================================
+            TOP SELLING PRODUCTS
+        ====================================== */}
         <Product
           productType="Top Selling"
           products={topSellingProducts}
+          slider={true}
+          limit={10}
         />
 
 
@@ -85,6 +93,5 @@ function Home() {
     </div>
   );
 }
-
 
 export default Home;
