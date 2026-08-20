@@ -13,30 +13,59 @@ function AllProducts() {
     error,
   } = useSelector((state) => state.product);
 
+  /*
+  |--------------------------------------------------------------------------
+  | Get All Products
+  |--------------------------------------------------------------------------
+  */
+
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
 
+  /*
+  |--------------------------------------------------------------------------
+  | Loading
+  |--------------------------------------------------------------------------
+  */
+
   if (loading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <p>Loading products...</p>
+        <p className="text-sm text-gray-600">
+          Loading products...
+        </p>
       </div>
     );
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | Error
+  |--------------------------------------------------------------------------
+  */
+
   if (error) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <p>Failed to load products.</p>
+        <p className="text-sm text-red-600">
+          Failed to load products.
+        </p>
       </div>
     );
   }
+
+  /*
+  |--------------------------------------------------------------------------
+  | Products
+  |--------------------------------------------------------------------------
+  */
 
   return (
     <Product
       products={products}
       productType="All Products"
+      slider={false}
     />
   );
 }

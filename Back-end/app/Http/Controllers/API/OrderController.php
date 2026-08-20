@@ -20,6 +20,7 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
+
         $orders = Order::with([
             'items.product.images',
             'items.variant',
@@ -28,9 +29,12 @@ class OrderController extends Controller
             ->latest()
             ->get();
 
+
         return response()->json([
             'success' => true,
+
             'message' => 'Orders fetched successfully.',
+
             'data' => $orders,
         ]);
     }
@@ -46,10 +50,19 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-        $request->validate([
+
+        /*
+        |--------------------------------------------------------------------------
+        | Validate Request
+        |--------------------------------------------------------------------------
+        */
+
+        $validated = $request->validate([
             'shipping' => 'nullable|numeric|min:0',
+
             'discount' => 'nullable|numeric|min:0',
         ]);
+
 
         /*
         |--------------------------------------------------------------------------
@@ -59,10 +72,11 @@ class OrderController extends Controller
 
         $cartItems = Cart::with([
             'product',
-            'variant'
+            'variant',
         ])
             ->where('user_id', $user->id)
             ->get();
+
 
         /*
         |--------------------------------------------------------------------------
@@ -71,13 +85,23 @@ class OrderController extends Controller
         */
 
         if ($cartItems->isEmpty()) {
+
             return response()->json([
                 'success' => false,
+
                 'message' => 'Your cart is empty.',
             ], 400);
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Start Database Transaction
+        |--------------------------------------------------------------------------
+        */
+
         DB::beginTransaction();
+
 
         try {
 
@@ -89,24 +113,68 @@ class OrderController extends Controller
 
             $subtotal = 0;
 
+
             foreach ($cartItems as $item) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | Check Product
+                |--------------------------------------------------------------------------
+                */
+
+                if (!$item->product) {
+
+                    throw new \Exception(
+                        "Product not found for cart item ID: {$item->id}"
+                    );
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Get Price
+                |--------------------------------------------------------------------------
+                |
+                | Variant price has priority.
+                | If variant has no price, use product price.
+                |
+                */
 
                 $price = $item->variant?->price
                     ?? $item->product->price;
 
-                $subtotal += $price * $item->quantity;
+
+                /*
+                |--------------------------------------------------------------------------
+                | Calculate Item Total
+                |--------------------------------------------------------------------------
+                */
+
+                $subtotal +=
+                    $price * $item->quantity;
             }
 
 
             /*
             |--------------------------------------------------------------------------
-            | Shipping / Discount
+            | Shipping
             |--------------------------------------------------------------------------
             */
 
-            $shipping = $request->shipping ?? 0;
+            $shipping =
+                $validated['shipping']
+                ?? 0;
 
-            $discount = $request->discount ?? 0;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Discount
+            |--------------------------------------------------------------------------
+            */
+
+            $discount =
+                $validated['discount']
+                ?? 0;
 
 
             /*
@@ -115,7 +183,17 @@ class OrderController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $total = $subtotal + $shipping - $discount;
+            $total =
+                $subtotal
+                + $shipping
+                - $discount;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Prevent Negative Total
+            |--------------------------------------------------------------------------
+            */
 
             if ($total < 0) {
                 $total = 0;
@@ -130,10 +208,15 @@ class OrderController extends Controller
 
             $order = Order::create([
                 'user_id' => $user->id,
+
                 'subtotal' => $subtotal,
+
                 'shipping' => $shipping,
+
                 'discount' => $discount,
+
                 'total' => $total,
+
                 'status' => 'pending',
             ]);
 
@@ -146,25 +229,68 @@ class OrderController extends Controller
 
             foreach ($cartItems as $item) {
 
+                /*
+                |--------------------------------------------------------------------------
+                | Get Product Price
+                |--------------------------------------------------------------------------
+                */
+
                 $price = $item->variant?->price
                     ?? $item->product->price;
 
+
+                /*
+                |--------------------------------------------------------------------------
+                | Create Order Item
+                |--------------------------------------------------------------------------
+                */
+
                 $order->items()->create([
-                    'product_id' => $item->product_id,
-                    'variant_id' => $item->variant_id,
-                    'quantity' => $item->quantity,
-                    'price' => $price,
+                    'product_id' =>
+                        $item->product_id,
+
+                    'variant_id' =>
+                        $item->variant_id,
+
+                    'quantity' =>
+                        $item->quantity,
+
+                    'price' =>
+                        $price,
                 ]);
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | UPDATE SALES COUNT
+                |--------------------------------------------------------------------------
+                |
+                | This makes Top Selling Products dynamic.
+                |
+                | Example:
+                |
+                | Current sales_count = 5
+                | Customer buys quantity = 3
+                |
+                | New sales_count = 8
+                |
+                */
+
+                $item->product->increment(
+                    'sales_count',
+                    $item->quantity
+                );
             }
 
 
             /*
             |--------------------------------------------------------------------------
-            | Empty Cart
+            | Empty User Cart
             |--------------------------------------------------------------------------
             */
 
-            Cart::where('user_id', $user->id)->delete();
+            Cart::where('user_id', $user->id)
+                ->delete();
 
 
             /*
@@ -178,7 +304,7 @@ class OrderController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Load Order Data
+            | Load Complete Order
             |--------------------------------------------------------------------------
             */
 
@@ -189,18 +315,37 @@ class OrderController extends Controller
             ]);
 
 
+            /*
+            |--------------------------------------------------------------------------
+            | Return Success Response
+            |--------------------------------------------------------------------------
+            */
+
             return response()->json([
                 'success' => true,
+
                 'message' => 'Order placed successfully.',
+
                 'data' => $order,
             ], 201);
+
+
         } catch (\Throwable $e) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Rollback Transaction
+            |--------------------------------------------------------------------------
+            */
 
             DB::rollBack();
 
+
             return response()->json([
                 'success' => false,
+
                 'message' => 'Failed to place order.',
+
                 'error' => $e->getMessage(),
             ], 500);
         }

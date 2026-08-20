@@ -6,21 +6,22 @@ import api from "../api/axios.js";
 | Get Home Data
 |--------------------------------------------------------------------------
 */
-export const getHomeData = createAsyncThunk(
-  "home/getHomeData",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await api.get("/home");
 
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data || {
-          message: "Failed to fetch home data",
+export const getHomeData = createAsyncThunk(
+    "home/getHomeData",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.get("/home");
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data || {
+                    message: "Failed to fetch home data",
+                }
+            );
         }
-      );
     }
-  }
 );
 
 
@@ -29,13 +30,17 @@ export const getHomeData = createAsyncThunk(
 | Initial State
 |--------------------------------------------------------------------------
 */
-const initialState = {
-  newProducts: [],
-  popularProducts: [],
-  topSellingProducts: [],
 
-  loading: false,
-  error: null,
+const initialState = {
+    newProducts: [],
+
+    popularProducts: [],
+
+    topSellingProducts: [],
+
+    loading: false,
+
+    error: null,
 };
 
 
@@ -44,75 +49,107 @@ const initialState = {
 | Home Slice
 |--------------------------------------------------------------------------
 */
+
 const homeSlice = createSlice({
-  name: "home",
+    name: "home",
 
-  initialState,
+    initialState,
 
-  reducers: {
-    clearHomeError: (state) => {
-      state.error = null;
+    reducers: {
+
+        clearHomeError: (state) => {
+            state.error = null;
+        },
+
     },
-  },
-
-  extraReducers: (builder) => {
-    builder
-
-      /*
-      |--------------------------------------------------------------------------
-      | GET HOME DATA - PENDING
-      |--------------------------------------------------------------------------
-      */
-      .addCase(getHomeData.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
 
 
-      /*
-      |--------------------------------------------------------------------------
-      | GET HOME DATA - SUCCESS
-      |--------------------------------------------------------------------------
-      */
-      .addCase(getHomeData.fulfilled, (state, action) => {
-        state.loading = false;
+    extraReducers: (builder) => {
 
-        const data = action.payload?.data;
+        /*
+        |--------------------------------------------------------------------------
+        | GET HOME DATA - PENDING
+        |--------------------------------------------------------------------------
+        */
 
-        state.newProducts = data?.new_products || [];
+        builder.addCase(
+            getHomeData.pending,
+            (state) => {
 
-        state.popularProducts = data?.popular_products || [];
+                state.loading = true;
 
-        state.topSellingProducts =
-          data?.top_selling_products || [];
-
-        state.error = null;
-      })
+                state.error = null;
+            }
+        );
 
 
-      /*
-      |--------------------------------------------------------------------------
-      | GET HOME DATA - FAILED
-      |--------------------------------------------------------------------------
-      */
-      .addCase(getHomeData.rejected, (state, action) => {
-        state.loading = false;
+        /*
+        |--------------------------------------------------------------------------
+        | GET HOME DATA - SUCCESS
+        |--------------------------------------------------------------------------
+        */
 
-        state.newProducts = [];
-        state.popularProducts = [];
-        state.topSellingProducts = [];
+        builder.addCase(
+            getHomeData.fulfilled,
+            (state, action) => {
 
-        state.error =
-          action.payload || {
-            message: "Failed to fetch home data",
-          };
-      });
-  },
+                state.loading = false;
+
+
+                const data =
+                    action.payload?.data;
+
+
+                state.newProducts =
+                    data?.new_products || [];
+
+
+                state.popularProducts =
+                    data?.popular_products || [];
+
+
+                state.topSellingProducts =
+                    data?.top_selling_products || [];
+
+
+                state.error = null;
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GET HOME DATA - FAILED
+        |--------------------------------------------------------------------------
+        */
+
+        builder.addCase(
+            getHomeData.rejected,
+            (state, action) => {
+
+                state.loading = false;
+
+
+                state.newProducts = [];
+
+                state.popularProducts = [];
+
+                state.topSellingProducts = [];
+
+
+                state.error =
+                    action.payload || {
+                        message:
+                            "Failed to fetch home data",
+                    };
+            }
+        );
+    },
 });
 
 
 export const {
-  clearHomeError,
+    clearHomeError,
 } = homeSlice.actions;
 
 
