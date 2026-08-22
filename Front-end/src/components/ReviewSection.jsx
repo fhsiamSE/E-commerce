@@ -1,11 +1,18 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import api from "../api/axios.js";
+import {
+  getReviews,
+  getMyReview,
+  addReview,
+  updateReview,
+  deleteReview,
+} from "../store/reviewSlice.js";
 
 const ReviewSection = ({ productId }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   /*
   |--------------------------------------------------------------------------
@@ -19,33 +26,50 @@ const ReviewSection = ({ productId }) => {
 
   /*
   |--------------------------------------------------------------------------
-  | REVIEWS
+  | REVIEW REDUX STATE
   |--------------------------------------------------------------------------
   */
 
-  const [reviews, setReviews] = useState([]);
-
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-
-  const [error, setError] = useState("");
+  const {
+    reviews,
+    myReview,
+    totalReviews,
+    averageRating,
+    ratingCounts,
+    loading,
+    submitting,
+    error,
+  } = useSelector((state) => state.review);
 
   /*
   |--------------------------------------------------------------------------
-  | REVIEW FORM
+  | FORM STATE
   |--------------------------------------------------------------------------
   */
 
   const [reviewRating, setReviewRating] = useState(0);
+  const [reviewTitle, setReviewTitle] = useState("");
   const [reviewComment, setReviewComment] = useState("");
 
   /*
   |--------------------------------------------------------------------------
-  | EDIT MODE
+  | EDIT STATE
   |--------------------------------------------------------------------------
   */
 
   const [editingReviewId, setEditingReviewId] = useState(null);
+
+  const [editRating, setEditRating] = useState(0);
+  const [editTitle, setEditTitle] = useState("");
+  const [editComment, setEditComment] = useState("");
+
+  /*
+  |--------------------------------------------------------------------------
+  | DELETE STATE
+  |--------------------------------------------------------------------------
+  */
+
+  const [deletingReviewId, setDeletingReviewId] = useState(null);
 
   /*
   |--------------------------------------------------------------------------
@@ -56,69 +80,50 @@ const ReviewSection = ({ productId }) => {
   useEffect(() => {
     if (!productId) return;
 
-    fetchReviews();
-  }, [productId]);
+    dispatch(getReviews(productId));
 
-  /*
-  |--------------------------------------------------------------------------
-  | GET REVIEWS
-  |--------------------------------------------------------------------------
-  */
-
-  const fetchReviews = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await api.get(
-        `/products/${productId}/reviews`
-      );
-
-      const data = response.data?.data;
-
-      setReviews(data?.reviews || []);
-    } catch (err) {
-      console.error("Fetch reviews error:", err);
-
-      setError(
-        err.response?.data?.message ||
-          "Unable to load reviews."
-      );
-
-      setReviews([]);
-    } finally {
-      setLoading(false);
+    if (isAuthenticated) {
+      dispatch(getMyReview(productId));
     }
-  };
+  }, [
+    dispatch,
+    productId,
+    isAuthenticated,
+  ]);
 
   /*
   |--------------------------------------------------------------------------
   | OWN REVIEW
   |--------------------------------------------------------------------------
-  |
-  | The backend returns:
-  |
-  | review.user_id
-  |
-  | and authenticated user:
-  |
-  | user.id
-  |
   */
 
   const ownReview = useMemo(() => {
-    if (!isAuthenticated || !user?.id) {
-      return null;
+    /*
+    | Prefer backend myReview
+    */
+
+    if (myReview) {
+      return myReview;
     }
 
-    return (
-      reviews.find(
-        (review) =>
-          Number(review.user_id) ===
-          Number(user.id)
-      ) || null
-    );
+    /*
+    | Fallback:
+    | Find review belonging to current user
+    */
+
+    if (isAuthenticated && user?.id) {
+      return (
+        reviews.find(
+          (review) =>
+            Number(review.user_id) ===
+            Number(user.id)
+        ) || null
+      );
+    }
+
+    return null;
   }, [
+    myReview,
     reviews,
     isAuthenticated,
     user?.id,
@@ -126,49 +131,21 @@ const ReviewSection = ({ productId }) => {
 
   /*
   |--------------------------------------------------------------------------
-  | ORDER REVIEWS
+  | OTHER REVIEWS
   |--------------------------------------------------------------------------
-  |
-  | Own review always appears first.
-  |
   */
 
-  const orderedReviews = useMemo(() => {
+  const otherReviews = useMemo(() => {
     if (!ownReview) {
       return reviews;
     }
 
-    return [
-      ownReview,
-      ...reviews.filter(
-        (review) =>
-          Number(review.id) !==
-          Number(ownReview.id)
-      ),
-    ];
+    return reviews.filter(
+      (review) =>
+        Number(review.id) !==
+        Number(ownReview.id)
+    );
   }, [reviews, ownReview]);
-
-  /*
-  |--------------------------------------------------------------------------
-  | AVERAGE RATING
-  |--------------------------------------------------------------------------
-  */
-
-  const averageRating = useMemo(() => {
-    if (!reviews.length) {
-      return 0;
-    }
-
-    const total = reviews.reduce(
-      (sum, review) =>
-        sum + Number(review.rating || 0),
-      0
-    );
-
-    return Number(
-      (total / reviews.length).toFixed(1)
-    );
-  }, [reviews]);
 
   /*
   |--------------------------------------------------------------------------
@@ -177,6 +154,17 @@ const ReviewSection = ({ productId }) => {
   */
 
   const getRatingCount = (rating) => {
+    /*
+    | Prefer backend rating counts
+    */
+
+    if (
+      ratingCounts &&
+      ratingCounts[rating] !== undefined
+    ) {
+      return ratingCounts[rating];
+    }
+
     return reviews.filter(
       (review) =>
         Number(review.rating) ===
@@ -191,67 +179,35 @@ const ReviewSection = ({ productId }) => {
   */
 
   const getRatingPercentage = (rating) => {
-    if (!reviews.length) {
-      return 0;
-    }
+    if (!totalReviews) return 0;
 
     return (
       (getRatingCount(rating) /
-        reviews.length) *
+        totalReviews) *
       100
     );
   };
 
   /*
   |--------------------------------------------------------------------------
-  | FORMAT DATE
+  | START EDIT
   |--------------------------------------------------------------------------
   */
 
-  const formatDate = (date) => {
-    if (!date) {
-      return "Recently";
-    }
-
-    try {
-      return new Date(date).toLocaleDateString(
-        "en-US",
-        {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        }
-      );
-    } catch {
-      return "Recently";
-    }
-  };
-
-  /*
-  |--------------------------------------------------------------------------
-  | EDIT REVIEW
-  |--------------------------------------------------------------------------
-  */
-
-  const handleEditReview = (review) => {
+  const handleEdit = (review) => {
     setEditingReviewId(review.id);
 
-    setReviewRating(
+    setEditRating(
       Number(review.rating || 0)
     );
 
-    setReviewComment(
-      review.comment || ""
+    setEditTitle(
+      review.title || ""
     );
 
-    setTimeout(() => {
-      document
-        .getElementById("review-form")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-    }, 100);
+    setEditComment(
+      review.comment || ""
+    );
   };
 
   /*
@@ -260,26 +216,142 @@ const ReviewSection = ({ productId }) => {
   |--------------------------------------------------------------------------
   */
 
-  const cancelEdit = () => {
+  const handleCancelEdit = () => {
     setEditingReviewId(null);
-    setReviewRating(0);
-    setReviewComment("");
+
+    setEditRating(0);
+    setEditTitle("");
+    setEditComment("");
   };
 
   /*
   |--------------------------------------------------------------------------
-  | SUBMIT / UPDATE REVIEW
+  | UPDATE REVIEW
   |--------------------------------------------------------------------------
   */
 
-  const submitReview = async (event) => {
+  const handleUpdate = async (event) => {
     event.preventDefault();
 
-    /*
-    |----------------------------------------------------------------------
-    | AUTH
-    |----------------------------------------------------------------------
-    */
+    if (!editingReviewId) return;
+
+    if (!editRating) {
+      alert("Please select a rating.");
+      return;
+    }
+
+    if (!editComment.trim()) {
+      alert("Please write your review.");
+      return;
+    }
+
+    try {
+      await dispatch(
+        updateReview({
+          reviewId: editingReviewId,
+          rating: editRating,
+          title:
+            editTitle.trim() || null,
+          comment:
+            editComment.trim(),
+        })
+      ).unwrap();
+
+      /*
+      | Refresh reviews from backend
+      | so the UI always has the latest data.
+      */
+
+      await dispatch(
+        getReviews(productId)
+      ).unwrap();
+
+      if (isAuthenticated) {
+        await dispatch(
+          getMyReview(productId)
+        ).unwrap();
+      }
+
+      handleCancelEdit();
+
+      alert(
+        "Review updated successfully."
+      );
+    } catch (err) {
+      console.error(
+        "Update review error:",
+        err
+      );
+
+      alert(
+        err?.message ||
+          err?.data?.message ||
+          "Unable to update review."
+      );
+    }
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | DELETE REVIEW
+  |--------------------------------------------------------------------------
+  */
+
+  const handleDelete = async (reviewId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your review?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingReviewId(reviewId);
+
+      await dispatch(
+        deleteReview(reviewId)
+      ).unwrap();
+
+      /*
+      | Refresh from backend
+      */
+
+      await dispatch(
+        getReviews(productId)
+      ).unwrap();
+
+      if (isAuthenticated) {
+        await dispatch(
+          getMyReview(productId)
+        ).unwrap();
+      }
+
+      alert(
+        "Review deleted successfully."
+      );
+    } catch (err) {
+      console.error(
+        "Delete review error:",
+        err
+      );
+
+      alert(
+        err?.message ||
+          err?.data?.message ||
+          "Unable to delete review."
+      );
+    } finally {
+      setDeletingReviewId(null);
+    }
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | SUBMIT NEW REVIEW
+  |--------------------------------------------------------------------------
+  */
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     if (!isAuthenticated) {
       alert(
@@ -291,280 +363,320 @@ const ReviewSection = ({ productId }) => {
       return;
     }
 
-    /*
-    |----------------------------------------------------------------------
-    | RATING
-    |----------------------------------------------------------------------
-    */
-
     if (!reviewRating) {
       alert("Please select a rating.");
       return;
     }
 
+    if (!reviewComment.trim()) {
+      alert("Please write your review.");
+      return;
+    }
+
+    try {
+      await dispatch(
+        addReview({
+          productId,
+          rating: reviewRating,
+          title:
+            reviewTitle.trim() || null,
+          comment:
+            reviewComment.trim(),
+        })
+      ).unwrap();
+
+      /*
+      | Reload backend data
+      */
+
+      await dispatch(
+        getReviews(productId)
+      ).unwrap();
+
+      await dispatch(
+        getMyReview(productId)
+      ).unwrap();
+
+      /*
+      | Clear form
+      */
+
+      setReviewRating(0);
+      setReviewTitle("");
+      setReviewComment("");
+
+      alert(
+        "Your review has been submitted."
+      );
+    } catch (err) {
+      console.error(
+        "Submit review error:",
+        err
+      );
+
+      alert(
+        err?.message ||
+          err?.data?.message ||
+          "Unable to submit review."
+      );
+    }
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | RENDER REVIEW
+  |--------------------------------------------------------------------------
+  */
+
+  const renderReview = (
+    review,
+    isOwnReview = false
+  ) => {
+    const isEditing =
+      editingReviewId === review.id;
+
     /*
-    |----------------------------------------------------------------------
-    | COMMENT
-    |----------------------------------------------------------------------
+    | EDIT MODE
     */
 
-    if (!reviewComment.trim()) {
-      alert(
-        "Please write your review."
-      );
+    if (isEditing) {
+      return (
+        <div
+          key={review.id}
+          className="border-b border-gray-200 pb-8"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">
+                {review.user?.name ||
+                  user?.name ||
+                  "You"}
+              </p>
 
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-      setError("");
-
-      /*
-      |--------------------------------------------------------------------------
-      | UPDATE EXISTING REVIEW
-      |--------------------------------------------------------------------------
-      */
-
-      if (editingReviewId) {
-        const response = await api.put(
-          `/reviews/${editingReviewId}`,
-          {
-            rating: reviewRating,
-            comment: reviewComment.trim(),
-          }
-        );
-
-        const updatedReview =
-          response.data?.data ||
-          response.data?.review;
-
-        /*
-        |----------------------------------------------------------------------
-        | Update review locally
-        |---------------------------------------------------------------------- 
-        */
-
-        if (updatedReview) {
-          setReviews((current) =>
-            current.map((review) =>
-              Number(review.id) ===
-              Number(editingReviewId)
-                ? {
-                    ...review,
-                    ...updatedReview,
-
-                    /*
-                    | Preserve user if backend
-                    | doesn't return it.
-                    */
-
-                    user:
-                      updatedReview.user ||
-                      review.user,
-                  }
-                : review
-            )
-          );
-        } else {
-          /*
-          |--------------------------------------------------------------------
-          | If backend doesn't return updated review,
-          | fetch again.
-          |--------------------------------------------------------------------
-          */
-
-          await fetchReviews();
-        }
-
-        setEditingReviewId(null);
-        setReviewRating(0);
-        setReviewComment("");
-
-        alert(
-          "Your review has been updated successfully."
-        );
-
-        return;
-      }
-
-      /*
-      |--------------------------------------------------------------------------
-      | CREATE NEW REVIEW
-      |--------------------------------------------------------------------------
-      */
-
-      const response = await api.post(
-        `/products/${productId}/reviews`,
-        {
-          rating: reviewRating,
-          comment: reviewComment.trim(),
-        }
-      );
-
-      const newReview =
-        response.data?.data ||
-        response.data?.review;
-
-      /*
-      |----------------------------------------------------------------------
-      | Add review to local list
-      |---------------------------------------------------------------------- 
-      */
-
-      if (newReview) {
-        setReviews((current) => [
-          newReview,
-          ...current,
-        ]);
-      } else {
-        /*
-        |--------------------------------------------------------------------
-        | If backend doesn't return the review,
-        | fetch reviews again.
-        |--------------------------------------------------------------------
-        */
-
-        await fetchReviews();
-      }
-
-      setReviewRating(0);
-      setReviewComment("");
-
-      alert(
-        "Your review has been submitted successfully."
-      );
-    } catch (err) {
-      console.error(
-        "Review submission error:",
-        err
-      );
-
-      setError(
-        err.response?.data?.message ||
-          "Unable to submit review."
-      );
-
-      alert(
-        err.response?.data?.message ||
-          "Unable to submit review."
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  /*
-  |--------------------------------------------------------------------------
-  | DELETE REVIEW
-  |--------------------------------------------------------------------------
-  */
-
-  const handleDeleteReview = async (
-    reviewId
-  ) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your review?"
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-      setError("");
-
-      await api.delete(
-        `/reviews/${reviewId}`
-      );
-
-      /*
-      |----------------------------------------------------------------------
-      | Remove from local state
-      |----------------------------------------------------------------------
-      */
-
-      setReviews((current) =>
-        current.filter(
-          (review) =>
-            Number(review.id) !==
-            Number(reviewId)
-        )
-      );
-
-      /*
-      |----------------------------------------------------------------------
-      | Reset form
-      |----------------------------------------------------------------------
-      */
-
-      setEditingReviewId(null);
-      setReviewRating(0);
-      setReviewComment("");
-
-      alert(
-        "Your review has been deleted successfully."
-      );
-    } catch (err) {
-      console.error(
-        "Delete review error:",
-        err
-      );
-
-      setError(
-        err.response?.data?.message ||
-          "Unable to delete review."
-      );
-
-      alert(
-        err.response?.data?.message ||
-          "Unable to delete review."
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  /*
-  |--------------------------------------------------------------------------
-  | LOADING
-  |--------------------------------------------------------------------------
-  */
-
-  if (loading) {
-    return (
-      <section className="mt-20 border-t border-gray-200 pt-16">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[320px_minmax(0,1fr)]">
-          <div>
-            <h2 className="text-2xl font-semibold tracking-tight">
-              Customer Reviews
-            </h2>
-
-            <div className="mt-6">
-              <div className="h-8 w-24 animate-pulse bg-gray-100" />
-
-              <div className="mt-4 h-4 w-32 animate-pulse bg-gray-100" />
+              <p className="mt-1 text-xs text-gray-400">
+                Editing your review
+              </p>
             </div>
           </div>
 
-          <div className="py-10 text-sm text-gray-500">
-            Loading reviews...
-          </div>
+          <form
+            onSubmit={handleUpdate}
+            className="mt-5"
+          >
+            {/* RATING */}
+
+            <div>
+              <label className="text-sm font-medium">
+                Your rating
+              </label>
+
+              <div className="mt-2 flex gap-1">
+                {[1, 2, 3, 4, 5].map(
+                  (star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() =>
+                        setEditRating(star)
+                      }
+                      className="text-2xl transition hover:scale-110"
+                    >
+                      <span
+                        className={
+                          star <= editRating
+                            ? "text-yellow-500"
+                            : "text-gray-300"
+                        }
+                      >
+                        ★
+                      </span>
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* TITLE */}
+
+            <div className="mt-5">
+              <label className="text-sm font-medium">
+                Review title
+              </label>
+
+              <input
+                type="text"
+                value={editTitle}
+                onChange={(event) =>
+                  setEditTitle(
+                    event.target.value
+                  )
+                }
+                placeholder="Give your review a title"
+                className="mt-2 h-11 w-full border border-gray-300 px-3 text-sm outline-none transition focus:border-black"
+              />
+            </div>
+
+            {/* COMMENT */}
+
+            <div className="mt-4">
+              <label className="text-sm font-medium">
+                Your review
+              </label>
+
+              <textarea
+                value={editComment}
+                onChange={(event) =>
+                  setEditComment(
+                    event.target.value
+                  )
+                }
+                rows={5}
+                placeholder="Tell us what you think..."
+                className="mt-2 w-full resize-none border border-gray-300 p-3 text-sm outline-none transition focus:border-black"
+              />
+            </div>
+
+            {/* BUTTONS */}
+
+            <div className="mt-5 flex gap-3">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="bg-black px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {submitting
+                  ? "Saving..."
+                  : "Save changes"}
+              </button>
+
+              <button
+                type="button"
+                onClick={
+                  handleCancelEdit
+                }
+                disabled={submitting}
+                className="border border-gray-300 px-6 py-3 text-sm font-medium hover:border-black disabled:opacity-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
         </div>
-      </section>
+      );
+    }
+
+    /*
+    | NORMAL REVIEW
+    */
+
+    return (
+      <div
+        key={review.id}
+        className={`border-b border-gray-200 pb-8 ${
+          isOwnReview
+            ? "bg-gray-50 p-5"
+            : ""
+        }`}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium text-gray-900">
+                {review.user?.name ||
+                  "Anonymous"}
+              </p>
+
+              {isOwnReview && (
+                <span className="rounded-full bg-black px-2 py-1 text-[10px] font-medium text-white">
+                  You
+                </span>
+              )}
+            </div>
+
+            <div className="mt-2 flex text-sm">
+              {[1, 2, 3, 4, 5].map(
+                (star) => (
+                  <span
+                    key={star}
+                    className={
+                      star <=
+                      Number(
+                        review.rating
+                      )
+                        ? "text-yellow-500"
+                        : "text-gray-300"
+                    }
+                  >
+                    ★
+                  </span>
+                )
+              )}
+            </div>
+
+            {review.title && (
+              <h3 className="mt-2 font-medium">
+                {review.title}
+              </h3>
+            )}
+          </div>
+
+          <span className="text-xs text-gray-400">
+            {review.created_at
+              ? new Date(
+                  review.created_at
+                ).toLocaleDateString()
+              : "Recently"}
+          </span>
+        </div>
+
+        <p className="mt-3 text-sm leading-6 text-gray-600">
+          {review.comment}
+        </p>
+
+        {/* OWN REVIEW ACTIONS */}
+
+        {isOwnReview && (
+          <div className="mt-5 flex gap-4">
+            <button
+              type="button"
+              onClick={() =>
+                handleEdit(review)
+              }
+              className="text-sm font-medium underline underline-offset-4 hover:text-gray-500"
+            >
+              Edit
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                handleDelete(review.id)
+              }
+              disabled={
+                deletingReviewId ===
+                review.id
+              }
+              className="text-sm font-medium text-red-500 underline underline-offset-4 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {deletingReviewId ===
+              review.id
+                ? "Deleting..."
+                : "Delete"}
+            </button>
+          </div>
+        )}
+      </div>
     );
-  }
+  };
 
   /*
   |--------------------------------------------------------------------------
-  | RENDER
+  | RETURN
   |--------------------------------------------------------------------------
   */
 
   return (
     <section className="mt-20 border-t border-gray-200 pt-16">
-
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[320px_minmax(0,1fr)]">
 
         {/* =========================================================
@@ -572,27 +684,27 @@ const ReviewSection = ({ productId }) => {
         ========================================================== */}
 
         <div>
-
           <h2 className="text-2xl font-semibold tracking-tight">
             Customer Reviews
           </h2>
 
           <div className="mt-6 flex items-center gap-4">
-
             <div className="text-5xl font-semibold tracking-tight">
-              {averageRating.toFixed(1)}
+              {Number(
+                averageRating || 0
+              ).toFixed(1)}
             </div>
 
             <div>
-
               <div className="flex text-lg">
-
                 {[1, 2, 3, 4, 5].map(
                   (star) => (
                     <span
                       key={star}
                       className={
-                        averageRating >= star
+                        Number(
+                          averageRating || 0
+                        ) >= star
                           ? "text-yellow-500"
                           : "text-gray-300"
                       }
@@ -601,29 +713,20 @@ const ReviewSection = ({ productId }) => {
                     </span>
                   )
                 )}
-
               </div>
 
               <p className="mt-1 text-sm text-gray-500">
-                Based on {reviews.length}{" "}
-                {reviews.length === 1
-                  ? "review"
-                  : "reviews"}
+                Based on {totalReviews}{" "}
+                reviews
               </p>
-
             </div>
-
           </div>
 
-          {/* =====================================================
-              RATING BREAKDOWN
-          ====================================================== */}
+          {/* RATING BREAKDOWN */}
 
           <div className="mt-8 space-y-3">
-
             {[5, 4, 3, 2, 1].map(
               (rating) => {
-
                 const count =
                   getRatingCount(rating);
 
@@ -637,7 +740,6 @@ const ReviewSection = ({ productId }) => {
                     key={rating}
                     className="flex items-center gap-3 text-sm"
                   >
-
                     <span className="w-3">
                       {rating}
                     </span>
@@ -647,355 +749,207 @@ const ReviewSection = ({ productId }) => {
                     </span>
 
                     <div className="h-2 flex-1 bg-gray-100">
-
                       <div
                         className="h-full bg-black transition-all"
                         style={{
                           width: `${percentage}%`,
                         }}
                       />
-
                     </div>
 
                     <span className="w-6 text-right text-gray-500">
                       {count}
                     </span>
-
                   </div>
                 );
               }
             )}
-
           </div>
-
         </div>
 
         {/* =========================================================
-            REVIEWS + FORM
+            REVIEWS
         ========================================================== */}
 
         <div>
+          {loading ? (
+            <div className="py-10 text-center text-sm text-gray-500">
+              Loading reviews...
+            </div>
+          ) : error ? (
+            <div className="border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+              {error?.message ||
+                "Unable to load reviews."}
+            </div>
+          ) : (
+            <div className="space-y-8">
 
-          {/* ERROR */}
+              {/* ===================================================
+                  OWN REVIEW FIRST
+              ==================================================== */}
 
-          {error && (
-            <div className="mb-6 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-              {error}
+              {ownReview &&
+                renderReview(
+                  ownReview,
+                  true
+                )}
+
+              {/* ===================================================
+                  OTHER REVIEWS
+              ==================================================== */}
+
+              {otherReviews.length > 0 ? (
+                otherReviews.map(
+                  (review) =>
+                    renderReview(
+                      review,
+                      false
+                    )
+                )
+              ) : (
+                !ownReview && (
+                  <div className="border-b border-gray-200 pb-8">
+                    <p className="text-sm text-gray-500">
+                      No reviews yet. Be
+                      the first person to
+                      review this product.
+                    </p>
+                  </div>
+                )
+              )}
             </div>
           )}
 
           {/* =======================================================
-              REVIEW LIST
+              WRITE REVIEW
           ======================================================== */}
 
-          <div className="space-y-8">
+          {!ownReview && (
+            <div className="mt-12">
+              <h3 className="text-xl font-semibold">
+                Write a review
+              </h3>
 
-            {orderedReviews.length === 0 ? (
+              <p className="mt-2 text-sm text-gray-500">
+                Share your experience with
+                this product.
+              </p>
 
-              <div className="border-b border-gray-200 pb-8">
+              {!isAuthenticated ? (
+                <div className="mt-6 border border-gray-200 p-5">
+                  <p className="text-sm text-gray-600">
+                    Please login to write a
+                    review.
+                  </p>
 
-                <p className="text-sm text-gray-500">
-                  No reviews yet. Be the first
-                  person to review this product.
-                </p>
-
-              </div>
-
-            ) : (
-
-              orderedReviews.map((review) => {
-
-                const isOwnReview =
-                  ownReview?.id ===
-                  review.id;
-
-                return (
-                  <div
-                    key={review.id}
-                    className={`border-b border-gray-200 pb-8 ${
-                      isOwnReview
-                        ? "border-l-2 border-l-black pl-4"
-                        : ""
-                    }`}
-                  >
-
-                    {/* =================================================
-                        REVIEW HEADER
-                    ================================================== */}
-
-                    <div className="flex items-start justify-between gap-4">
-
-                      <div>
-
-                        {/* YOUR REVIEW */}
-
-                        {isOwnReview && (
-                          <span className="mb-2 inline-block text-xs font-semibold uppercase tracking-wide text-black">
-                            Your review
-                          </span>
-                        )}
-
-                        {/* USER NAME */}
-
-                        <p className="text-sm font-medium text-gray-900">
-                          {review.user?.name ||
-                            "Customer"}
-                        </p>
-
-                        {/* RATING */}
-
-                        <div className="mt-1 flex text-sm">
-
-                          {[1, 2, 3, 4, 5].map(
-                            (star) => (
-                              <span
-                                key={star}
-                                className={
-                                  star <=
-                                  Number(
-                                    review.rating
-                                  )
-                                    ? "text-yellow-500"
-                                    : "text-gray-300"
-                                }
-                              >
-                                ★
-                              </span>
-                            )
-                          )}
-
-                        </div>
-
-                      </div>
-
-                      {/* DATE */}
-
-                      <span className="text-xs text-gray-400">
-                        {formatDate(
-                          review.created_at
-                        )}
-                      </span>
-
-                    </div>
-
-                    {/* =================================================
-                        COMMENT
-                    ================================================== */}
-
-                    <p className="mt-3 text-sm leading-6 text-gray-600">
-                      {review.comment}
-                    </p>
-
-                    {/* =================================================
-                        OWN REVIEW ACTIONS
-                    ================================================== */}
-
-                    {isOwnReview && (
-                      <div className="mt-4 flex gap-4">
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleEditReview(
-                              review
-                            )
-                          }
-                          disabled={submitting}
-                          className="text-xs font-medium underline underline-offset-4 transition hover:text-gray-500 disabled:opacity-50"
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleDeleteReview(
-                              review.id
-                            )
-                          }
-                          disabled={submitting}
-                          className="text-xs font-medium text-red-500 underline underline-offset-4 transition hover:text-red-700 disabled:opacity-50"
-                        >
-                          Delete
-                        </button>
-
-                      </div>
-                    )}
-
-                  </div>
-                );
-              })
-
-            )}
-
-          </div>
-
-          {/* =========================================================
-              REVIEW FORM
-          ========================================================== */}
-
-          <div
-            id="review-form"
-            className="mt-12"
-          >
-
-            <h3 className="text-xl font-semibold">
-              {editingReviewId
-                ? "Edit your review"
-                : "Write a review"}
-            </h3>
-
-            <p className="mt-2 text-sm text-gray-500">
-              {editingReviewId
-                ? "Update your rating or comment."
-                : "Share your experience with this product."}
-            </p>
-
-            {/* =====================================================
-                NOT LOGGED IN
-            ====================================================== */}
-
-            {!isAuthenticated ? (
-
-              <div className="mt-6 border border-gray-200 p-5">
-
-                <p className="text-sm text-gray-600">
-                  Please login to write a
-                  review.
-                </p>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate("/login")
-                  }
-                  className="mt-4 bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
-                >
-                  Login
-                </button>
-
-              </div>
-
-            ) : (
-
-              <form
-                onSubmit={submitReview}
-                className="mt-6"
-              >
-
-                {/* =================================================
-                    RATING
-                ================================================== */}
-
-                <div>
-
-                  <label className="text-sm font-medium">
-                    Your rating
-                  </label>
-
-                  <div className="mt-2 flex gap-1">
-
-                    {[1, 2, 3, 4, 5].map(
-                      (star) => (
-
-                        <button
-                          key={star}
-                          type="button"
-                          onClick={() =>
-                            setReviewRating(
-                              star
-                            )
-                          }
-                          className="text-2xl transition hover:scale-110"
-                        >
-
-                          <span
-                            className={
-                              star <=
-                              reviewRating
-                                ? "text-yellow-500"
-                                : "text-gray-300"
-                            }
-                          >
-                            ★
-                          </span>
-
-                        </button>
-
-                      )
-                    )}
-
-                  </div>
-
-                </div>
-
-                {/* =================================================
-                    COMMENT
-                ================================================== */}
-
-                <div className="mt-6">
-
-                  <label className="text-sm font-medium">
-                    Your review
-                  </label>
-
-                  <textarea
-                    value={reviewComment}
-                    onChange={(event) =>
-                      setReviewComment(
-                        event.target.value
-                      )
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate("/login")
                     }
-                    placeholder="Tell us what you think about this product..."
-                    rows={5}
-                    className="mt-2 w-full resize-none border border-gray-300 p-3 text-sm outline-none transition focus:border-black"
-                  />
-
+                    className="mt-4 bg-black px-6 py-3 text-sm font-medium text-white hover:bg-gray-800"
+                  >
+                    Login
+                  </button>
                 </div>
+              ) : (
+                <form
+                  onSubmit={handleSubmit}
+                  className="mt-6"
+                >
+                  {/* RATING */}
 
-                {/* =================================================
-                    BUTTONS
-                ================================================== */}
+                  <div>
+                    <label className="text-sm font-medium">
+                      Your rating
+                    </label>
 
-                <div className="mt-5 flex gap-3">
+                    <div className="mt-2 flex gap-1">
+                      {[1, 2, 3, 4, 5].map(
+                        (star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() =>
+                              setReviewRating(
+                                star
+                              )
+                            }
+                            className="text-2xl transition hover:scale-110"
+                          >
+                            <span
+                              className={
+                                star <=
+                                reviewRating
+                                  ? "text-yellow-500"
+                                  : "text-gray-300"
+                              }
+                            >
+                              ★
+                            </span>
+                          </button>
+                        )
+                      )}
+                    </div>
+                  </div>
+
+                  {/* TITLE */}
+
+                  <div className="mt-6">
+                    <label className="text-sm font-medium">
+                      Review title
+                    </label>
+
+                    <input
+                      type="text"
+                      value={reviewTitle}
+                      onChange={(event) =>
+                        setReviewTitle(
+                          event.target.value
+                        )
+                      }
+                      placeholder="Give your review a title"
+                      className="mt-2 h-11 w-full border border-gray-300 px-3 text-sm outline-none transition focus:border-black"
+                    />
+                  </div>
+
+                  {/* COMMENT */}
+
+                  <div className="mt-4">
+                    <label className="text-sm font-medium">
+                      Your review
+                    </label>
+
+                    <textarea
+                      value={reviewComment}
+                      onChange={(event) =>
+                        setReviewComment(
+                          event.target.value
+                        )
+                      }
+                      placeholder="Tell us what you think about this product..."
+                      rows={5}
+                      className="mt-2 w-full resize-none border border-gray-300 p-3 text-sm outline-none transition focus:border-black"
+                    />
+                  </div>
+
+                  {/* SUBMIT */}
 
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="h-12 bg-black px-8 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="mt-5 h-12 bg-black px-8 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {submitting
-                      ? editingReviewId
-                        ? "Updating..."
-                        : "Submitting..."
-                      : editingReviewId
-                      ? "Update review"
+                      ? "Submitting..."
                       : "Submit review"}
                   </button>
-
-                  {editingReviewId && (
-                    <button
-                      type="button"
-                      onClick={cancelEdit}
-                      disabled={submitting}
-                      className="h-12 border border-gray-300 px-6 text-sm font-medium transition hover:border-black disabled:opacity-50"
-                    >
-                      Cancel
-                    </button>
-                  )}
-
-                </div>
-
-              </form>
-
-            )}
-
-          </div>
-
+                </form>
+              )}
+            </div>
+          )}
         </div>
-
       </div>
-
     </section>
   );
 };
