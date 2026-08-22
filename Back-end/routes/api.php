@@ -8,11 +8,13 @@ use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\WishlistController;
+use App\Http\Controllers\API\ReviewController;
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/home', [HomeController::class, 'index']);
+Route::get('/products/{productId}/reviews',[ReviewController::class, 'index']);
 
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
@@ -46,13 +48,19 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     //wish list route
-     Route::get('/wishlist', [WishlistController::class, 'index']);
+    Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist', [WishlistController::class, 'store']);
     Route::delete('/wishlist/{productId}', [WishlistController::class, 'destroy']);
     
     //order route
-     Route::post('/orders', [OrderController::class, 'store']);
-      Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders', [OrderController::class, 'index']);
+
+    //review route
+    Route::post('/products/{productId}/reviews',[ReviewController::class, 'store']);
+    Route::get('/products/{productId}/my-review',[ReviewController::class, 'myReview']);
+    Route::put('/reviews/{id}',[ReviewController::class, 'update']);
+    Route::delete('/reviews/{id}',[ReviewController::class, 'destroy']);
      
 });
 
