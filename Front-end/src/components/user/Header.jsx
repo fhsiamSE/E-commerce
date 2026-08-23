@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../store/auth/authSlice.js";
-import { getCart } from "../store/cartSlice.js";
+import { logoutUser } from "../../store/auth/authSlice.js";
+import { getCart } from "../../store/cartSlice.js";
 
 const Header = () => {
   const [showHeader, setShowHeader] = useState(true);
@@ -20,7 +20,7 @@ const Header = () => {
   |--------------------------------------------------------------------------
   */
 
-  const { isAuthenticated } = useSelector(
+  const { isAuthenticated, user } = useSelector(
     (state) => state.auth
   );
 
@@ -49,15 +49,6 @@ const Header = () => {
   /*
   |--------------------------------------------------------------------------
   | Cart Count
-  |--------------------------------------------------------------------------
-  |
-  | Example:
-  |
-  | T-shirt quantity = 2
-  | Hoodie quantity = 1
-  |
-  | Cart count = 3
-  |
   |--------------------------------------------------------------------------
   */
 
@@ -114,12 +105,6 @@ const Header = () => {
     } catch (error) {
       console.error("Logout failed:", error);
 
-      /*
-      |--------------------------------------------------------------------------
-      | Remove Local Authentication Data
-      |--------------------------------------------------------------------------
-      */
-
       localStorage.removeItem("token");
       localStorage.removeItem("user");
 
@@ -128,6 +113,30 @@ const Header = () => {
 
       navigate("/login");
     }
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Login
+  |--------------------------------------------------------------------------
+  */
+
+  const handleLogin = () => {
+    setProfileMenu(false);
+    setMobileMenu(false);
+    navigate("/login");
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Signup
+  |--------------------------------------------------------------------------
+  */
+
+  const handleSignup = () => {
+    setProfileMenu(false);
+    setMobileMenu(false);
+    navigate("/register");
   };
 
   return (
@@ -142,7 +151,7 @@ const Header = () => {
 
         {/* =========================================================
             LOGO
-        ========================================================= */}
+        ========================================================== */}
 
         <div className="flex items-center gap-3">
 
@@ -161,7 +170,7 @@ const Header = () => {
 
         {/* =========================================================
             DESKTOP MENU
-        ========================================================= */}
+        ========================================================== */}
 
         <nav className="hidden items-center gap-6 text-sm font-semibold text-gray-700 md:flex">
 
@@ -198,7 +207,7 @@ const Header = () => {
 
         {/* =========================================================
             RIGHT SIDE
-        ========================================================= */}
+        ========================================================== */}
 
         <div className="flex items-center gap-2">
 
@@ -238,15 +247,9 @@ const Header = () => {
             className="relative rounded-full p-2 hover:bg-gray-100"
           >
 
-            {/* Cart Icon */}
-
             <span className="text-xl">
               🛒
             </span>
-
-            {/* =====================================================
-                CART BADGE
-            ===================================================== */}
 
             {cartCount > 0 && (
               <span
@@ -275,57 +278,101 @@ const Header = () => {
           </Link>
 
           {/* =======================================================
-              PROFILE DROPDOWN
+              AUTH / PROFILE
           ======================================================= */}
 
-          <div className="relative">
+          {isAuthenticated ? (
 
-            <button
-              type="button"
-              onClick={() =>
-                setProfileMenu(!profileMenu)
-              }
-              className="rounded-full p-2 hover:bg-gray-100"
-            >
-              👤
-            </button>
+            /* =====================================================
+                LOGGED IN
+            ====================================================== */
 
-            {profileMenu && (
-              <div className="absolute right-0 mt-2 w-48 rounded-md border bg-white py-2 shadow-lg">
+            <div className="relative">
 
-                <Link
-                  to="/profile"
-                  onClick={() =>
-                    setProfileMenu(false)
-                  }
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  View Profile
-                </Link>
+              <button
+                type="button"
+                onClick={() =>
+                  setProfileMenu(!profileMenu)
+                }
+                className="rounded-full p-2 hover:bg-gray-100"
+                aria-label="Profile menu"
+              >
+                👤
+              </button>
 
-                
-                <Link
-                  to="/orders"
-                  onClick={() =>
-                    setProfileMenu(false)
-                  }
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Order List
-                </Link>
+              {profileMenu && (
+                <div className="absolute right-0 mt-2 w-52 rounded-md border bg-white py-2 shadow-lg">
 
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Logout
-                </button>
+                  {/* User name */}
 
-              </div>
-            )}
+                  {user?.name && (
+                    <div className="border-b px-4 py-3">
 
-          </div>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {user.name}
+                      </p>
+
+                      {user?.email && (
+                        <p className="mt-1 truncate text-xs text-gray-500">
+                          {user.email}
+                        </p>
+                      )}
+
+                    </div>
+                  )}
+
+                  <Link
+                    to="/profile"
+                    onClick={() =>
+                      setProfileMenu(false)
+                    }
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    View Profile
+                  </Link>
+
+                  <Link
+                    to="/orders"
+                    onClick={() =>
+                      setProfileMenu(false)
+                    }
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Order List
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+
+                </div>
+              )}
+
+            </div>
+
+          ) : (
+
+            /* =====================================================
+                NOT LOGGED IN
+            ====================================================== */
+
+            <div className="hidden items-center gap-2 md:flex">
+
+              <button
+                type="button"
+                onClick={handleLogin}
+                className="rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+              >
+                Login
+              </button>
+
+            </div>
+
+          )}
 
           {/* =======================================================
               MOBILE MENU BUTTON
@@ -337,6 +384,7 @@ const Header = () => {
               setMobileMenu(!mobileMenu)
             }
             className="rounded-md p-2 hover:bg-gray-100 md:hidden"
+            aria-label="Toggle menu"
           >
             {mobileMenu ? (
               <span className="text-2xl">
@@ -354,19 +402,21 @@ const Header = () => {
 
       {/* =========================================================
           MOBILE MENU
-      ========================================================= */}
+      ========================================================== */}
 
       <div
         className={`overflow-hidden bg-white transition-all duration-300 md:hidden ${
           mobileMenu
-            ? "max-h-96 border-t"
+            ? "max-h-[600px] border-t"
             : "max-h-0"
         }`}
       >
 
         <div className="space-y-2 p-4">
 
-          {/* Mobile Search */}
+          {/* =====================================================
+              Mobile Search
+          ====================================================== */}
 
           <input
             type="text"
@@ -374,7 +424,9 @@ const Header = () => {
             className="w-full rounded-lg border p-2 outline-none"
           />
 
-          {/* Home */}
+          {/* =====================================================
+              Home
+          ====================================================== */}
 
           <Link
             to="/"
@@ -386,7 +438,9 @@ const Header = () => {
             Home
           </Link>
 
-          {/* Products */}
+          {/* =====================================================
+              Products
+          ====================================================== */}
 
           <Link
             to="/products"
@@ -398,7 +452,9 @@ const Header = () => {
             Products
           </Link>
 
-          {/* Cart */}
+          {/* =====================================================
+              Cart
+          ====================================================== */}
 
           <Link
             to="/cart"
@@ -422,7 +478,9 @@ const Header = () => {
 
           </Link>
 
-          {/* Wishlist */}
+          {/* =====================================================
+              Wishlist
+          ====================================================== */}
 
           <Link
             to="/wishlist"
@@ -434,39 +492,68 @@ const Header = () => {
             Wishlist
           </Link>
 
-          {/* Profile */}
+          {/* =====================================================
+              AUTHENTICATED MOBILE MENU
+          ====================================================== */}
 
-          <Link
-            to="/profile"
-            onClick={() =>
-              setMobileMenu(false)
-            }
-            className="block rounded px-2 py-2 hover:bg-gray-100"
-          >
-            Profile
-          </Link>
+          {isAuthenticated ? (
 
-          {/* Logout */}
+            <>
+              {/* Profile */}
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="block w-full rounded px-2 py-2 text-left hover:bg-gray-100"
-          >
-            Logout
-          </button>
+              <Link
+                to="/profile"
+                onClick={() =>
+                  setMobileMenu(false)
+                }
+                className="block rounded px-2 py-2 hover:bg-gray-100"
+              >
+                Profile
+              </Link>
 
-          {/* Contact */}
+              {/* Orders */}
 
-          <Link
-            to="/contact"
-            onClick={() =>
-              setMobileMenu(false)
-            }
-            className="block rounded px-2 py-2 hover:bg-gray-100"
-          >
-            Contact
-          </Link>
+              <Link
+                to="/orders"
+                onClick={() =>
+                  setMobileMenu(false)
+                }
+                className="block rounded px-2 py-2 hover:bg-gray-100"
+              >
+                Order List
+              </Link>
+
+              {/* Logout */}
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="block w-full rounded px-2 py-2 text-left hover:bg-gray-100"
+              >
+                Logout
+              </button>
+            </>
+
+          ) : (
+
+            /* =================================================
+                NOT AUTHENTICATED
+            ================================================== */
+
+            <div className="space-y-2 border-t pt-3">
+
+              <button
+                type="button"
+                onClick={handleLogin}
+                className="block w-full bg-blue-500 text-white rounded border border-gray-300 px-4 py-2 text-left text-sm font-medium hover:bg-blue-600"
+              >
+                Login
+              </button>
+
+            </div>
+
+          )}
+
 
         </div>
       </div>

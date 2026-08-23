@@ -11,8 +11,8 @@ import AllProducts from "./pages/users/product/AllProducts";
 import CategoryProducts from "./pages/users/product/CategoryProducts";
 import ProductDetails from "./pages/users/product/ProductDetails";
 
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "./components/user/Header";
+import Footer from "./components/user/Footer";
 
 import ContactUs from "./pages/users/companyInfo/ContactUs";
 import Profile from "./pages/users/user/Profile";

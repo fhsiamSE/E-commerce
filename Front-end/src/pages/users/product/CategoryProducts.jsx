@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Product from "../../../components/product";
+import Product from "../../../components/user/product";
 import api from "../../../api/axios.js";
 
 function CategoryProducts() {

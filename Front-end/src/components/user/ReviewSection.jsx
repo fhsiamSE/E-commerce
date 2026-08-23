@@ -8,7 +8,7 @@ import {
   addReview,
   updateReview,
   deleteReview,
-} from "../store/reviewSlice.js";
+} from "../../store/reviewSlice.js";
 
 const ReviewSection = ({ productId }) => {
   const navigate = useNavigate();

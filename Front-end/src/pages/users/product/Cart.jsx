@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import {getCart,updateCart, removeFromCart,} from "../../../store/cartSlice.js";
 import api from "../../../api/axios.js";
-import CheckoutModal from "../../../components/CheckoutModal.jsx";
+import CheckoutModal from "../../../components/user/CheckoutModal.jsx";
 
 function Cart() {
   const dispatch = useDispatch();

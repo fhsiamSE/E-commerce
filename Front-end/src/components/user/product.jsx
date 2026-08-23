@@ -11,7 +11,7 @@ import {
   getWishlist,
   addToWishlist,
   removeFromWishlist,
-} from "../store/wishlistSlice.js";
+} from "../../store/wishlistSlice.js";
 
 
 function Product({
@@ -638,38 +638,6 @@ function Product({
               </div>
             )}
 
-
-          {/* See More */}
-
-          <button
-            type="button"
-            onClick={() =>
-              navigate("/products")
-            }
-            className="
-              rounded-full
-              border
-              border-gray-300
-              px-2.5
-              py-1
-              text-[10px]
-              font-semibold
-              text-gray-700
-              transition
-              hover:border-black
-              hover:text-black
-
-              sm:px-3
-              sm:py-1.5
-              sm:text-xs
-
-              lg:px-3.5
-              lg:py-1.5
-              lg:text-xs
-            "
-          >
-            See More
-          </button>
 
         </div>
 

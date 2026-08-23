@@ -4,42 +4,36 @@ import { Link } from "react-router-dom";
 const categories = [
   {
     name: "Men",
-    count: "150+ Items",
     image:
       "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80",
     href: "/category/men",
   },
   {
     name: "Women",
-    count: "180+ Items",
     image:
       "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=600&q=80",
     href: "/category/women",
   },
   {
     name: "Shoes",
-    count: "220+ Items",
     image:
       "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
     href: "/category/shoes",
   },
   {
     name: "Bags",
-    count: "80+ Items",
     image:
       "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=600&q=80",
     href: "/category/bags",
   },
   {
     name: "Watches",
-    count: "65+ Items",
     image:
       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
     href: "/category/watches",
   },
   {
     name: "Accessories",
-    count: "200+ Items",
     image:
       "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80",
     href: "/category/accessories",
@@ -78,12 +72,6 @@ export default function CategoryBar() {
 
             <span className="mt-3 text-sm font-semibold text-stone-900 transition-colors group-hover:text-stone-600">
               {item.name}
-            </span>
-
-            {/* Count */}
-
-            <span className="text-xs text-stone-400">
-              {item.count}
             </span>
 
           </Link>

@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import CategoryBar from "../../../components/CategoryBar";
-import Product from "../../../components/product";
-import Banner from "../../../components/Banner";
-import Review from "../../../components/ReviewSlider";
+import CategoryBar from "../../../components/user/CategoryBar";
+import Product from "../../../components/user/product";
+import Banner from "../../../components/user/Banner";
+import Review from "../../../components/user/ReviewSlider";
 
 import { getHomeData } from "../../../store/homeSlice";
 

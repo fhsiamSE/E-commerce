@@ -20,7 +20,7 @@ import {
   addToCart as addToCartAction,
 } from "../../../store/cartSlice.js";
 
-import ReviewSection from "../../../components/ReviewSection.jsx";
+import ReviewSection from "../../../components/user/ReviewSection.jsx";
 
 
 const ProductDetails = () => {
@@ -206,8 +206,8 @@ const ProductDetails = () => {
 
         setError(
           err.response?.data?.message ||
-            err.message ||
-            "Unable to load product."
+          err.message ||
+          "Unable to load product."
         );
 
       } finally {
@@ -397,9 +397,9 @@ const ProductDetails = () => {
       return variants.find(
         (variant) =>
           variant.size ===
-            selectedSize &&
+          selectedSize &&
           variant.color ===
-            selectedColor
+          selectedColor
       );
 
     }, [
@@ -452,7 +452,7 @@ const ProductDetails = () => {
     setSelectedImage(
       (current) =>
         current ===
-        images.length - 1
+          images.length - 1
           ? 0
           : current + 1
     );
@@ -477,9 +477,9 @@ const ProductDetails = () => {
       variants.find(
         (variant) =>
           variant.color ===
-            color &&
+          color &&
           variant.size ===
-            selectedSize
+          selectedSize
       );
 
 
@@ -523,9 +523,9 @@ const ProductDetails = () => {
     return variants.find(
       (variant) =>
         variant.size ===
-          size &&
+        size &&
         variant.color ===
-          selectedColor
+        selectedColor
     );
 
   };
@@ -689,8 +689,8 @@ const ProductDetails = () => {
 
         alert(
           err?.message ||
-            err?.data?.message ||
-            "Unable to add product to cart."
+          err?.data?.message ||
+          "Unable to add product to cart."
         );
 
       }
@@ -910,21 +910,19 @@ const ProductDetails = () => {
                       index
                     )
                   }
-                  className={`relative h-[80px] w-[80px] flex-shrink-0 overflow-hidden bg-gray-100 transition ${
-                    selectedImage ===
-                    index
+                  className={`relative h-[80px] w-[80px] flex-shrink-0 overflow-hidden bg-gray-100 transition ${selectedImage ===
+                      index
                       ? "border-2 border-black"
                       : "border border-transparent"
-                  }`}
+                    }`}
                 >
 
                   <img
                     src={
                       image.image_url
                     }
-                    alt={`${product.product_name} ${
-                      index + 1
-                    }`}
+                    alt={`${product.product_name} ${index + 1
+                      }`}
                     className="h-full w-full object-cover"
                   />
 
@@ -1047,21 +1045,6 @@ const ProductDetails = () => {
 
               </div>
 
-
-              <div className="flex flex-shrink-0 items-center gap-1 text-sm">
-
-                <span className="text-yellow-500">
-                  ★
-                </span>
-
-                <span>
-                  {Number(
-                    product.rating || 0
-                  ).toFixed(1)}
-                </span>
-
-              </div>
-
             </div>
 
 
@@ -1143,12 +1126,11 @@ const ProductDetails = () => {
                             color
                           )
                         }
-                        className={`rounded-full border px-4 py-2 text-sm transition ${
-                          selectedColor ===
-                          color
+                        className={`rounded-full border px-4 py-2 text-sm transition ${selectedColor ===
+                            color
                             ? "border-black bg-black text-white"
                             : "border-gray-300 hover:border-black"
-                        }`}
+                          }`}
                       >
                         {color}
                       </button>
@@ -1186,7 +1168,7 @@ const ProductDetails = () => {
                       const stock =
                         Number(
                           variant?.stock ||
-                            0
+                          0
                         );
 
                       const outOfStock =
@@ -1207,14 +1189,13 @@ const ProductDetails = () => {
                               size
                             )
                           }
-                          className={`h-10 border text-sm transition ${
-                            outOfStock
+                          className={`h-10 border text-sm transition ${outOfStock
                               ? "cursor-not-allowed bg-gray-50 text-gray-300 line-through"
                               : selectedSize ===
                                 size
-                              ? "border-black bg-black text-white"
-                              : "border-gray-200 hover:border-black"
-                          }`}
+                                ? "border-black bg-black text-white"
+                                : "border-gray-200 hover:border-black"
+                            }`}
                         >
                           {size}
                         </button>
@@ -1265,10 +1246,10 @@ const ProductDetails = () => {
                   disabled={
                     !selectedVariant ||
                     quantity >=
-                      Number(
-                        selectedVariant.stock ||
-                          0
-                      )
+                    Number(
+                      selectedVariant.stock ||
+                      0
+                    )
                   }
                   className="flex h-full w-10 items-center justify-center text-lg hover:bg-gray-50 disabled:cursor-not-allowed disabled:text-gray-300"
                 >
@@ -1335,11 +1316,10 @@ const ProductDetails = () => {
                 </span>
 
                 <svg
-                  className={`h-4 w-4 transition-transform ${
-                    openDescription
+                  className={`h-4 w-4 transition-transform ${openDescription
                       ? "rotate-180"
                       : ""
-                  }`}
+                    }`}
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -1383,11 +1363,10 @@ const ProductDetails = () => {
                 </span>
 
                 <svg
-                  className={`h-4 w-4 transition-transform ${
-                    openShipping
+                  className={`h-4 w-4 transition-transform ${openShipping
                       ? "rotate-180"
                       : ""
-                  }`}
+                    }`}
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -1572,7 +1551,7 @@ const ProductDetails = () => {
                             ৳
                             {Number(
                               item.price ||
-                                0
+                              0
                             ).toFixed(2)}
                           </span>
 
