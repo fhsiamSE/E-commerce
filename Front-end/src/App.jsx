@@ -23,10 +23,19 @@ import OrderList from "./pages/users/user/OrderList";
 import Login from "./pages/users/auth/Login";
 import Register from "./pages/users/auth/Register";
 
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
+
+import AdminLayout from "./components/admin/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard/Dashboard";
+
 
 /*
 |--------------------------------------------------------------------------
-| Protected Route
+| Protected User Route
 |--------------------------------------------------------------------------
 */
 
@@ -46,6 +55,36 @@ function ProtectedRoute({ children }) {
 
 /*
 |--------------------------------------------------------------------------
+| Admin Route
+|--------------------------------------------------------------------------
+|
+| For now we only check login.
+|
+| Later we will change this to:
+|
+| user.role === "admin"
+|
+|--------------------------------------------------------------------------
+*/
+
+function AdminRoute({ children }) {
+  const isLoggedIn = !!localStorage.getItem("token");
+
+  if (!isLoggedIn) {
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
+  }
+
+  return children;
+}
+
+
+/*
+|--------------------------------------------------------------------------
 | App
 |--------------------------------------------------------------------------
 */
@@ -53,203 +92,193 @@ function ProtectedRoute({ children }) {
 function App() {
   const location = useLocation();
 
-
   /*
   |--------------------------------------------------------------------------
-  | Hide Header/Footer On Login/Register
+  | Admin Page?
   |--------------------------------------------------------------------------
   */
 
-  const hideLayout =
+  const isAdminPage =
+    location.pathname.startsWith("/admin");
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Hide User Header/Footer
+  |--------------------------------------------------------------------------
+  |
+  | Admin has its own layout.
+  |
+  */
+
+  const hideUserLayout =
+    isAdminPage ||
     location.pathname === "/login" ||
     location.pathname === "/register";
 
 
   return (
-    <div className="flex min-h-screen flex-col mt-12">
+    <div className="min-h-screen">
 
       {/* =========================================================
-          HEADER
+          USER HEADER
       ========================================================== */}
 
-      {!hideLayout && <Header />}
-
-
-      {/* =========================================================
-          MAIN
-      ========================================================== */}
-
-      <main className="flex-grow">
-
-        <Routes>
-
-          {/* =====================================================
-              PUBLIC ROUTES
-          ====================================================== */}
-
-          <Route
-            path="/"
-            element={<Home />}
-          />
-
-          <Route
-            path="/login"
-            element={<Login />}
-          />
-
-          <Route
-            path="/register"
-            element={<Register />}
-          />
-
-
-          {/* =====================================================
-              ALL PRODUCTS
-          ====================================================== */}
-
-          <Route
-            path="/products"
-            element={
-              <ProtectedRoute>
-                <AllProducts />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* =====================================================
-              CATEGORY PRODUCTS
-              
-              Examples:
-              /category/men
-              /category/women
-              /category/shoes
-              /category/bags
-              /category/watches
-              /category/accessories
-          ====================================================== */}
-
-          <Route
-            path="/category/:category"
-            element={
-              <ProtectedRoute>
-                <CategoryProducts />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* =====================================================
-              PRODUCT DETAILS
-              
-              Example:
-              /products/1
-          ====================================================== */}
-
-          <Route
-            path="/products/:id"
-            element={
-              <ProtectedRoute>
-                <ProductDetails />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* =====================================================
-              CONTACT
-          ====================================================== */}
-
-          <Route
-            path="/contact"
-            element={
-              <ProtectedRoute>
-                <ContactUs />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* =====================================================
-              PROFILE
-          ====================================================== */}
-
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* =====================================================
-              WISHLIST
-          ====================================================== */}
-
-          <Route
-            path="/wishlist"
-            element={
-              <ProtectedRoute>
-                <WishList />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* =====================================================
-              CART
-          ====================================================== */}
-
-          <Route
-            path="/cart"
-            element={
-              <ProtectedRoute>
-                <Cart />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* =====================================================
-              ORDERS
-          ====================================================== */}
-
-          <Route
-            path="/orders"
-            element={
-              <ProtectedRoute>
-                <OrderList />
-              </ProtectedRoute>
-            }
-          />
-
-
-          {/* =====================================================
-              FALLBACK
-          ====================================================== */}
-
-          <Route
-            path="*"
-            element={
-              <Navigate
-                to="/"
-                replace
-              />
-            }
-          />
-
-        </Routes>
-
-      </main>
+      {!hideUserLayout && <Header />}
 
 
       {/* =========================================================
-          FOOTER
+          USER / ADMIN ROUTES
       ========================================================== */}
 
-      {!hideLayout && <Footer />}
+      <Routes>
+
+        {/* =====================================================
+            USER WEBSITE
+        ====================================================== */}
+
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <AllProducts />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
+          path="/category/:category"
+          element={
+            <ProtectedRoute>
+              <CategoryProducts />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
+          path="/products/:id"
+          element={
+            <ProtectedRoute>
+              <ProductDetails />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
+          path="/contact"
+          element={
+            <ProtectedRoute>
+              <ContactUs />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
+          path="/wishlist"
+          element={
+            <ProtectedRoute>
+              <WishList />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
+
+
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <OrderList />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* =====================================================
+            ADMIN PANEL
+        ====================================================== */}
+
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
+
+          {/* Dashboard */}
+          <Route
+            index
+            element={<Dashboard />}
+          />
+
+          {/* We will add these later */}
+
+        </Route>
+
+
+        {/* =====================================================
+            FALLBACK
+        ====================================================== */}
+
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
+          }
+        />
+
+      </Routes>
+
+
+      {/* =========================================================
+          USER FOOTER
+      ========================================================== */}
+
+      {!hideUserLayout && <Footer />}
 
     </div>
   );
