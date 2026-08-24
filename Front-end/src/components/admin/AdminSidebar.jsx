@@ -6,12 +6,6 @@ const AdminSidebar = ({
   setSidebarOpen,
 }) => {
 
-  /*
-  |--------------------------------------------------------------------------
-  | NAVIGATION ITEM
-  |--------------------------------------------------------------------------
-  */
-
   const navigation = [
     {
       name: "Dashboard",
@@ -47,24 +41,20 @@ const AdminSidebar = ({
   ];
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | CLOSE MOBILE SIDEBAR
-  |--------------------------------------------------------------------------
-  */
-
   const handleNavigation = () => {
+
     if (window.innerWidth < 1024) {
       setSidebarOpen(false);
     }
+
   };
 
 
   return (
     <>
-      {/* =========================================================
+      {/* =====================================================
           MOBILE BACKDROP
-      ========================================================== */}
+      ====================================================== */}
 
       {sidebarOpen && (
         <div
@@ -75,14 +65,16 @@ const AdminSidebar = ({
             bg-black/50
             lg:hidden
           "
-          onClick={() => setSidebarOpen(false)}
+          onClick={() =>
+            setSidebarOpen(false)
+          }
         />
       )}
 
 
-      {/* =========================================================
+      {/* =====================================================
           SIDEBAR
-      ========================================================== */}
+      ====================================================== */}
 
       <aside
         className={`
@@ -109,9 +101,9 @@ const AdminSidebar = ({
         `}
       >
 
-        {/* =====================================================
+        {/* ===================================================
             LOGO
-        ====================================================== */}
+        ==================================================== */}
 
         <div
           className="
@@ -149,11 +141,24 @@ const AdminSidebar = ({
 
             <div>
 
-              <h2 className="text-sm font-bold text-gray-900 dark:text-white">
+              <h2
+                className="
+                  text-sm
+                  font-bold
+                  text-gray-900
+                  dark:text-white
+                "
+              >
                 E-Commerce
               </h2>
 
-              <p className="text-[10px] text-gray-500 dark:text-gray-400">
+              <p
+                className="
+                  text-[10px]
+                  text-gray-500
+                  dark:text-gray-400
+                "
+              >
                 Admin Panel
               </p>
 
@@ -166,7 +171,9 @@ const AdminSidebar = ({
 
           <button
             type="button"
-            onClick={() => setSidebarOpen(false)}
+            onClick={() =>
+              setSidebarOpen(false)
+            }
             className="
               flex
               h-8
@@ -186,11 +193,17 @@ const AdminSidebar = ({
         </div>
 
 
-        {/* =====================================================
+        {/* ===================================================
             NAVIGATION
-        ====================================================== */}
+        ==================================================== */}
 
-        <nav className="flex-1 overflow-y-auto p-4">
+        <nav
+          className="
+            flex-1
+            overflow-y-auto
+            p-4
+          "
+        >
 
           <p
             className="
@@ -250,7 +263,13 @@ const AdminSidebar = ({
                 }
               >
 
-                <span className="w-5 text-center text-base">
+                <span
+                  className="
+                    w-5
+                    text-center
+                    text-base
+                  "
+                >
                   {item.icon}
                 </span>
 
@@ -265,9 +284,9 @@ const AdminSidebar = ({
           </div>
 
 
-          {/* ===================================================
-              QUICK ACTIONS
-          ==================================================== */}
+          {/* =================================================
+              PRODUCT ACTION
+          ================================================== */}
 
           <div className="mt-8">
 
@@ -283,12 +302,83 @@ const AdminSidebar = ({
                 dark:text-gray-500
               "
             >
-              Quick Actions
+              Product Actions
             </p>
 
 
             <NavLink
               to="/admin/products/add"
+              onClick={handleNavigation}
+              className={({ isActive }) =>
+                `
+                  flex
+                  items-center
+                  gap-3
+                  rounded-lg
+                  px-3
+                  py-3
+                  text-sm
+                  font-medium
+                  transition
+
+                  ${
+                    isActive
+                      ? `
+                        bg-black
+                        text-white
+                        dark:bg-white
+                        dark:text-black
+                      `
+                      : `
+                        text-gray-600
+                        hover:bg-gray-100
+                        hover:text-gray-900
+                        dark:text-gray-300
+                        dark:hover:bg-gray-800
+                        dark:hover:text-white
+                      `
+                  }
+                `
+              }
+            >
+
+              <span className="w-5 text-center">
+                ➕
+              </span>
+
+              <span>
+                Add Product
+              </span>
+
+            </NavLink>
+
+          </div>
+
+
+          {/* =================================================
+              QUICK LINKS
+          ================================================== */}
+
+          <div className="mt-8">
+
+            <p
+              className="
+                mb-3
+                px-3
+                text-[11px]
+                font-semibold
+                uppercase
+                tracking-wider
+                text-gray-400
+                dark:text-gray-500
+              "
+            >
+              Quick Links
+            </p>
+
+
+            <NavLink
+              to="/"
               onClick={handleNavigation}
               className="
                 flex
@@ -311,11 +401,11 @@ const AdminSidebar = ({
             >
 
               <span className="w-5 text-center">
-                ➕
+                🏪
               </span>
 
               <span>
-                Add Product
+                View Store
               </span>
 
             </NavLink>
@@ -325,9 +415,9 @@ const AdminSidebar = ({
         </nav>
 
 
-        {/* =====================================================
-            SIDEBAR FOOTER
-        ====================================================== */}
+        {/* ===================================================
+            FOOTER
+        ==================================================== */}
 
         <div
           className="
@@ -347,11 +437,25 @@ const AdminSidebar = ({
             "
           >
 
-            <p className="text-xs font-medium text-gray-900 dark:text-white">
+            <p
+              className="
+                text-xs
+                font-medium
+                text-gray-900
+                dark:text-white
+              "
+            >
               Admin Panel
             </p>
 
-            <p className="mt-1 text-[11px] text-gray-500 dark:text-gray-400">
+            <p
+              className="
+                mt-1
+                text-[11px]
+                text-gray-500
+                dark:text-gray-400
+              "
+            >
               Manage your online store
             </p>
 
@@ -365,3 +469,4 @@ const AdminSidebar = ({
 };
 
 export default AdminSidebar;
+
