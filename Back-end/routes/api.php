@@ -10,6 +10,7 @@ use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\WishlistController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\Admin\DashboardController;
+use App\Http\Controllers\API\Admin\AdminProductController;
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -80,7 +81,8 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'admin']) ->prefix('admin') ->group(function () 
-    {
-     Route::get('/dashboard', [DashboardController::class, 'index' ]); 
-     
-     });
+{
+    Route::get('/dashboard', [DashboardController::class, 'index' ]); 
+    Route::get('/products',[AdminProductController::class, 'index']);
+    Route::delete('/products/{id}',[AdminProductController::class, 'destroy']);
+});
