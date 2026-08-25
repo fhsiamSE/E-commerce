@@ -9,6 +9,7 @@ use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\WishlistController;
 use App\Http\Controllers\API\ReviewController;
+use App\Http\Controllers\API\Admin\DashboardController;
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -39,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 
-    //cart route
+    //cart routes
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index']);
         Route::post('/', [CartController::class, 'store']);
@@ -47,16 +48,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [CartController::class, 'destroy']);
     });
 
-    //wish list route
+    //wish list routes
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist', [WishlistController::class, 'store']);
     Route::delete('/wishlist/{productId}', [WishlistController::class, 'destroy']);
     
-    //order route
+    //order routes
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders', [OrderController::class, 'index']);
 
-    //review route
+    //review routes
     Route::post('/products/{productId}/reviews',[ReviewController::class, 'store']);
     Route::get('/products/{productId}/my-review',[ReviewController::class, 'myReview']);
     Route::put('/reviews/{id}',[ReviewController::class, 'update']);
@@ -64,6 +65,8 @@ Route::middleware('auth:sanctum')->group(function () {
      
 });
 
+
+//Admin routes
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     Route::get('/admin/test', function (Request $request) {
@@ -75,3 +78,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     });
 
 });
+
+Route::middleware(['auth:sanctum', 'admin']) ->prefix('admin') ->group(function () 
+    {
+     Route::get('/dashboard', [DashboardController::class, 'index' ]); 
+     
+     });
