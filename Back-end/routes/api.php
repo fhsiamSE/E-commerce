@@ -64,3 +64,14 @@ Route::middleware('auth:sanctum')->group(function () {
      
 });
 
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+
+    Route::get('/admin/test', function (Request $request) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Admin authorization working.',
+            'user' => $request->user(),
+        ]);
+    });
+
+});

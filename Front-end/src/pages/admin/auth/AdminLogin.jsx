@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../../../api/axios";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const AdminLogin = () => {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   /*
   |--------------------------------------------------------------------------
@@ -29,21 +31,90 @@ const AdminLogin = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  /*
+  |--------------------------------------------------------------------------
+  | Admin Login
+  |--------------------------------------------------------------------------
+  */
 
-    setError("");
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!formData.email || !formData.password) {
-      setError("Please enter your email and password.");
+  setError("");
+
+  if (!formData.email || !formData.password) {
+    setError("Please enter your email and password.");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    // 1. Login
+    const response = await api.post("/login", {
+      email: formData.email,
+      password: formData.password,
+    });
+
+    console.log("Login response:", response.data);
+
+    const token = response.data?.token;
+
+    if (!token) {
+      setError("Login failed. No authentication token was returned.");
       return;
     }
 
-    console.log("Admin login:", formData);
+    // 2. Save token FIRST
+    localStorage.setItem("token", token);
 
-    // Temporary navigation for testing
-    navigate("/admin");
-  };
+    // 3. Get authenticated user
+    const userResponse = await api.get("/user");
+
+    console.log("Authenticated user:", userResponse.data);
+
+    const user = userResponse.data?.data || userResponse.data?.user;
+
+    // 4. Check admin role
+    if (user?.role !== "admin") {
+      localStorage.removeItem("token");
+
+      setError(
+        "Access denied. You do not have administrator privileges."
+      );
+
+      return;
+    }
+
+    // 5. Save user
+    localStorage.setItem("user", JSON.stringify(user));
+
+    // 6. Go to admin dashboard
+    navigate("/admin", { replace: true });
+
+  } catch (error) {
+    console.error("Admin login error:", error);
+
+    // Remove token if something failed
+    localStorage.removeItem("token");
+
+    if (error.response) {
+      setError(
+        error.response.data?.message ||
+        "Invalid email or password."
+      );
+    } else if (error.request) {
+      setError(
+        "Cannot connect to the server. Please make sure the Laravel backend is running."
+      );
+    } else {
+      setError("Something went wrong. Please try again.");
+    }
+
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4 py-10 dark:bg-gray-950">
@@ -51,6 +122,10 @@ const AdminLogin = () => {
       <div className="w-full max-w-md">
 
         <div className="rounded-2xl border border-gray-200 bg-white p-7 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:p-9">
+
+          {/* =====================================================
+              HEADER
+          ====================================================== */}
 
           <div className="mb-8">
 
@@ -112,6 +187,7 @@ const AdminLogin = () => {
                   onChange={handleChange}
                   placeholder="admin@example.com"
                   autoComplete="email"
+                  disabled={loading}
                   className="
                     w-full
                     rounded-lg
@@ -129,6 +205,9 @@ const AdminLogin = () => {
                     focus:border-black
                     focus:ring-2
                     focus:ring-black/10
+
+                    disabled:cursor-not-allowed
+                    disabled:opacity-60
 
                     dark:border-gray-700
                     dark:bg-gray-800
@@ -157,7 +236,17 @@ const AdminLogin = () => {
 
                 <button
                   type="button"
-                  className="text-xs font-medium text-gray-500 transition hover:text-black dark:text-gray-400 dark:hover:text-white"
+                  disabled={loading}
+                  className="
+                    text-xs
+                    font-medium
+                    text-gray-500
+                    transition
+                    hover:text-black
+                    disabled:opacity-50
+                    dark:text-gray-400
+                    dark:hover:text-white
+                  "
                 >
                   Forgot Password?
                 </button>
@@ -178,6 +267,7 @@ const AdminLogin = () => {
                   onChange={handleChange}
                   placeholder="Enter your password"
                   autoComplete="current-password"
+                  disabled={loading}
                   className="
                     w-full
                     rounded-lg
@@ -196,6 +286,9 @@ const AdminLogin = () => {
                     focus:ring-2
                     focus:ring-black/10
 
+                    disabled:cursor-not-allowed
+                    disabled:opacity-60
+
                     dark:border-gray-700
                     dark:bg-gray-800
                     dark:text-white
@@ -212,6 +305,7 @@ const AdminLogin = () => {
                   onClick={() =>
                     setShowPassword((prev) => !prev)
                   }
+                  disabled={loading}
                   className="
                     absolute
                     right-3
@@ -220,6 +314,7 @@ const AdminLogin = () => {
                     text-gray-400
                     transition
                     hover:text-gray-700
+                    disabled:opacity-50
                     dark:hover:text-white
                   "
                 >
@@ -244,6 +339,7 @@ const AdminLogin = () => {
                   name="remember"
                   checked={formData.remember}
                   onChange={handleChange}
+                  disabled={loading}
                   className="h-4 w-4 rounded border-gray-300 accent-black"
                 />
 
@@ -262,8 +358,13 @@ const AdminLogin = () => {
 
             <button
               type="submit"
+              disabled={loading}
               className="
+                flex
                 w-full
+                items-center
+                justify-center
+                gap-2
                 rounded-lg
                 bg-black
                 py-3
@@ -274,12 +375,25 @@ const AdminLogin = () => {
                 hover:bg-gray-800
                 active:scale-[0.99]
 
+                disabled:cursor-not-allowed
+                disabled:opacity-60
+
                 dark:bg-white
                 dark:text-black
                 dark:hover:bg-gray-200
               "
             >
-              Sign In to Admin Panel
+
+              {loading ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent dark:border-black dark:border-t-transparent" />
+
+                  Signing in...
+                </>
+              ) : (
+                "Sign In to Admin Panel"
+              )}
+
             </button>
 
           </form>

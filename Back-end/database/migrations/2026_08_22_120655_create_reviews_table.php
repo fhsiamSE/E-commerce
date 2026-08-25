@@ -8,7 +8,24 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
+
+            $table->id();
+
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
+            $table->foreignId('product_id')
+                ->constrained('products')
+                ->cascadeOnDelete();
+
+            $table->unsignedTinyInteger('rating');
+
+            $table->text('comment')->nullable();
+
+            $table->timestamps();
+
             $table->unique(
                 ['user_id', 'product_id'],
                 'reviews_user_product_unique'
@@ -18,10 +35,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
-            $table->dropUnique(
-                'reviews_user_product_unique'
-            );
-        });
+        Schema::dropIfExists('reviews');
     }
 };
