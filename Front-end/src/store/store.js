@@ -8,6 +8,7 @@ import wishlistReducer from "./wishlistSlice.js";
 import reviewReducer from "./reviewSlice.js";
 import adminReducer from "./admin/adminSlice.js";
 import adminProductReducer from "./admin/adminProductSlice";
+import adminOrderReducer from "./admin/adminOrderSlice.js";
 
 
 export const store = configureStore({
@@ -21,7 +22,7 @@ export const store = configureStore({
         review: reviewReducer,
         admin: adminReducer,
         adminProducts: adminProductReducer,
-
+        adminOrders: adminOrderReducer,
     },
 
 });

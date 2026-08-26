@@ -11,6 +11,7 @@ use App\Http\Controllers\API\WishlistController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\Admin\DashboardController;
 use App\Http\Controllers\API\Admin\AdminProductController;
+use App\Http\Controllers\API\Admin\AdminOrderController;
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -85,4 +86,11 @@ Route::middleware(['auth:sanctum', 'admin']) ->prefix('admin') ->group(function 
     Route::get('/dashboard', [DashboardController::class, 'index' ]); 
     Route::get('/products',[AdminProductController::class, 'index']);
     Route::delete('/products/{id}',[AdminProductController::class, 'destroy']);
+
+    //AdminOrder routes
+    Route::get('/orders', [AdminOrderController::class,'index']);
+    Route::get('/orders/{id}', [AdminOrderController::class,'show']); 
+    Route::patch('/orders/{id}/status', [AdminOrderController::class,'updateStatus']);
+    Route::delete('/orders/{id}', [AdminOrderController::class,'destroy']);
+
 });
