@@ -14,10 +14,18 @@ class ProductController extends Controller
     |--------------------------------------------------------------------------
     | Get All Products
     |--------------------------------------------------------------------------
+    |
+    | Pagination is used here so we don't fetch every product at once.
+    |
     */
 
     public function index(Request $request)
     {
+        $perPage = min(
+            max((int) $request->input('per_page', 20), 1),
+            50
+        );
+
         $query = Product::with([
             'images',
             'variants',
@@ -33,9 +41,67 @@ class ProductController extends Controller
             $query->where('category', $request->category);
         }
 
-        $products = $query
-            ->latest()
-            ->get();
+        /*
+        |--------------------------------------------------------------------------
+        | Search
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Sorting
+        |--------------------------------------------------------------------------
+        */
+
+        switch ($request->input('sort')) {
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+
+            case 'popular':
+                $query->orderByDesc('views_count');
+                break;
+
+            case 'selling':
+                $query->orderByDesc('sales_count');
+                break;
+
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+
+            case 'newest':
+            default:
+                $query->latest('created_at');
+                break;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pagination
+        |--------------------------------------------------------------------------
+        */
+
+        $products = $query->paginate($perPage);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Response
+        |--------------------------------------------------------------------------
+        */
 
         return response()->json([
             'success' => true,
@@ -84,13 +150,15 @@ class ProductController extends Controller
 
             'variants.*.color' => 'nullable|string|max:100',
 
-            'variants.*.sku' => 'required|string|max:100|unique:product_variants,sku',
+            'variants.*.sku' =>
+                'required|string|max:100|unique:product_variants,sku',
 
-            'variants.*.stock' => 'required|integer|min:0',
+            'variants.*.stock' =>
+                'required|integer|min:0',
 
-            'variants.*.price' => 'nullable|numeric|min:0',
+            'variants.*.price' =>
+                'nullable|numeric|min:0',
         ]);
-
 
         DB::beginTransaction();
 
@@ -105,21 +173,20 @@ class ProductController extends Controller
             $product = Product::create([
                 'name' => $validated['name'],
 
-                'description' => $validated['description'] ?? null,
+                'description' =>
+                    $validated['description'] ?? null,
 
-                'price' => $validated['price'],
+                'price' =>
+                    $validated['price'],
 
-                'category_id' => $validated['category_id'] ?? null,
-
-                /*
-                |--------------------------------------------------------------------------
-                | Initial Counters
-                |--------------------------------------------------------------------------
-                */
+                'category_id' =>
+                    $validated['category_id'] ?? null,
 
                 'views_count' => 0,
 
                 'sales_count' => 0,
+
+                'stock' => 0,
             ]);
 
 
@@ -131,7 +198,10 @@ class ProductController extends Controller
 
             if ($request->hasFile('images')) {
 
-                foreach ($request->file('images') as $index => $image) {
+                foreach (
+                    $request->file('images')
+                    as $index => $image
+                ) {
 
                     $path = $image->store(
                         'product_images',
@@ -141,9 +211,11 @@ class ProductController extends Controller
                     $product->images()->create([
                         'image' => $path,
 
-                        'is_primary' => $index === 0,
+                        'is_primary' =>
+                            $index === 0,
 
-                        'sort_order' => $index,
+                        'sort_order' =>
+                            $index,
                     ]);
                 }
             }
@@ -155,18 +227,26 @@ class ProductController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            foreach ($validated['variants'] as $variant) {
+            foreach (
+                $validated['variants']
+                as $variant
+            ) {
 
                 $product->variants()->create([
-                    'size' => $variant['size'] ?? null,
+                    'size' =>
+                        $variant['size'] ?? null,
 
-                    'color' => $variant['color'] ?? null,
+                    'color' =>
+                        $variant['color'] ?? null,
 
-                    'sku' => $variant['sku'],
+                    'sku' =>
+                        $variant['sku'],
 
-                    'stock' => $variant['stock'],
+                    'stock' =>
+                        $variant['stock'],
 
-                    'price' => $variant['price'] ?? null,
+                    'price' =>
+                        $variant['price'] ?? null,
                 ]);
             }
 
@@ -180,7 +260,6 @@ class ProductController extends Controller
             $totalStock = $product
                 ->variants()
                 ->sum('stock');
-
 
             $product->update([
                 'stock' => $totalStock,
@@ -196,15 +275,18 @@ class ProductController extends Controller
             |--------------------------------------------------------------------------
             */
 
+            $product->load([
+                'images',
+                'variants',
+            ]);
+
             return response()->json([
                 'success' => true,
 
-                'message' => 'Product created successfully',
+                'message' =>
+                    'Product created successfully',
 
-                'data' => $product->load([
-                    'images',
-                    'variants',
-                ]),
+                'data' => $product,
             ], 201);
 
 
@@ -215,9 +297,11 @@ class ProductController extends Controller
             return response()->json([
                 'success' => false,
 
-                'message' => 'Failed to create product',
+                'message' =>
+                    'Failed to create product',
 
-                'error' => $e->getMessage(),
+                'error' =>
+                    $e->getMessage(),
             ], 500);
         }
     }
@@ -248,7 +332,8 @@ class ProductController extends Controller
             return response()->json([
                 'success' => false,
 
-                'message' => 'Product not found',
+                'message' =>
+                    'Product not found',
             ], 404);
         }
 
@@ -257,13 +342,6 @@ class ProductController extends Controller
         |--------------------------------------------------------------------------
         | Increase View Count
         |--------------------------------------------------------------------------
-        |
-        | Every time this API is called:
-        |
-        | /api/products/{id}
-        |
-        | views_count increases by 1.
-        |
         */
 
         $product->increment('views_count');
@@ -280,14 +358,15 @@ class ProductController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Return Product
+        | Response
         |--------------------------------------------------------------------------
         */
 
         return response()->json([
             'success' => true,
 
-            'message' => 'Product fetched successfully',
+            'message' =>
+                'Product fetched successfully',
 
             'data' => $product,
         ], 200);
@@ -316,7 +395,8 @@ class ProductController extends Controller
             return response()->json([
                 'success' => false,
 
-                'message' => 'Product not found',
+                'message' =>
+                    'Product not found',
             ], 404);
         }
 
@@ -328,13 +408,17 @@ class ProductController extends Controller
         */
 
         $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
+            'name' =>
+                'sometimes|required|string|max:255',
 
-            'description' => 'nullable|string',
+            'description' =>
+                'nullable|string',
 
-            'price' => 'sometimes|required|numeric|min:0',
+            'price' =>
+                'sometimes|required|numeric|min:0',
 
-            'category_id' => 'nullable|exists:categories,id',
+            'category_id' =>
+                'nullable|exists:categories,id',
 
             /*
             |--------------------------------------------------------------------------
@@ -342,9 +426,11 @@ class ProductController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            'images' => 'nullable|array',
+            'images' =>
+                'nullable|array',
 
-            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'images.*' =>
+                'image|mimes:jpg,jpeg,png,webp|max:2048',
 
             /*
             |--------------------------------------------------------------------------
@@ -352,19 +438,26 @@ class ProductController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            'variants' => 'nullable|array',
+            'variants' =>
+                'nullable|array',
 
-            'variants.*.id' => 'nullable|integer|exists:product_variants,id',
+            'variants.*.id' =>
+                'nullable|integer|exists:product_variants,id',
 
-            'variants.*.size' => 'nullable|string|max:50',
+            'variants.*.size' =>
+                'nullable|string|max:50',
 
-            'variants.*.color' => 'nullable|string|max:100',
+            'variants.*.color' =>
+                'nullable|string|max:100',
 
-            'variants.*.sku' => 'required|string|max:100',
+            'variants.*.sku' =>
+                'required|string|max:100',
 
-            'variants.*.stock' => 'required|integer|min:0',
+            'variants.*.stock' =>
+                'required|integer|min:0',
 
-            'variants.*.price' => 'nullable|numeric|min:0',
+            'variants.*.price' =>
+                'nullable|numeric|min:0',
         ]);
 
 
@@ -379,25 +472,29 @@ class ProductController extends Controller
             */
 
             $product->update([
-                'name' => $validated['name']
+                'name' =>
+                    $validated['name']
                     ?? $product->name,
 
-                'description' => array_key_exists(
-                    'description',
-                    $validated
-                )
-                    ? $validated['description']
-                    : $product->description,
+                'description' =>
+                    array_key_exists(
+                        'description',
+                        $validated
+                    )
+                        ? $validated['description']
+                        : $product->description,
 
-                'price' => $validated['price']
+                'price' =>
+                    $validated['price']
                     ?? $product->price,
 
-                'category_id' => array_key_exists(
-                    'category_id',
-                    $validated
-                )
-                    ? $validated['category_id']
-                    : $product->category_id,
+                'category_id' =>
+                    array_key_exists(
+                        'category_id',
+                        $validated
+                    )
+                        ? $validated['category_id']
+                        : $product->category_id,
             ]);
 
 
@@ -412,7 +509,6 @@ class ProductController extends Controller
                 $existingImagesCount =
                     $product->images()->count();
 
-
                 foreach (
                     $request->file('images')
                     as $index => $image
@@ -422,7 +518,6 @@ class ProductController extends Controller
                         'product_images',
                         'public'
                     );
-
 
                     $product->images()->create([
                         'image' => $path,
@@ -467,7 +562,6 @@ class ProductController extends Controller
                                     $variant['id']
                                 )
                                 ->first();
-
 
                         if ($productVariant) {
 
@@ -535,7 +629,6 @@ class ProductController extends Controller
                     ->variants()
                     ->sum('stock');
 
-
             $product->update([
                 'stock' => $totalStock,
             ]);
@@ -550,15 +643,18 @@ class ProductController extends Controller
             |--------------------------------------------------------------------------
             */
 
+            $product->load([
+                'images',
+                'variants',
+            ]);
+
             return response()->json([
                 'success' => true,
 
-                'message' => 'Product updated successfully',
+                'message' =>
+                    'Product updated successfully',
 
-                'data' => $product->load([
-                    'images',
-                    'variants',
-                ]),
+                'data' => $product,
             ], 200);
 
 
@@ -569,9 +665,11 @@ class ProductController extends Controller
             return response()->json([
                 'success' => false,
 
-                'message' => 'Failed to update product',
+                'message' =>
+                    'Failed to update product',
 
-                'error' => $e->getMessage(),
+                'error' =>
+                    $e->getMessage(),
             ], 500);
         }
     }
@@ -590,14 +688,15 @@ class ProductController extends Controller
             'variants',
         ])
             ->latest('created_at')
-            ->take(10)
+            ->limit(10)
             ->get();
 
 
         return response()->json([
             'success' => true,
 
-            'message' => 'New products fetched successfully',
+            'message' =>
+                'New products fetched successfully',
 
             'data' => $products,
         ]);
@@ -608,9 +707,6 @@ class ProductController extends Controller
     |--------------------------------------------------------------------------
     | Popular Products
     |--------------------------------------------------------------------------
-    |
-    | Popular = Most Viewed
-    |
     */
 
     public function popularProducts()
@@ -620,14 +716,15 @@ class ProductController extends Controller
             'variants',
         ])
             ->orderByDesc('views_count')
-            ->take(10)
+            ->limit(10)
             ->get();
 
 
         return response()->json([
             'success' => true,
 
-            'message' => 'Popular products fetched successfully',
+            'message' =>
+                'Popular products fetched successfully',
 
             'data' => $products,
         ]);
@@ -638,9 +735,6 @@ class ProductController extends Controller
     |--------------------------------------------------------------------------
     | Top Selling Products
     |--------------------------------------------------------------------------
-    |
-    | Top Selling = Highest sales_count
-    |
     */
 
     public function topSellingProducts()
@@ -650,14 +744,15 @@ class ProductController extends Controller
             'variants',
         ])
             ->orderByDesc('sales_count')
-            ->take(10)
+            ->limit(10)
             ->get();
 
 
         return response()->json([
             'success' => true,
 
-            'message' => 'Top selling products fetched successfully',
+            'message' =>
+                'Top selling products fetched successfully',
 
             'data' => $products,
         ]);
@@ -689,7 +784,8 @@ class ProductController extends Controller
             return response()->json([
                 'success' => false,
 
-                'message' => 'Product not found',
+                'message' =>
+                    'Product not found',
             ], 404);
         }
 
@@ -732,7 +828,8 @@ class ProductController extends Controller
             return response()->json([
                 'success' => true,
 
-                'message' => 'Product deleted successfully',
+                'message' =>
+                    'Product deleted successfully',
             ], 200);
 
 
@@ -740,13 +837,14 @@ class ProductController extends Controller
 
             DB::rollBack();
 
-
             return response()->json([
                 'success' => false,
 
-                'message' => 'Failed to delete product',
+                'message' =>
+                    'Failed to delete product',
 
-                'error' => $e->getMessage(),
+                'error' =>
+                    $e->getMessage(),
             ], 500);
         }
     }

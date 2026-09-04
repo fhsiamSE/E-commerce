@@ -11,17 +11,33 @@ function AllProducts() {
     products,
     loading,
     error,
+    currentPage,
+    lastPage,
   } = useSelector((state) => state.product);
 
   /*
   |--------------------------------------------------------------------------
-  | Get All Products
+  | Get Products
   |--------------------------------------------------------------------------
   */
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getProducts(1));
   }, [dispatch]);
+
+  /*
+  |--------------------------------------------------------------------------
+  | Change Page
+  |--------------------------------------------------------------------------
+  */
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > lastPage || loading) {
+      return;
+    }
+
+    dispatch(getProducts(page));
+  };
 
   /*
   |--------------------------------------------------------------------------
@@ -29,7 +45,7 @@ function AllProducts() {
   |--------------------------------------------------------------------------
   */
 
-  if (loading) {
+  if (loading && products.length === 0) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <p className="text-sm text-gray-600">
@@ -45,7 +61,7 @@ function AllProducts() {
   |--------------------------------------------------------------------------
   */
 
-  if (error) {
+  if (error && products.length === 0) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <p className="text-sm text-red-600">
@@ -62,11 +78,53 @@ function AllProducts() {
   */
 
   return (
-    <Product
-      products={products}
-      productType="All Products"
-      slider={false}
-    />
+    <>
+      <Product
+        products={products}
+        productType="All Products"
+        slider={false}
+      />
+
+      {/* Pagination */}
+      {lastPage > 1 && (
+        <div className="flex items-center justify-center gap-2 py-8">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1 || loading}
+            className="rounded border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          {Array.from({ length: lastPage }, (_, index) => {
+            const page = index + 1;
+
+            return (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                disabled={loading}
+                className={`rounded border px-3 py-2 text-sm ${
+                  currentPage === page
+                    ? "bg-black text-white"
+                    : "bg-white text-gray-700"
+                }`}
+              >
+                {page}
+              </button>
+            );
+          })}
+
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === lastPage || loading}
+            className="rounded border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
+    </>
   );
 }
 
