@@ -10,6 +10,9 @@ function CategoryProducts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+
   /*
   |--------------------------------------------------------------------------
   | Category Name
@@ -35,24 +38,40 @@ function CategoryProducts() {
         const response = await api.get("/products", {
           params: {
             category: category,
+            page: currentPage,
+            per_page: 10,
           },
         });
 
         console.log("Category products response:", response.data);
 
-        const productData =
-          response.data?.data ||
-          response.data?.products ||
-          response.data ||
-          [];
+        /*
+        |--------------------------------------------------------------------------
+        | Pagination Response
+        |--------------------------------------------------------------------------
+        */
+
+        const pagination = response.data?.data;
 
         setProducts(
-          Array.isArray(productData)
-            ? productData
+          Array.isArray(pagination?.data)
+            ? pagination.data
             : []
         );
+
+        setCurrentPage(
+          pagination?.current_page || 1
+        );
+
+        setLastPage(
+          pagination?.last_page || 1
+        );
+
       } catch (error) {
-        console.error("Category products error:", error);
+        console.error(
+          "Category products error:",
+          error
+        );
 
         setError(
           error?.response?.data?.message ||
@@ -68,7 +87,30 @@ function CategoryProducts() {
     if (category) {
       getCategoryProducts();
     }
-  }, [category]);
+  }, [category, currentPage]);
+
+  /*
+  |--------------------------------------------------------------------------
+  | Change Page
+  |--------------------------------------------------------------------------
+  */
+
+  const handlePageChange = (page) => {
+    if (
+      page < 1 ||
+      page > lastPage ||
+      loading
+    ) {
+      return;
+    }
+
+    setCurrentPage(page);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   /*
   |--------------------------------------------------------------------------
@@ -76,7 +118,7 @@ function CategoryProducts() {
   |--------------------------------------------------------------------------
   */
 
-  if (loading) {
+  if (loading && products.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 px-4 py-10">
         <div className="mx-auto max-w-7xl">
@@ -212,6 +254,63 @@ function CategoryProducts() {
         productType={`${categoryName} Products`}
         slider={false}
       />
+
+      {/* Pagination */}
+
+      {lastPage > 1 && (
+        <div className="flex items-center justify-center gap-2 py-8">
+
+          <button
+            onClick={() =>
+              handlePageChange(currentPage - 1)
+            }
+            disabled={
+              currentPage === 1 || loading
+            }
+            className="rounded border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          {Array.from(
+            { length: lastPage },
+            (_, index) => {
+              const page = index + 1;
+
+              return (
+                <button
+                  key={page}
+                  onClick={() =>
+                    handlePageChange(page)
+                  }
+                  disabled={loading}
+                  className={`rounded border px-3 py-2 text-sm ${
+                    currentPage === page
+                      ? "bg-black text-white"
+                      : "bg-white text-gray-700"
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            }
+          )}
+
+          <button
+            onClick={() =>
+              handlePageChange(currentPage + 1)
+            }
+            disabled={
+              currentPage === lastPage ||
+              loading
+            }
+            className="rounded border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Next
+          </button>
+
+        </div>
+      )}
 
     </div>
   );

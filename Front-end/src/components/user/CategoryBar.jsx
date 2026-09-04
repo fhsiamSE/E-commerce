@@ -9,10 +9,10 @@ const categories = [
     href: "/category/men",
   },
   {
-    name: "Women",
+    name: "Woman",
     image:
       "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=600&q=80",
-    href: "/category/women",
+    href: "/category/woman",
   },
   {
     name: "Shoes",

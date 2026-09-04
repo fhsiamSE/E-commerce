@@ -20,7 +20,6 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-
         $orders = Order::with([
             'items.product.images',
             'items.variant',
@@ -29,12 +28,9 @@ class OrderController extends Controller
             ->latest()
             ->get();
 
-
         return response()->json([
             'success' => true,
-
             'message' => 'Orders fetched successfully.',
-
             'data' => $orders,
         ]);
     }
@@ -50,7 +46,6 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-
         /*
         |--------------------------------------------------------------------------
         | Validate Request
@@ -59,39 +54,8 @@ class OrderController extends Controller
 
         $validated = $request->validate([
             'shipping' => 'nullable|numeric|min:0',
-
             'discount' => 'nullable|numeric|min:0',
         ]);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Get User Cart
-        |--------------------------------------------------------------------------
-        */
-
-        $cartItems = Cart::with([
-            'product',
-            'variant',
-        ])
-            ->where('user_id', $user->id)
-            ->get();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Check Cart
-        |--------------------------------------------------------------------------
-        */
-
-        if ($cartItems->isEmpty()) {
-
-            return response()->json([
-                'success' => false,
-
-                'message' => 'Your cart is empty.',
-            ], 400);
-        }
 
 
         /*
@@ -102,8 +66,38 @@ class OrderController extends Controller
 
         DB::beginTransaction();
 
-
         try {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Get User Cart
+            |--------------------------------------------------------------------------
+            */
+
+            $cartItems = Cart::with([
+                'product',
+                'variant',
+            ])
+                ->where('user_id', $user->id)
+                ->get();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Check Cart
+            |--------------------------------------------------------------------------
+            */
+
+            if ($cartItems->isEmpty()) {
+
+                DB::rollBack();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your cart is empty.',
+                ], 400);
+            }
+
 
             /*
             |--------------------------------------------------------------------------
@@ -132,6 +126,20 @@ class OrderController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
+                | Check Variant
+                |--------------------------------------------------------------------------
+                */
+
+                if ($item->variant_id && !$item->variant) {
+
+                    throw new \Exception(
+                        "Variant not found for cart item ID: {$item->id}"
+                    );
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
                 | Get Price
                 |--------------------------------------------------------------------------
                 |
@@ -150,8 +158,7 @@ class OrderController extends Controller
                 |--------------------------------------------------------------------------
                 */
 
-                $subtotal +=
-                    $price * $item->quantity;
+                $subtotal += $price * $item->quantity;
             }
 
 
@@ -161,9 +168,7 @@ class OrderController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $shipping =
-                $validated['shipping']
-                ?? 0;
+            $shipping = $validated['shipping'] ?? 0;
 
 
             /*
@@ -172,9 +177,7 @@ class OrderController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $discount =
-                $validated['discount']
-                ?? 0;
+            $discount = $validated['discount'] ?? 0;
 
 
             /*
@@ -183,10 +186,7 @@ class OrderController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $total =
-                $subtotal
-                + $shipping
-                - $discount;
+            $total = $subtotal + $shipping - $discount;
 
 
             /*
@@ -208,22 +208,17 @@ class OrderController extends Controller
 
             $order = Order::create([
                 'user_id' => $user->id,
-
                 'subtotal' => $subtotal,
-
                 'shipping' => $shipping,
-
                 'discount' => $discount,
-
                 'total' => $total,
-
                 'status' => 'pending',
             ]);
 
 
             /*
             |--------------------------------------------------------------------------
-            | Create Order Items
+            | Create Order Items + Update Stock
             |--------------------------------------------------------------------------
             */
 
@@ -231,7 +226,7 @@ class OrderController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | Get Product Price
+                | Get Price
                 |--------------------------------------------------------------------------
                 */
 
@@ -241,31 +236,175 @@ class OrderController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
+                | Check Quantity
+                |--------------------------------------------------------------------------
+                */
+
+                if ($item->quantity < 1) {
+
+                    throw new \Exception(
+                        "Invalid quantity for cart item ID: {$item->id}"
+                    );
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Variant Product
+                |--------------------------------------------------------------------------
+                */
+
+                if ($item->variant_id) {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Lock Variant Row
+                    |--------------------------------------------------------------------------
+                    |
+                    | Prevents two customers from buying the
+                    | same last stock at the same time.
+                    |
+                    */
+
+                    $variant = $item->product
+                        ->variants()
+                        ->where('id', $item->variant_id)
+                        ->lockForUpdate()
+                        ->first();
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Variant Not Found
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (!$variant) {
+
+                        throw new \Exception(
+                            "Variant not found for product: {$item->product->id}"
+                        );
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Check Variant Stock
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if ($variant->stock < $item->quantity) {
+
+                        throw new \Exception(
+                            "Insufficient stock for SKU: {$variant->sku}. "
+                            . "Available: {$variant->stock}, "
+                            . "Requested: {$item->quantity}"
+                        );
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Decrease Variant Stock
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $variant->decrement(
+                        'stock',
+                        $item->quantity
+                    );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Decrease Product Stock
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $item->product->decrement(
+                        'stock',
+                        $item->quantity
+                    );
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Product Without Variant
+                |--------------------------------------------------------------------------
+                */
+
+                else {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Lock Product Row
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $product = $item->product
+                        ->newQuery()
+                        ->where('id', $item->product_id)
+                        ->lockForUpdate()
+                        ->first();
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Check Product Stock
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (!$product) {
+
+                        throw new \Exception(
+                            "Product not found: {$item->product_id}"
+                        );
+                    }
+
+
+                    if ($product->stock < $item->quantity) {
+
+                        throw new \Exception(
+                            "Insufficient stock for product: "
+                            . "{$product->name}. "
+                            . "Available: {$product->stock}, "
+                            . "Requested: {$item->quantity}"
+                        );
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Decrease Product Stock
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $product->decrement(
+                        'stock',
+                        $item->quantity
+                    );
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
                 | Create Order Item
                 |--------------------------------------------------------------------------
                 */
 
                 $order->items()->create([
-                    'product_id' =>
-                        $item->product_id,
-
-                    'variant_id' =>
-                        $item->variant_id,
-
-                    'quantity' =>
-                        $item->quantity,
-
-                    'price' =>
-                        $price,
+                    'product_id' => $item->product_id,
+                    'variant_id' => $item->variant_id,
+                    'quantity' => $item->quantity,
+                    'price' => $price,
                 ]);
 
 
                 /*
                 |--------------------------------------------------------------------------
-                | UPDATE SALES COUNT
+                | Update Sales Count
                 |--------------------------------------------------------------------------
-                |
-                | This makes Top Selling Products dynamic.
                 |
                 | Example:
                 |
@@ -323,9 +462,7 @@ class OrderController extends Controller
 
             return response()->json([
                 'success' => true,
-
                 'message' => 'Order placed successfully.',
-
                 'data' => $order,
             ], 201);
 
@@ -343,11 +480,9 @@ class OrderController extends Controller
 
             return response()->json([
                 'success' => false,
-
-                'message' => 'Failed to place order.',
-
-                'error' => $e->getMessage(),
-            ], 500);
+                'message' => $e->getMessage(),
+            ], 400);
         }
     }
 }
+
