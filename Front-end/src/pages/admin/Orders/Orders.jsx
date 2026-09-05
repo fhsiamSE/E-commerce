@@ -35,9 +35,6 @@ const Orders = () => {
     const [statusFilter, setStatusFilter] =
         useState("All");
 
-    const [paymentFilter, setPaymentFilter] =
-        useState("All");
-
 
     /*
     |--------------------------------------------------------------------------
@@ -163,35 +160,9 @@ const Orders = () => {
                     statusFilter.toLowerCase();
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | Payment
-            |--------------------------------------------------------------------------
-            |
-            | Your current orders table does not have
-            | payment_status yet.
-            |
-            */
-
-            const matchesPayment =
-                paymentFilter === "All" ||
-                String(
-                    order.payment_status || ""
-                ).toLowerCase() ===
-                    paymentFilter.toLowerCase();
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | If payment_status doesn't exist,
-            | don't hide orders when "All" is selected.
-            |--------------------------------------------------------------------------
-            */
-
             return (
                 matchesSearch &&
-                matchesStatus &&
-                matchesPayment
+                matchesStatus
             );
 
         });
@@ -200,7 +171,6 @@ const Orders = () => {
         orders,
         search,
         statusFilter,
-        paymentFilter,
     ]);
 
 
@@ -244,40 +214,6 @@ const Orders = () => {
             default:
 
                 return "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300";
-        }
-    };
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Payment Style
-    |--------------------------------------------------------------------------
-    */
-
-    const getPaymentStyle = (payment) => {
-
-        switch (
-            String(payment).toLowerCase()
-        ) {
-
-            case "paid":
-
-                return "text-green-600 dark:text-green-400";
-
-
-            case "pending":
-
-                return "text-yellow-600 dark:text-yellow-400";
-
-
-            case "failed":
-
-                return "text-red-600 dark:text-red-400";
-
-
-            default:
-
-                return "text-gray-500";
         }
     };
 
@@ -335,6 +271,82 @@ const Orders = () => {
             .join("")
             .slice(0, 2)
             .toUpperCase();
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Assignee
+    |--------------------------------------------------------------------------
+    */
+
+    const getAssignee = (order) => {
+
+        /*
+        | Supports different possible API structures.
+        */
+
+        if (order.assignee?.name) {
+            return order.assignee.name;
+        }
+
+
+        if (order.assigned_user?.name) {
+            return order.assigned_user.name;
+        }
+
+
+        if (order.assignedTo?.name) {
+            return order.assignedTo.name;
+        }
+
+
+        if (order.assigned_to?.name) {
+            return order.assigned_to.name;
+        }
+
+
+        if (
+            typeof order.assignee === "string" &&
+            order.assignee.trim()
+        ) {
+            return order.assignee;
+        }
+
+
+        if (
+            typeof order.assigned_to === "string" &&
+            order.assigned_to.trim()
+        ) {
+            return order.assigned_to;
+        }
+
+
+        return "Unassigned";
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Assignee Initials
+    |--------------------------------------------------------------------------
+    */
+
+    const getAssigneeInitials = (order) => {
+
+        const assignee =
+            getAssignee(order);
+
+
+        if (
+            !assignee ||
+            assignee === "Unassigned"
+        ) {
+            return "UA";
+        }
+
+
+        return getInitials(assignee);
     };
 
 
@@ -694,12 +706,9 @@ const Orders = () => {
 
 
 
-                        {/* Filters */}
+                        {/* Status Filter */}
 
                         <div className="flex flex-col gap-2 sm:flex-row">
-
-
-                            {/* Status */}
 
                             <select
                                 value={statusFilter}
@@ -731,36 +740,6 @@ const Orders = () => {
 
                                 <option value="Cancelled">
                                     Cancelled
-                                </option>
-
-                            </select>
-
-
-
-                            {/* Payment */}
-
-                            <select
-                                value={paymentFilter}
-                                onChange={(event) =>
-                                    setPaymentFilter(event.target.value)
-                                }
-                                className="h-10 rounded-lg border border-gray-200 bg-white px-3 text-sm outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-white"
-                            >
-
-                                <option value="All">
-                                    All Payments
-                                </option>
-
-                                <option value="Paid">
-                                    Paid
-                                </option>
-
-                                <option value="Pending">
-                                    Pending
-                                </option>
-
-                                <option value="Failed">
-                                    Failed
                                 </option>
 
                             </select>
@@ -802,7 +781,7 @@ const Orders = () => {
                                 </th>
 
                                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    Payment
+                                    Assignee
                                 </th>
 
                                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -851,9 +830,12 @@ const Orders = () => {
                                     getInitials(customer);
 
 
-                                const payment =
-                                    order.payment_status ||
-                                    "Not Set";
+                                const assignee =
+                                    getAssignee(order);
+
+
+                                const assigneeInitials =
+                                    getAssigneeInitials(order);
 
 
                                 return (
@@ -930,29 +912,26 @@ const Orders = () => {
 
 
 
-                                        {/* Payment */}
+                                        {/* Assignee */}
 
                                         <td className="whitespace-nowrap px-6 py-4">
 
-                                            {order.payment_status ? (
+                                            <div className="flex items-center gap-2">
 
-                                                <span
-                                                    className={`text-sm font-medium ${getPaymentStyle(
-                                                        order.payment_status
-                                                    )}`}
-                                                >
+                                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-300">
 
-                                                    {order.payment_status}
+                                                    {assigneeInitials}
+
+                                                </div>
+
+
+                                                <span className="text-sm text-gray-700 dark:text-gray-300">
+
+                                                    {assignee}
 
                                                 </span>
 
-                                            ) : (
-
-                                                <span className="text-sm text-gray-400">
-                                                    Not Set
-                                                </span>
-
-                                            )}
+                                            </div>
 
                                         </td>
 
@@ -1053,6 +1032,14 @@ const Orders = () => {
 
                         const initials =
                             getInitials(customer);
+
+
+                        const assignee =
+                            getAssignee(order);
+
+
+                        const assigneeInitials =
+                            getAssigneeInitials(order);
 
 
                         return (
@@ -1161,30 +1148,40 @@ const Orders = () => {
 
 
 
-                                {/* Payment + View */}
+                                {/* Assignee */}
 
                                 <div className="mt-4 flex items-center justify-between">
 
-                                    {order.payment_status ? (
+                                    <div className="flex items-center gap-2">
 
-                                        <span
-                                            className={`text-sm font-medium ${getPaymentStyle(
-                                                order.payment_status
-                                            )}`}
-                                        >
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-300">
 
-                                            {order.payment_status}
+                                            {assigneeInitials}
 
-                                        </span>
+                                        </div>
 
-                                    ) : (
 
-                                        <span className="text-sm text-gray-400">
-                                            Payment not set
-                                        </span>
+                                        <div>
 
-                                    )}
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                Assignee
+                                            </p>
 
+                                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                                                {assignee}
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                {/* View */}
+
+                                <div className="mt-4 flex items-center justify-end">
 
                                     <button
                                         type="button"
