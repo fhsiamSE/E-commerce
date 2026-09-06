@@ -826,18 +826,7 @@ const Products = () => {
                           <button
                             onClick={() =>
                               navigate(
-                                `/admin/products/${product.id}`
-                              )
-                            }
-                            className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-                          >
-                            View
-                          </button>
-
-                          <button
-                            onClick={() =>
-                              navigate(
-                                `/admin/products/${product.id}/edit`
+                                `/admin/products/edit/${product.id}`
                               )
                             }
                             className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
@@ -952,18 +941,7 @@ const Products = () => {
                     <button
                       onClick={() =>
                         navigate(
-                          `/admin/products/${product.id}`
-                        )
-                      }
-                      className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 dark:border-gray-700 dark:text-gray-300"
-                    >
-                      View
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        navigate(
-                          `/admin/products/${product.id}/edit`
+                          `/admin/products/edit/${product.id}`
                         )
                       }
                       className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 dark:border-gray-700 dark:text-gray-300"
