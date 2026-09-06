@@ -17,6 +17,12 @@ class AdminOrderController extends Controller
 
     public function index(Request $request)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Get all orders
+        |--------------------------------------------------------------------------
+        */
+
         $orders = Order::with([
             'user',
             'assignee',
@@ -26,10 +32,67 @@ class AdminOrderController extends Controller
         ->latest()
         ->get();
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Calculate Revenue
+        |--------------------------------------------------------------------------
+        |
+        | Only delivered orders are counted as revenue.
+        |
+        */
+
+        $revenue = Order::where('status', 'delivered')
+            ->sum('total');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Order Statistics
+        |--------------------------------------------------------------------------
+        */
+
+        $totalOrders = Order::count();
+
+        $pendingOrders = Order::where('status', 'pending')
+            ->count();
+
+        $processingOrders = Order::where('status', 'processing')
+            ->count();
+
+        $shippedOrders = Order::where('status', 'shipped')
+            ->count();
+
+        $deliveredOrders = Order::where('status', 'delivered')
+            ->count();
+
+        $cancelledOrders = Order::where('status', 'cancelled')
+            ->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Response
+        |--------------------------------------------------------------------------
+        */
+
         return response()->json([
             'success' => true,
             'message' => 'All orders fetched successfully.',
+
             'data' => $orders,
+
+            'statistics' => [
+                'total_orders' => $totalOrders,
+                'pending_orders' => $pendingOrders,
+                'processing_orders' => $processingOrders,
+                'shipped_orders' => $shippedOrders,
+                'delivered_orders' => $deliveredOrders,
+                'cancelled_orders' => $cancelledOrders,
+
+                // Only delivered orders
+                'revenue' => $revenue,
+            ],
         ]);
     }
 
@@ -49,12 +112,14 @@ class AdminOrderController extends Controller
             'items.variant',
         ])->find($id);
 
+
         if (!$order) {
             return response()->json([
                 'success' => false,
                 'message' => 'Order not found.',
             ], 404);
         }
+
 
         return response()->json([
             'success' => true,
@@ -68,7 +133,9 @@ class AdminOrderController extends Controller
     |--------------------------------------------------------------------------
     | Get Assignees
     |--------------------------------------------------------------------------
+    |
     | Only Admin and Employee users will be returned.
+    |
     */
 
     public function assignees()
@@ -86,6 +153,7 @@ class AdminOrderController extends Controller
         ->orderBy('name')
         ->get();
 
+
         return response()->json([
             'success' => true,
             'message' => 'Assignees fetched successfully.',
@@ -102,11 +170,28 @@ class AdminOrderController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Validate status
+        |--------------------------------------------------------------------------
+        */
+
         $validated = $request->validate([
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
+            'status' => [
+                'required',
+                'in:pending,processing,shipped,delivered,cancelled',
+            ],
         ]);
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Find order
+        |--------------------------------------------------------------------------
+        */
+
         $order = Order::find($id);
+
 
         if (!$order) {
             return response()->json([
@@ -115,9 +200,23 @@ class AdminOrderController extends Controller
             ], 404);
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update status
+        |--------------------------------------------------------------------------
+        */
+
         $order->update([
             'status' => $validated['status'],
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Reload order with relationships
+        |--------------------------------------------------------------------------
+        */
 
         $order->load([
             'user',
@@ -125,6 +224,13 @@ class AdminOrderController extends Controller
             'items.product.images',
             'items.variant',
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Response
+        |--------------------------------------------------------------------------
+        */
 
         return response()->json([
             'success' => true,
@@ -142,6 +248,12 @@ class AdminOrderController extends Controller
 
     public function updateAssignee(Request $request, $id)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Validate assignee
+        |--------------------------------------------------------------------------
+        */
+
         $validated = $request->validate([
             'assigned_to' => [
                 'nullable',
@@ -150,7 +262,15 @@ class AdminOrderController extends Controller
             ],
         ]);
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Find order
+        |--------------------------------------------------------------------------
+        */
+
         $order = Order::find($id);
+
 
         if (!$order) {
             return response()->json([
@@ -159,19 +279,27 @@ class AdminOrderController extends Controller
             ], 404);
         }
 
+
         /*
-        |----------------------------------------------------------------------
-        | If an assignee is selected
-        |----------------------------------------------------------------------
+        |--------------------------------------------------------------------------
+        | Assign user
+        |--------------------------------------------------------------------------
         */
 
         if ($validated['assigned_to'] !== null) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Make sure selected user is Admin or Employee
+            |--------------------------------------------------------------------------
+            */
 
             $assignee = User::whereIn('role', [
                 'admin',
                 'employee',
             ])
             ->find($validated['assigned_to']);
+
 
             if (!$assignee) {
                 return response()->json([
@@ -180,20 +308,41 @@ class AdminOrderController extends Controller
                 ], 422);
             }
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Set assignee
+            |--------------------------------------------------------------------------
+            */
+
             $order->assigned_to = $assignee->id;
 
         } else {
 
             /*
-            |------------------------------------------------------------------
+            |--------------------------------------------------------------------------
             | Unassign order
-            |------------------------------------------------------------------
+            |--------------------------------------------------------------------------
             */
 
             $order->assigned_to = null;
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Save
+        |--------------------------------------------------------------------------
+        */
+
         $order->save();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Reload relationships
+        |--------------------------------------------------------------------------
+        */
 
         $order->load([
             'user',
@@ -202,11 +351,20 @@ class AdminOrderController extends Controller
             'items.variant',
         ]);
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Response
+        |--------------------------------------------------------------------------
+        */
+
         return response()->json([
             'success' => true,
+
             'message' => $order->assigned_to
                 ? 'Order assigned successfully.'
                 : 'Order unassigned successfully.',
+
             'data' => $order,
         ]);
     }
@@ -220,7 +378,14 @@ class AdminOrderController extends Controller
 
     public function destroy($id)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Find order
+        |--------------------------------------------------------------------------
+        */
+
         $order = Order::find($id);
+
 
         if (!$order) {
             return response()->json([
@@ -229,7 +394,21 @@ class AdminOrderController extends Controller
             ], 404);
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Delete order
+        |--------------------------------------------------------------------------
+        */
+
         $order->delete();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Response
+        |--------------------------------------------------------------------------
+        */
 
         return response()->json([
             'success' => true,

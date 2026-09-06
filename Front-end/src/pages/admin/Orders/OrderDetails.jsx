@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
 import api from "../../../api/axios.js";
 
 const OrderDetails = () => {
@@ -23,7 +24,6 @@ const OrderDetails = () => {
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-
 
     /*
     |--------------------------------------------------------------------------
@@ -49,7 +49,6 @@ const OrderDetails = () => {
         )}`;
     };
 
-
     /*
     |--------------------------------------------------------------------------
     | Fetch Order
@@ -71,7 +70,6 @@ const OrderDetails = () => {
                 response.data;
 
             setOrder(orderData);
-
         } catch (err) {
             console.error(
                 "Failed to load order:",
@@ -82,12 +80,10 @@ const OrderDetails = () => {
                 err.response?.data?.message ||
                 "Failed to load order details."
             );
-
         } finally {
             setLoading(false);
         }
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -108,19 +104,11 @@ const OrderDetails = () => {
                 response.data?.users ||
                 [];
 
-            /*
-            |--------------------------------------------------------------------------
-            | Only Admin and Employee
-            |--------------------------------------------------------------------------
-            */
-
             const filteredUsers = users.filter(
                 (user) => {
-
-                    const role =
-                        String(
-                            user.role || ""
-                        ).toLowerCase();
+                    const role = String(
+                        user.role || ""
+                    ).toLowerCase();
 
                     return (
                         role === "admin" ||
@@ -130,7 +118,6 @@ const OrderDetails = () => {
             );
 
             setAssignees(filteredUsers);
-
         } catch (err) {
             console.error(
                 "Failed to load assignees:",
@@ -140,7 +127,6 @@ const OrderDetails = () => {
             setAssigneesLoading(false);
         }
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -155,9 +141,7 @@ const OrderDetails = () => {
 
         fetchOrder();
         fetchAssignees();
-
     }, [id]);
-
 
     /*
     |--------------------------------------------------------------------------
@@ -166,51 +150,53 @@ const OrderDetails = () => {
     */
 
     const handleStatusChange = async (event) => {
-    const newStatus = event.target.value;
+        const newStatus = event.target.value;
 
-    if (!newStatus || !order) {
-        return;
-    }
-
-    try {
-        setStatusUpdating(true);
-        setError("");
-        setSuccess("");
-
-        const response = await api.patch(
-            `/admin/orders/${id}/status`,
-            {
-                status: newStatus,
-            }
-        );
-
-        const updatedOrder = response.data?.data;
-
-        if (updatedOrder) {
-            setOrder(updatedOrder);
-        } else {
-            setOrder((previous) => ({
-                ...previous,
-                status: newStatus,
-            }));
+        if (!newStatus || !order) {
+            return;
         }
 
-        setSuccess("Order status updated successfully.");
-    } catch (err) {
-        console.error(
-            "Failed to update status:",
-            err
-        );
+        try {
+            setStatusUpdating(true);
+            setError("");
+            setSuccess("");
 
-        setError(
-            err.response?.data?.message ||
-            "Failed to update order status."
-        );
-    } finally {
-        setStatusUpdating(false);
-    }
-};
+            const response = await api.patch(
+                `/admin/orders/${id}/status`,
+                {
+                    status: newStatus,
+                }
+            );
 
+            const updatedOrder =
+                response.data?.data;
+
+            if (updatedOrder) {
+                setOrder(updatedOrder);
+            } else {
+                setOrder((previous) => ({
+                    ...previous,
+                    status: newStatus,
+                }));
+            }
+
+            setSuccess(
+                "Order status updated successfully."
+            );
+        } catch (err) {
+            console.error(
+                "Failed to update status:",
+                err
+            );
+
+            setError(
+                err.response?.data?.message ||
+                "Failed to update order status."
+            );
+        } finally {
+            setStatusUpdating(false);
+        }
+    };
 
     /*
     |--------------------------------------------------------------------------
@@ -219,7 +205,6 @@ const OrderDetails = () => {
     */
 
     const handleAssigneeChange = async (event) => {
-
         const assigneeId =
             event.target.value;
 
@@ -228,7 +213,6 @@ const OrderDetails = () => {
         }
 
         try {
-
             setAssigneeUpdating(true);
             setError("");
             setSuccess("");
@@ -245,11 +229,8 @@ const OrderDetails = () => {
                 response.data?.data;
 
             if (updatedOrder) {
-
                 setOrder(updatedOrder);
-
             } else {
-
                 const selectedAssignee =
                     assignees.find(
                         (user) =>
@@ -271,9 +252,7 @@ const OrderDetails = () => {
                     ? "Order assigned successfully."
                     : "Order unassigned successfully."
             );
-
         } catch (err) {
-
             console.error(
                 "Failed to assign order:",
                 err
@@ -283,14 +262,10 @@ const OrderDetails = () => {
                 err.response?.data?.message ||
                 "Failed to assign order."
             );
-
         } finally {
-
             setAssigneeUpdating(false);
-
         }
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -305,14 +280,12 @@ const OrderDetails = () => {
         );
     };
 
-
     const getCustomerEmail = () => {
         return (
             order?.user?.email ||
             "-"
         );
     };
-
 
     const getCustomerPhone = () => {
         return (
@@ -321,14 +294,12 @@ const OrderDetails = () => {
         );
     };
 
-
     const getCustomerAddress = () => {
         return (
             order?.user?.address ||
             "-"
         );
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -337,7 +308,6 @@ const OrderDetails = () => {
     */
 
     const getInitials = (name) => {
-
         if (!name) {
             return "CU";
         }
@@ -351,7 +321,6 @@ const OrderDetails = () => {
             .toUpperCase();
     };
 
-
     /*
     |--------------------------------------------------------------------------
     | Date
@@ -359,7 +328,6 @@ const OrderDetails = () => {
     */
 
     const formatDate = (date) => {
-
         if (!date) {
             return "-";
         }
@@ -385,9 +353,7 @@ const OrderDetails = () => {
         );
     };
 
-
     const formatDateTime = (date) => {
-
         if (!date) {
             return "-";
         }
@@ -415,7 +381,6 @@ const OrderDetails = () => {
         );
     };
 
-
     /*
     |--------------------------------------------------------------------------
     | Product Information
@@ -423,7 +388,6 @@ const OrderDetails = () => {
     */
 
     const getItemProductName = (item) => {
-
         return (
             item?.product?.product_name ||
             item?.product?.name ||
@@ -433,13 +397,10 @@ const OrderDetails = () => {
         );
     };
 
-
     const getItemImage = (item) => {
-
         return (
             item?.product?.images?.find(
-                (image) =>
-                    image.is_primary
+                (image) => image.is_primary
             )?.image ||
             item?.product?.images?.[0]?.image ||
             item?.image ||
@@ -448,9 +409,7 @@ const OrderDetails = () => {
         );
     };
 
-
     const getItemPrice = (item) => {
-
         return Number(
             item?.price ||
             item?.unit_price ||
@@ -459,17 +418,13 @@ const OrderDetails = () => {
         );
     };
 
-
     const getItemQuantity = (item) => {
-
         return Number(
             item?.quantity || 0
         );
     };
 
-
     const getItemSize = (item) => {
-
         return (
             item?.size ||
             item?.variant?.size ||
@@ -478,9 +433,7 @@ const OrderDetails = () => {
         );
     };
 
-
     const getItemColor = (item) => {
-
         return (
             item?.color ||
             item?.variant?.color ||
@@ -489,9 +442,7 @@ const OrderDetails = () => {
         );
     };
 
-
     const getItemSku = (item) => {
-
         return (
             item?.sku ||
             item?.variant?.sku ||
@@ -500,7 +451,6 @@ const OrderDetails = () => {
         );
     };
 
-
     /*
     |--------------------------------------------------------------------------
     | Order Items
@@ -508,27 +458,20 @@ const OrderDetails = () => {
     */
 
     const orderItems = useMemo(() => {
-
         if (
-            Array.isArray(
-                order?.items
-            )
+            Array.isArray(order?.items)
         ) {
             return order.items;
         }
 
         if (
-            Array.isArray(
-                order?.order_items
-            )
+            Array.isArray(order?.order_items)
         ) {
             return order.order_items;
         }
 
         return [];
-
     }, [order]);
-
 
     /*
     |--------------------------------------------------------------------------
@@ -537,7 +480,6 @@ const OrderDetails = () => {
     */
 
     const subtotal = useMemo(() => {
-
         if (
             order?.subtotal !== undefined &&
             order?.subtotal !== null
@@ -549,32 +491,37 @@ const OrderDetails = () => {
             (sum, item) =>
                 sum +
                 getItemPrice(item) *
-                getItemQuantity(item),
+                    getItemQuantity(item),
             0
         );
-
     }, [order, orderItems]);
 
-
-    const shipping = Number(
-        order?.shipping ||
-        order?.shipping_cost ||
-        0
-    );
-
+    /*
+    |--------------------------------------------------------------------------
+    | Shipping Removed
+    |--------------------------------------------------------------------------
+    |
+    | Shipping is intentionally not used here.
+    |
+    */
 
     const discount = Number(
         order?.discount || 0
     );
 
+    /*
+    |--------------------------------------------------------------------------
+    | Total
+    |--------------------------------------------------------------------------
+    |
+    | Total = Subtotal - Discount
+    |
+    */
 
     const total = Number(
-        order?.total ||
-        subtotal +
-        shipping -
-        discount
+        order?.total ??
+        subtotal - discount
     );
-
 
     /*
     |--------------------------------------------------------------------------
@@ -589,7 +536,6 @@ const OrderDetails = () => {
         order?.assigned_user?.id ??
         "";
 
-
     /*
     |--------------------------------------------------------------------------
     | Status Style
@@ -597,37 +543,25 @@ const OrderDetails = () => {
     */
 
     const getStatusStyle = (status) => {
-
         switch (
             String(status).toLowerCase()
         ) {
-
             case "delivered":
-
                 return "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400";
 
             case "processing":
-
                 return "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400";
 
-            case "shipped":
-
-                return "bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400";
-
             case "pending":
-
                 return "bg-yellow-50 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400";
 
             case "cancelled":
-
                 return "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400";
 
             default:
-
                 return "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300";
         }
     };
-
 
     /*
     |--------------------------------------------------------------------------
@@ -636,12 +570,9 @@ const OrderDetails = () => {
     */
 
     if (loading) {
-
         return (
             <div className="min-h-screen bg-gray-50 p-4 dark:bg-gray-950 sm:p-6 lg:p-8">
-
                 <div className="flex min-h-[500px] items-center justify-center">
-
                     <div className="text-center">
 
                         <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-black dark:border-gray-700 dark:border-t-white" />
@@ -651,13 +582,10 @@ const OrderDetails = () => {
                         </p>
 
                     </div>
-
                 </div>
-
             </div>
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -666,10 +594,8 @@ const OrderDetails = () => {
     */
 
     if (error && !order) {
-
         return (
             <div className="min-h-screen bg-gray-50 p-4 dark:bg-gray-950 sm:p-6 lg:p-8">
-
                 <div className="flex min-h-[500px] items-center justify-center">
 
                     <div className="w-full max-w-md rounded-xl border border-red-200 bg-white p-8 text-center dark:border-red-900 dark:bg-gray-900">
@@ -697,11 +623,9 @@ const OrderDetails = () => {
                     </div>
 
                 </div>
-
             </div>
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -710,9 +634,7 @@ const OrderDetails = () => {
     */
 
     return (
-
         <div className="min-h-screen bg-gray-50 p-4 dark:bg-gray-950 sm:p-6 lg:p-8">
-
 
             {/* =========================================================
                 HEADER
@@ -743,7 +665,8 @@ const OrderDetails = () => {
                                 order?.status
                             )}`}
                         >
-                            {order?.status || "Unknown"}
+                            {order?.status ||
+                                "Unknown"}
                         </span>
 
                     </div>
@@ -759,36 +682,25 @@ const OrderDetails = () => {
 
             </div>
 
-
             {/* =========================================================
                 SUCCESS MESSAGE
             ========================================================== */}
 
             {success && (
-
                 <div className="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-900 dark:bg-green-500/10 dark:text-green-400">
-
                     {success}
-
                 </div>
-
             )}
-
 
             {/* =========================================================
                 ERROR MESSAGE
             ========================================================== */}
 
             {error && order && (
-
                 <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-500/10 dark:text-red-400">
-
                     {error}
-
                 </div>
-
             )}
-
 
             {/* =========================================================
                 MAIN GRID
@@ -796,13 +708,11 @@ const OrderDetails = () => {
 
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
 
-
                 {/* =====================================================
                     LEFT SIDE
                 ====================================================== */}
 
                 <div className="space-y-6 xl:col-span-2">
-
 
                     {/* =================================================
                         ORDER ITEMS
@@ -825,11 +735,9 @@ const OrderDetails = () => {
 
                         </div>
 
-
                         <div className="divide-y divide-gray-100 dark:divide-gray-800">
 
                             {orderItems.length > 0 ? (
-
                                 orderItems.map(
                                     (item, index) => {
 
@@ -858,7 +766,6 @@ const OrderDetails = () => {
                                             quantity;
 
                                         return (
-
                                             <div
                                                 key={
                                                     item.id ||
@@ -874,29 +781,22 @@ const OrderDetails = () => {
                                                     <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-950">
 
                                                         {imageUrl ? (
-
                                                             <img
                                                                 src={
                                                                     imageUrl
                                                                 }
-                                                                alt={
-                                                                    getItemProductName(
-                                                                        item
-                                                                    )
-                                                                }
+                                                                alt={getItemProductName(
+                                                                    item
+                                                                )}
                                                                 className="h-full w-full object-cover"
                                                             />
-
                                                         ) : (
-
                                                             <div className="flex h-full w-full items-center justify-center text-xs text-gray-400">
                                                                 No Image
                                                             </div>
-
                                                         )}
 
                                                     </div>
-
 
                                                     {/* Product Info */}
 
@@ -921,14 +821,12 @@ const OrderDetails = () => {
 
                                                             </div>
 
-
                                                             <p className="text-sm font-semibold text-gray-900 dark:text-white">
                                                                 ৳
                                                                 {itemTotal.toLocaleString()}
                                                             </p>
 
                                                         </div>
-
 
                                                         <div className="mt-3 flex flex-wrap gap-2">
 
@@ -953,7 +851,6 @@ const OrderDetails = () => {
 
                                                         </div>
 
-
                                                         <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
 
                                                             Unit price:{" "}
@@ -970,14 +867,10 @@ const OrderDetails = () => {
                                                 </div>
 
                                             </div>
-
                                         );
-
                                     }
                                 )
-
                             ) : (
-
                                 <div className="px-5 py-12 text-center">
 
                                     <div className="text-4xl">
@@ -989,13 +882,11 @@ const OrderDetails = () => {
                                     </p>
 
                                 </div>
-
                             )}
 
                         </div>
 
                     </div>
-
 
                     {/* =================================================
                         CUSTOMER INFORMATION
@@ -1011,19 +902,15 @@ const OrderDetails = () => {
 
                         </div>
 
-
                         <div className="p-5">
 
                             <div className="flex items-center gap-3">
 
                                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-
                                     {getInitials(
                                         getCustomerName()
                                     )}
-
                                 </div>
-
 
                                 <div>
 
@@ -1039,9 +926,7 @@ const OrderDetails = () => {
 
                             </div>
 
-
                             <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-
 
                                 {/* Email */}
 
@@ -1057,7 +942,6 @@ const OrderDetails = () => {
 
                                 </div>
 
-
                                 {/* Phone */}
 
                                 <div>
@@ -1071,7 +955,6 @@ const OrderDetails = () => {
                                     </p>
 
                                 </div>
-
 
                                 {/* Address */}
 
@@ -1095,13 +978,11 @@ const OrderDetails = () => {
 
                 </div>
 
-
                 {/* =====================================================
                     RIGHT SIDE
                 ====================================================== */}
 
                 <div className="space-y-6">
-
 
                     {/* =================================================
                         ORDER MANAGEMENT
@@ -1121,9 +1002,7 @@ const OrderDetails = () => {
 
                         </div>
 
-
                         <div className="space-y-5 p-5">
-
 
                             {/* Status */}
 
@@ -1155,10 +1034,6 @@ const OrderDetails = () => {
                                         Processing
                                     </option>
 
-                                    <option value="shipped">
-                                        Shipped
-                                    </option>
-
                                     <option value="delivered">
                                         Delivered
                                     </option>
@@ -1170,15 +1045,12 @@ const OrderDetails = () => {
                                 </select>
 
                                 {statusUpdating && (
-
                                     <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                         Updating status...
                                     </p>
-
                                 )}
 
                             </div>
-
 
                             {/* Assignee */}
 
@@ -1208,7 +1080,6 @@ const OrderDetails = () => {
 
                                     {assignees.map(
                                         (user) => (
-
                                             <option
                                                 key={
                                                     user.id
@@ -1223,26 +1094,21 @@ const OrderDetails = () => {
                                                 }
                                                 )
                                             </option>
-
                                         )
                                     )}
 
                                 </select>
 
                                 {assigneesLoading && (
-
                                     <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                         Loading assignees...
                                     </p>
-
                                 )}
 
                                 {assigneeUpdating && (
-
                                     <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                                         Assigning order...
                                     </p>
-
                                 )}
 
                             </div>
@@ -1250,7 +1116,6 @@ const OrderDetails = () => {
                         </div>
 
                     </div>
-
 
                     {/* =================================================
                         ORDER SUMMARY
@@ -1266,8 +1131,9 @@ const OrderDetails = () => {
 
                         </div>
 
-
                         <div className="space-y-3 p-5">
+
+                            {/* Subtotal */}
 
                             <div className="flex items-center justify-between text-sm">
 
@@ -1282,20 +1148,7 @@ const OrderDetails = () => {
 
                             </div>
 
-
-                            <div className="flex items-center justify-between text-sm">
-
-                                <span className="text-gray-500 dark:text-gray-400">
-                                    Shipping
-                                </span>
-
-                                <span className="font-medium text-gray-900 dark:text-white">
-                                    ৳
-                                    {shipping.toLocaleString()}
-                                </span>
-
-                            </div>
-
+                            {/* Discount */}
 
                             <div className="flex items-center justify-between text-sm">
 
@@ -1310,6 +1163,7 @@ const OrderDetails = () => {
 
                             </div>
 
+                            {/* Total */}
 
                             <div className="border-t border-gray-200 pt-3 dark:border-gray-800">
 
@@ -1332,7 +1186,6 @@ const OrderDetails = () => {
 
                     </div>
 
-
                     {/* =================================================
                         ORDER INFORMATION
                     ================================================== */}
@@ -1347,7 +1200,6 @@ const OrderDetails = () => {
 
                         </div>
 
-
                         <div className="space-y-4 p-5">
 
                             <div className="flex items-center justify-between">
@@ -1361,7 +1213,6 @@ const OrderDetails = () => {
                                 </span>
 
                             </div>
-
 
                             <div className="flex items-center justify-between">
 
@@ -1380,7 +1231,6 @@ const OrderDetails = () => {
 
                             </div>
 
-
                             <div className="flex items-center justify-between">
 
                                 <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -1395,9 +1245,7 @@ const OrderDetails = () => {
 
                             </div>
 
-
                             {order?.updated_at && (
-
                                 <div className="flex items-center justify-between">
 
                                     <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -1411,7 +1259,6 @@ const OrderDetails = () => {
                                     </span>
 
                                 </div>
-
                             )}
 
                         </div>
@@ -1427,3 +1274,4 @@ const OrderDetails = () => {
 };
 
 export default OrderDetails;
+
