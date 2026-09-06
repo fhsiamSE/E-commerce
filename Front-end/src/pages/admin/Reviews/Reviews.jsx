@@ -1,115 +1,66 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import api from "../../../api/axios.js";
 
 const Reviews = () => {
-  /*
-  |--------------------------------------------------------------------------
-  | TEMPORARY REVIEW DATA
-  |--------------------------------------------------------------------------
-  | We will replace this with Laravel API data later.
-  */
-
-  const [reviews, setReviews] = useState([
-    {
-      id: 1,
-      customer: "John Doe",
-      email: "john@example.com",
-      product: "Premium Cotton T-Shirt",
-      rating: 5,
-      title: "Excellent quality",
-      comment:
-        "The quality is really good and the fabric feels comfortable. Very happy with the purchase.",
-      status: "Published",
-      date: "Aug 22, 2026",
-    },
-    {
-      id: 2,
-      customer: "Sarah Smith",
-      email: "sarah@example.com",
-      product: "Classic Hoodie",
-      rating: 4,
-      title: "Very comfortable",
-      comment:
-        "The hoodie is comfortable and looks great. The size was also perfect for me.",
-      status: "Published",
-      date: "Aug 21, 2026",
-    },
-    {
-      id: 3,
-      customer: "Michael Brown",
-      email: "michael@example.com",
-      product: "Stretch Skirt",
-      rating: 3,
-      title: "Good but could be better",
-      comment:
-        "The product is okay. The material is decent but I expected slightly better quality.",
-      status: "Pending",
-      date: "Aug 20, 2026",
-    },
-    {
-      id: 4,
-      customer: "Emily Wilson",
-      email: "emily@example.com",
-      product: "Party Silk Saree",
-      rating: 5,
-      title: "Beautiful saree",
-      comment:
-        "Absolutely beautiful. The color looks even better in person.",
-      status: "Published",
-      date: "Aug 19, 2026",
-    },
-    {
-      id: 5,
-      customer: "Robert Johnson",
-      email: "robert@example.com",
-      product: "Oversized Graphic Shirt",
-      rating: 2,
-      title: "Not satisfied",
-      comment:
-        "The print looks nice but the material was not what I expected.",
-      status: "Hidden",
-      date: "Aug 18, 2026",
-    },
-    {
-      id: 6,
-      customer: "David Miller",
-      email: "david@example.com",
-      product: "Salwar Kameez",
-      rating: 4,
-      title: "Nice product",
-      comment:
-        "Good product and fast delivery. Overall satisfied with the purchase.",
-      status: "Pending",
-      date: "Aug 17, 2026",
-    },
-    {
-      id: 7,
-      customer: "Emma Taylor",
-      email: "emma@example.com",
-      product: "Classic Hoodie",
-      rating: 5,
-      title: "Loved it",
-      comment:
-        "Very soft and comfortable. I would definitely buy this again.",
-      status: "Published",
-      date: "Aug 16, 2026",
-    },
-  ]);
-
   /*
   |--------------------------------------------------------------------------
   | STATE
   |--------------------------------------------------------------------------
   */
 
+  const [reviews, setReviews] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
   const [search, setSearch] = useState("");
   const [ratingFilter, setRatingFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
 
-  const [selectedReview, setSelectedReview] =
-    useState(null);
+  const [selectedReview, setSelectedReview] = useState(null);
 
-  const [showDeleteModal, setShowDeleteModal] =
-    useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [deleting, setDeleting] = useState(false);
+
+  /*
+  |--------------------------------------------------------------------------
+  | FETCH REVIEWS
+  |--------------------------------------------------------------------------
+  */
+
+  const fetchReviews = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await api.get("/admin/reviews");
+
+      if (response.data.success) {
+        setReviews(response.data.data || []);
+      } else {
+        setError("Failed to load reviews.");
+      }
+    } catch (error) {
+      console.error("Failed to fetch reviews:", error);
+
+      setError(
+        error.response?.data?.message ||
+          "Failed to load reviews."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | INITIAL LOAD
+  |--------------------------------------------------------------------------
+  */
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
 
   /*
   |--------------------------------------------------------------------------
@@ -119,69 +70,62 @@ const Reviews = () => {
 
   const filteredReviews = useMemo(() => {
     return reviews.filter((review) => {
-      const searchValue = search.toLowerCase();
+      const searchValue = search
+        .toLowerCase()
+        .trim();
+
+      const customerName =
+        review.user?.name?.toLowerCase() || "";
+
+      const customerEmail =
+        review.user?.email?.toLowerCase() || "";
+
+      const productName =
+        review.product?.product_name?.toLowerCase() || "";
+
+      const title =
+        review.title?.toLowerCase() || "";
+
+      const comment =
+        review.comment?.toLowerCase() || "";
 
       const matchesSearch =
-        review.customer
-          .toLowerCase()
-          .includes(searchValue) ||
-        review.email
-          .toLowerCase()
-          .includes(searchValue) ||
-        review.product
-          .toLowerCase()
-          .includes(searchValue) ||
-        review.title
-          .toLowerCase()
-          .includes(searchValue) ||
-        review.comment
-          .toLowerCase()
-          .includes(searchValue);
+        customerName.includes(searchValue) ||
+        customerEmail.includes(searchValue) ||
+        productName.includes(searchValue) ||
+        title.includes(searchValue) ||
+        comment.includes(searchValue);
 
       const matchesRating =
         ratingFilter === "All" ||
         Number(review.rating) ===
           Number(ratingFilter);
 
-      const matchesStatus =
-        statusFilter === "All" ||
-        review.status === statusFilter;
-
       return (
         matchesSearch &&
-        matchesRating &&
-        matchesStatus
+        matchesRating
       );
     });
   }, [
     reviews,
     search,
     ratingFilter,
-    statusFilter,
   ]);
 
   /*
   |--------------------------------------------------------------------------
-  | REVIEW STATISTICS
+  | STATISTICS
   |--------------------------------------------------------------------------
   */
 
   const totalReviews = reviews.length;
-
-  const publishedReviews = reviews.filter(
-    (review) => review.status === "Published"
-  ).length;
-
-  const pendingReviews = reviews.filter(
-    (review) => review.status === "Pending"
-  ).length;
 
   const averageRating =
     reviews.length > 0
       ? (
           reviews.reduce(
             (total, review) =>
-              total + Number(review.rating),
+              total + Number(review.rating || 0),
             0
           ) / reviews.length
         ).toFixed(1)
@@ -208,7 +152,9 @@ const Reviews = () => {
   */
 
   const getRatingPercentage = (rating) => {
-    if (!reviews.length) return 0;
+    if (!reviews.length) {
+      return 0;
+    }
 
     return (
       (getRatingCount(rating) /
@@ -219,58 +165,95 @@ const Reviews = () => {
 
   /*
   |--------------------------------------------------------------------------
-  | CHANGE REVIEW STATUS
-  |--------------------------------------------------------------------------
-  */
-
-  const changeStatus = (id, status) => {
-    setReviews((currentReviews) =>
-      currentReviews.map((review) =>
-        review.id === id
-          ? {
-              ...review,
-              status,
-            }
-          : review
-      )
-    );
-
-    setSelectedReview(null);
-  };
-
-  /*
-  |--------------------------------------------------------------------------
   | DELETE REVIEW
   |--------------------------------------------------------------------------
   */
 
-  const deleteReview = () => {
-    if (!selectedReview) return;
+  const deleteReview = async () => {
+    if (!selectedReview) {
+      return;
+    }
 
-    setReviews((currentReviews) =>
-      currentReviews.filter(
-        (review) =>
-          review.id !== selectedReview.id
-      )
-    );
+    try {
+      setDeleting(true);
 
-    setSelectedReview(null);
-    setShowDeleteModal(false);
+      const response = await api.delete(
+        `/admin/reviews/${selectedReview.id}`
+      );
+
+      if (response.data.success) {
+        setReviews((currentReviews) =>
+          currentReviews.filter(
+            (review) =>
+              review.id !== selectedReview.id
+          )
+        );
+
+        setSelectedReview(null);
+        setShowDeleteModal(false);
+      }
+    } catch (error) {
+      console.error(
+        "Failed to delete review:",
+        error
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to delete review."
+      );
+    } finally {
+      setDeleting(false);
+    }
   };
 
   /*
   |--------------------------------------------------------------------------
-  | CUSTOMER INITIALS
+  | HELPERS
   |--------------------------------------------------------------------------
   */
 
+  const getCustomerName = (review) => {
+    return review.user?.name || "Unknown User";
+  };
+
+  const getCustomerEmail = (review) => {
+    return review.user?.email || "N/A";
+  };
+
+  const getProductName = (review) => {
+    return (
+      review.product?.product_name ||
+      "Unknown Product"
+    );
+  };
+
   const getInitials = (name) => {
+    if (!name) {
+      return "?";
+    }
+
     return name
       .split(" ")
       .map((word) => word[0])
       .join("")
       .slice(0, 2)
       .toUpperCase();
+  };
+
+  const formatDate = (date) => {
+    if (!date) {
+      return "N/A";
+    }
+
+    return new Date(date).toLocaleDateString(
+      "en-US",
+      {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }
+    );
   };
 
   /*
@@ -290,7 +273,7 @@ const Reviews = () => {
             <span
               key={star}
               className={
-                star <= rating
+                star <= Number(rating)
                   ? "text-yellow-500"
                   : "text-gray-300 dark:text-gray-600"
               }
@@ -302,6 +285,70 @@ const Reviews = () => {
       </div>
     );
   };
+
+  /*
+  |--------------------------------------------------------------------------
+  | LOADING
+  |--------------------------------------------------------------------------
+  */
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 dark:bg-gray-950">
+
+        <div className="flex min-h-[400px] items-center justify-center">
+
+          <div className="text-center">
+
+            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-black dark:border-gray-700 dark:border-t-white" />
+
+            <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+              Loading reviews...
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | ERROR
+  |--------------------------------------------------------------------------
+  */
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 dark:bg-gray-950">
+
+        <div className="rounded-xl border border-red-200 bg-white p-8 text-center dark:border-red-900 dark:bg-gray-900">
+
+          <p className="text-sm text-red-600 dark:text-red-400">
+            {error}
+          </p>
+
+          <button
+            type="button"
+            onClick={fetchReviews}
+            className="mt-4 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-black"
+          >
+            Try Again
+          </button>
+
+        </div>
+
+      </div>
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | MAIN UI
+  |--------------------------------------------------------------------------
+  */
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 dark:bg-gray-950">
@@ -327,9 +374,9 @@ const Reviews = () => {
           STAT CARDS
       ========================================================== */}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-        {/* TOTAL */}
+        {/* TOTAL REVIEWS */}
 
         <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
 
@@ -356,7 +403,7 @@ const Reviews = () => {
         </div>
 
 
-        {/* AVERAGE */}
+        {/* AVERAGE RATING */}
 
         <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
 
@@ -384,60 +431,6 @@ const Reviews = () => {
 
             <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-yellow-50 text-xl dark:bg-yellow-950">
               ⭐
-            </div>
-
-          </div>
-
-        </div>
-
-
-        {/* PUBLISHED */}
-
-        <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-
-          <div className="flex items-center justify-between">
-
-            <div>
-
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Published
-              </p>
-
-              <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">
-                {publishedReviews}
-              </p>
-
-            </div>
-
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-green-50 text-xl dark:bg-green-950">
-              ✓
-            </div>
-
-          </div>
-
-        </div>
-
-
-        {/* PENDING */}
-
-        <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-
-          <div className="flex items-center justify-between">
-
-            <div>
-
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Pending
-              </p>
-
-              <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">
-                {pendingReviews}
-              </p>
-
-            </div>
-
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-orange-50 text-xl dark:bg-orange-950">
-              ⏳
             </div>
 
           </div>
@@ -547,17 +540,15 @@ const Reviews = () => {
 
       <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
 
-        {/* =======================================================
-            FILTER BAR
-        ======================================================== */}
+        {/* FILTER BAR */}
 
         <div className="border-b border-gray-200 p-5 dark:border-gray-800">
 
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
             {/* SEARCH */}
 
-            <div className="relative w-full xl:max-w-md">
+            <div className="relative w-full sm:max-w-md">
 
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                 🔍
@@ -593,113 +584,66 @@ const Reviews = () => {
             </div>
 
 
-            {/* FILTERS */}
+            {/* RATING FILTER */}
 
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <select
+              value={ratingFilter}
+              onChange={(event) =>
+                setRatingFilter(
+                  event.target.value
+                )
+              }
+              className="
+                h-11
+                rounded-lg
+                border
+                border-gray-200
+                bg-white
+                px-4
+                text-sm
+                outline-none
+                dark:border-gray-700
+                dark:bg-gray-800
+                dark:text-white
+              "
+            >
 
-              <select
-                value={ratingFilter}
-                onChange={(event) =>
-                  setRatingFilter(
-                    event.target.value
-                  )
-                }
-                className="
-                  h-11
-                  rounded-lg
-                  border
-                  border-gray-200
-                  bg-white
-                  px-4
-                  text-sm
-                  outline-none
-                  dark:border-gray-700
-                  dark:bg-gray-800
-                  dark:text-white
-                "
-              >
+              <option value="All">
+                All Ratings
+              </option>
 
-                <option value="All">
-                  All Ratings
-                </option>
+              <option value="5">
+                5 Stars
+              </option>
 
-                <option value="5">
-                  5 Stars
-                </option>
+              <option value="4">
+                4 Stars
+              </option>
 
-                <option value="4">
-                  4 Stars
-                </option>
+              <option value="3">
+                3 Stars
+              </option>
 
-                <option value="3">
-                  3 Stars
-                </option>
+              <option value="2">
+                2 Stars
+              </option>
 
-                <option value="2">
-                  2 Stars
-                </option>
+              <option value="1">
+                1 Star
+              </option>
 
-                <option value="1">
-                  1 Star
-                </option>
-
-              </select>
-
-
-              <select
-                value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(
-                    event.target.value
-                  )
-                }
-                className="
-                  h-11
-                  rounded-lg
-                  border
-                  border-gray-200
-                  bg-white
-                  px-4
-                  text-sm
-                  outline-none
-                  dark:border-gray-700
-                  dark:bg-gray-800
-                  dark:text-white
-                "
-              >
-
-                <option value="All">
-                  All Status
-                </option>
-
-                <option value="Published">
-                  Published
-                </option>
-
-                <option value="Pending">
-                  Pending
-                </option>
-
-                <option value="Hidden">
-                  Hidden
-                </option>
-
-              </select>
-
-            </div>
+            </select>
 
           </div>
 
         </div>
 
 
-        {/* =======================================================
-            TABLE
-        ======================================================== */}
+        {/* TABLE */}
 
         <div className="overflow-x-auto">
 
-          <table className="w-full min-w-[1000px]">
+          <table className="w-full min-w-[900px]">
 
             <thead>
 
@@ -722,10 +666,6 @@ const Reviews = () => {
                 </th>
 
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                  Status
-                </th>
-
-                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                   Date
                 </th>
 
@@ -745,7 +685,7 @@ const Reviews = () => {
                 <tr>
 
                   <td
-                    colSpan="7"
+                    colSpan="6"
                     className="px-6 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
                   >
                     No reviews found.
@@ -770,19 +710,27 @@ const Reviews = () => {
                         <div className="flex items-center gap-3">
 
                           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gray-900 text-[10px] font-semibold text-white dark:bg-white dark:text-black">
+
                             {getInitials(
-                              review.customer
+                              getCustomerName(
+                                review
+                              )
                             )}
+
                           </div>
 
                           <div>
 
                             <p className="text-sm font-medium text-gray-900 dark:text-white">
-                              {review.customer}
+                              {getCustomerName(
+                                review
+                              )}
                             </p>
 
                             <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                              {review.email}
+                              {getCustomerEmail(
+                                review
+                              )}
                             </p>
 
                           </div>
@@ -797,7 +745,7 @@ const Reviews = () => {
                       <td className="px-6 py-4">
 
                         <p className="max-w-[180px] truncate text-sm font-medium text-gray-900 dark:text-white">
-                          {review.product}
+                          {getProductName(review)}
                         </p>
 
                       </td>
@@ -825,11 +773,13 @@ const Reviews = () => {
                         <div className="max-w-[300px]">
 
                           <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
-                            {review.title}
+                            {review.title ||
+                              "No title"}
                           </p>
 
                           <p className="mt-1 truncate text-xs text-gray-500 dark:text-gray-400">
-                            {review.comment}
+                            {review.comment ||
+                              "No comment"}
                           </p>
 
                         </div>
@@ -837,31 +787,12 @@ const Reviews = () => {
                       </td>
 
 
-                      {/* STATUS */}
-
-                      <td className="px-6 py-4">
-
-                        <span
-                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
-                            review.status ===
-                            "Published"
-                              ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                              : review.status ===
-                                "Pending"
-                              ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300"
-                              : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                          }`}
-                        >
-                          {review.status}
-                        </span>
-
-                      </td>
-
-
                       {/* DATE */}
 
                       <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                        {review.date}
+                        {formatDate(
+                          review.created_at
+                        )}
                       </td>
 
 
@@ -870,6 +801,8 @@ const Reviews = () => {
                       <td className="px-6 py-4">
 
                         <div className="flex justify-end gap-2">
+
+                          {/* VIEW */}
 
                           <button
                             type="button"
@@ -896,96 +829,8 @@ const Reviews = () => {
                             View
                           </button>
 
-                          {review.status ===
-                            "Pending" && (
 
-                            <button
-                              type="button"
-                              onClick={() =>
-                                changeStatus(
-                                  review.id,
-                                  "Published"
-                                )
-                              }
-                              className="
-                                rounded-lg
-                                bg-black
-                                px-3
-                                py-2
-                                text-xs
-                                font-medium
-                                text-white
-                                hover:bg-gray-800
-                                dark:bg-white
-                                dark:text-black
-                                dark:hover:bg-gray-200
-                              "
-                            >
-                              Approve
-                            </button>
-
-                          )}
-
-                          {review.status ===
-                            "Published" && (
-
-                            <button
-                              type="button"
-                              onClick={() =>
-                                changeStatus(
-                                  review.id,
-                                  "Hidden"
-                                )
-                              }
-                              className="
-                                rounded-lg
-                                border
-                                border-gray-200
-                                px-3
-                                py-2
-                                text-xs
-                                font-medium
-                                text-gray-700
-                                hover:bg-gray-100
-                                dark:border-gray-700
-                                dark:text-gray-300
-                                dark:hover:bg-gray-800
-                              "
-                            >
-                              Hide
-                            </button>
-
-                          )}
-
-                          {review.status ===
-                            "Hidden" && (
-
-                            <button
-                              type="button"
-                              onClick={() =>
-                                changeStatus(
-                                  review.id,
-                                  "Published"
-                                )
-                              }
-                              className="
-                                rounded-lg
-                                border
-                                border-green-200
-                                px-3
-                                py-2
-                                text-xs
-                                font-medium
-                                text-green-600
-                                hover:bg-green-50
-                                dark:border-green-900
-                                dark:hover:bg-green-950
-                              "
-                            >
-                              Publish
-                            </button>
-
-                          )}
+                          {/* DELETE */}
 
                           <button
                             type="button"
@@ -1033,23 +878,25 @@ const Reviews = () => {
         </div>
 
 
-        {/* =======================================================
-            TABLE FOOTER
-        ======================================================== */}
+        {/* TABLE FOOTER */}
 
         <div className="border-t border-gray-200 px-6 py-4 dark:border-gray-800">
 
           <p className="text-sm text-gray-500 dark:text-gray-400">
 
             Showing{" "}
+
             <span className="font-medium text-gray-900 dark:text-white">
               {filteredReviews.length}
-            </span>{" "}
-            of{" "}
+            </span>
+
+            {" "}of{" "}
+
             <span className="font-medium text-gray-900 dark:text-white">
               {reviews.length}
-            </span>{" "}
-            reviews
+            </span>
+
+            {" "}reviews
 
           </p>
 
@@ -1105,19 +952,27 @@ const Reviews = () => {
               <div className="mt-6 flex items-center gap-3">
 
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white dark:bg-white dark:text-black">
+
                   {getInitials(
-                    selectedReview.customer
+                    getCustomerName(
+                      selectedReview
+                    )
                   )}
+
                 </div>
 
                 <div>
 
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {selectedReview.customer}
+                    {getCustomerName(
+                      selectedReview
+                    )}
                   </p>
 
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {selectedReview.email}
+                    {getCustomerEmail(
+                      selectedReview
+                    )}
                   </p>
 
                 </div>
@@ -1134,7 +989,9 @@ const Reviews = () => {
                 </p>
 
                 <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-                  {selectedReview.product}
+                  {getProductName(
+                    selectedReview
+                  )}
                 </p>
 
               </div>
@@ -1145,11 +1002,13 @@ const Reviews = () => {
               <div className="mt-5">
 
                 <Stars
-                  rating={selectedReview.rating}
+                  rating={
+                    selectedReview.rating
+                  }
                   size="text-lg"
                 />
 
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                   {selectedReview.rating} out of 5
                 </p>
 
@@ -1161,120 +1020,43 @@ const Reviews = () => {
               <div className="mt-5">
 
                 <h3 className="text-base font-semibold text-gray-900 dark:text-white">
-                  {selectedReview.title}
+                  {selectedReview.title ||
+                    "No title"}
                 </h3>
 
                 <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-300">
-                  {selectedReview.comment}
+                  {selectedReview.comment ||
+                    "No comment"}
                 </p>
 
               </div>
 
 
-              {/* STATUS */}
+              {/* CLOSE */}
 
-              <div className="mt-5">
-
-                <span
-                  className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-                    selectedReview.status ===
-                    "Published"
-                      ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                      : selectedReview.status ===
-                        "Pending"
-                      ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300"
-                      : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                  }`}
-                >
-                  {selectedReview.status}
-                </span>
-
-              </div>
-
-
-              {/* ACTIONS */}
-
-              <div className="mt-6 flex flex-wrap gap-2">
-
-                {selectedReview.status ===
-                  "Pending" && (
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      changeStatus(
-                        selectedReview.id,
-                        "Published"
-                      )
-                    }
-                    className="h-10 rounded-lg bg-black px-5 text-sm font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-black"
-                  >
-                    Approve Review
-                  </button>
-
-                )}
-
-
-                {selectedReview.status ===
-                  "Published" && (
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      changeStatus(
-                        selectedReview.id,
-                        "Hidden"
-                      )
-                    }
-                    className="h-10 rounded-lg border border-gray-200 px-5 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-                  >
-                    Hide Review
-                  </button>
-
-                )}
-
-
-                {selectedReview.status ===
-                  "Hidden" && (
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      changeStatus(
-                        selectedReview.id,
-                        "Published"
-                      )
-                    }
-                    className="h-10 rounded-lg bg-black px-5 text-sm font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-black"
-                  >
-                    Publish Review
-                  </button>
-
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowDeleteModal(
-                      true
-                    );
-                  }}
-                  className="h-10 rounded-lg border border-red-200 px-5 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950"
-                >
-                  Delete
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setSelectedReview(null)
-                  }
-                  className="h-10 rounded-lg border border-gray-200 px-5 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-                >
-                  Close
-                </button>
-
-              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  setSelectedReview(null)
+                }
+                className="
+                  mt-6
+                  h-10
+                  w-full
+                  rounded-lg
+                  bg-black
+                  text-sm
+                  font-medium
+                  text-white
+                  transition
+                  hover:bg-gray-800
+                  dark:bg-white
+                  dark:text-black
+                  dark:hover:bg-gray-200
+                "
+              >
+                Close
+              </button>
 
             </div>
 
@@ -1293,8 +1075,10 @@ const Reviews = () => {
           <div
             className="fixed inset-0 z-[110] flex items-center justify-center bg-black/50 p-4"
             onClick={() => {
-              setShowDeleteModal(false);
-              setSelectedReview(null);
+              if (!deleting) {
+                setShowDeleteModal(false);
+                setSelectedReview(null);
+              }
             }}
           >
 
@@ -1321,10 +1105,16 @@ const Reviews = () => {
                   this review from{" "}
 
                   <span className="font-medium text-gray-900 dark:text-white">
-                    {selectedReview.customer}
+                    {getCustomerName(
+                      selectedReview
+                    )}
                   </span>
 
-                  ? This action cannot be undone.
+                  ?
+
+                  <br />
+
+                  This action cannot be undone.
 
                 </p>
 
@@ -1333,24 +1123,57 @@ const Reviews = () => {
 
               <div className="mt-6 grid grid-cols-2 gap-3">
 
+                {/* CANCEL */}
+
                 <button
                   type="button"
+                  disabled={deleting}
                   onClick={() => {
                     setShowDeleteModal(
                       false
                     );
                   }}
-                  className="h-11 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                  className="
+                    h-11
+                    rounded-lg
+                    border
+                    border-gray-200
+                    text-sm
+                    font-medium
+                    text-gray-700
+                    hover:bg-gray-100
+                    disabled:cursor-not-allowed
+                    disabled:opacity-50
+                    dark:border-gray-700
+                    dark:text-gray-300
+                    dark:hover:bg-gray-800
+                  "
                 >
                   Cancel
                 </button>
 
+
+                {/* DELETE */}
+
                 <button
                   type="button"
+                  disabled={deleting}
                   onClick={deleteReview}
-                  className="h-11 rounded-lg bg-red-600 text-sm font-medium text-white hover:bg-red-700"
+                  className="
+                    h-11
+                    rounded-lg
+                    bg-red-600
+                    text-sm
+                    font-medium
+                    text-white
+                    hover:bg-red-700
+                    disabled:cursor-not-allowed
+                    disabled:opacity-50
+                  "
                 >
-                  Delete
+                  {deleting
+                    ? "Deleting..."
+                    : "Delete"}
                 </button>
 
               </div>
@@ -1366,4 +1189,3 @@ const Reviews = () => {
 };
 
 export default Reviews;
-

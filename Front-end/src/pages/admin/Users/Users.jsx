@@ -1,183 +1,90 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import api from "../../../api/axios.js";
 
 const Users = () => {
-  /*
-  |--------------------------------------------------------------------------
-  | TEMPORARY USER DATA
-  |--------------------------------------------------------------------------
-  | We will replace this with Laravel API data later.
-  */
-
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "+880 1712-345678",
-      role: "Customer",
-      status: "Active",
-      orders: 12,
-      spent: 24500,
-      joined: "Aug 20, 2026",
-    },
-    {
-      id: 2,
-      name: "Sarah Smith",
-      email: "sarah@example.com",
-      phone: "+880 1812-456789",
-      role: "Customer",
-      status: "Active",
-      orders: 8,
-      spent: 18200,
-      joined: "Aug 18, 2026",
-    },
-    {
-      id: 3,
-      name: "Michael Brown",
-      email: "michael@example.com",
-      phone: "+880 1912-567890",
-      role: "Customer",
-      status: "Blocked",
-      orders: 4,
-      spent: 7200,
-      joined: "Aug 15, 2026",
-    },
-    {
-      id: 4,
-      name: "Emily Wilson",
-      email: "emily@example.com",
-      phone: "+880 1612-678901",
-      role: "Customer",
-      status: "Active",
-      orders: 21,
-      spent: 45800,
-      joined: "Aug 12, 2026",
-    },
-    {
-      id: 5,
-      name: "Robert Johnson",
-      email: "robert@example.com",
-      phone: "+880 1512-789012",
-      role: "Customer",
-      status: "Inactive",
-      orders: 2,
-      spent: 3500,
-      joined: "Aug 10, 2026",
-    },
-    {
-      id: 6,
-      name: "Admin User",
-      email: "admin@example.com",
-      phone: "+880 1312-890123",
-      role: "Admin",
-      status: "Active",
-      orders: 0,
-      spent: 0,
-      joined: "Aug 01, 2026",
-    },
-  ]);
-
-  /*
-  |--------------------------------------------------------------------------
-  | STATE
-  |--------------------------------------------------------------------------
-  */
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
   const [roleFilter, setRoleFilter] = useState("All");
+
   const [selectedUser, setSelectedUser] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  /*
-  |--------------------------------------------------------------------------
-  | FILTER USERS
-  |--------------------------------------------------------------------------
-  */
+  // =========================
+  // Fetch Users
+  // =========================
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
+        const response = await api.get("/admin/users");
+
+        if (response.data.success) {
+          setUsers(response.data.data);
+        } else {
+          setError("Failed to load users.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+
+        setError(
+          error.response?.data?.message ||
+            "Failed to load users."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // =========================
+  // Search + Role Filter
+  // =========================
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
-      const searchValue = search.toLowerCase();
+      const searchValue = search.toLowerCase().trim();
+
+      const userName = user.name?.toLowerCase() || "";
+      const userEmail = user.email?.toLowerCase() || "";
 
       const matchesSearch =
-        user.name.toLowerCase().includes(searchValue) ||
-        user.email.toLowerCase().includes(searchValue) ||
-        user.phone.toLowerCase().includes(searchValue);
-
-      const matchesStatus =
-        statusFilter === "All" ||
-        user.status === statusFilter;
+        userName.includes(searchValue) ||
+        userEmail.includes(searchValue);
 
       const matchesRole =
         roleFilter === "All" ||
         user.role === roleFilter;
 
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesRole
-      );
+      return matchesSearch && matchesRole;
     });
-  }, [
-    users,
-    search,
-    statusFilter,
-    roleFilter,
-  ]);
+  }, [users, search, roleFilter]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | USER STATS
-  |--------------------------------------------------------------------------
-  */
-
+  // =========================
+  // Statistics
+  // =========================
   const totalUsers = users.length;
 
-  const activeUsers = users.filter(
-    (user) => user.status === "Active"
-  ).length;
-
-  const blockedUsers = users.filter(
-    (user) => user.status === "Blocked"
+  const employeeUsers = users.filter(
+    (user) => user.role === "employee"
   ).length;
 
   const adminUsers = users.filter(
-    (user) => user.role === "Admin"
+    (user) => user.role === "admin"
   ).length;
 
-  /*
-  |--------------------------------------------------------------------------
-  | TOGGLE USER STATUS
-  |--------------------------------------------------------------------------
-  */
-
-  const toggleStatus = (id) => {
-    setUsers((currentUsers) =>
-      currentUsers.map((user) => {
-        if (user.id !== id) {
-          return user;
-        }
-
-        return {
-          ...user,
-          status:
-            user.status === "Active"
-              ? "Blocked"
-              : "Active",
-        };
-      })
-    );
-  };
-
-  /*
-  |--------------------------------------------------------------------------
-  | DELETE USER
-  |--------------------------------------------------------------------------
-  */
-
+  // =========================
+  // Delete User
+  // =========================
   const deleteUser = () => {
     if (!selectedUser) return;
 
+    // Currently local state only
     setUsers((currentUsers) =>
       currentUsers.filter(
         (user) => user.id !== selectedUser.id
@@ -188,13 +95,27 @@ const Users = () => {
     setShowDeleteModal(false);
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | AVATAR
-  |--------------------------------------------------------------------------
-  */
+  // =========================
+  // Role Label
+  // =========================
+  const getRoleLabel = (role) => {
+    if (role === "admin") {
+      return "Admin";
+    }
 
+    if (role === "employee") {
+      return "Employee";
+    }
+
+    return "Customer";
+  };
+
+  // =========================
+  // Initials
+  // =========================
   const getInitials = (name) => {
+    if (!name) return "?";
+
     return name
       .split(" ")
       .map((word) => word[0])
@@ -203,40 +124,104 @@ const Users = () => {
       .toUpperCase();
   };
 
+  // =========================
+  // Date Format
+  // =========================
+  const formatDate = (date) => {
+    if (!date) return "N/A";
+
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  // =========================
+  // Money Format
+  // =========================
+  const formatMoney = (amount) => {
+    return Number(amount || 0).toLocaleString();
+  };
+
+  // =========================
+  // Loading
+  // =========================
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 dark:bg-gray-950">
+        <div className="flex min-h-[400px] items-center justify-center">
+          <div className="text-center">
+
+            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-black dark:border-gray-700 dark:border-t-white"></div>
+
+            <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+              Loading users...
+            </p>
+
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================
+  // Error
+  // =========================
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 dark:bg-gray-950">
+
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6 dark:border-red-900 dark:bg-red-950/30">
+
+          <h2 className="text-lg font-semibold text-red-700 dark:text-red-400">
+            Failed to load users
+          </h2>
+
+          <p className="mt-2 text-sm text-red-600 dark:text-red-300">
+            {error}
+          </p>
+
+        </div>
+
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 dark:bg-gray-950">
 
-      {/* =========================================================
+      {/* =====================================================
           PAGE HEADER
-      ========================================================== */}
+      ====================================================== */}
 
       <div className="mb-8">
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
           <div>
+
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
               Users
             </h1>
 
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage customers and administrators.
+              Manage customers, employees and administrators.
             </p>
+
           </div>
 
         </div>
 
       </div>
 
+      {/* =====================================================
+          STATISTICS
+      ====================================================== */}
 
-      {/* =========================================================
-          STAT CARDS
-      ========================================================== */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-
-        {/* TOTAL USERS */}
-
+        {/* Total Users */}
         <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
 
           <div className="flex items-center justify-between">
@@ -261,9 +246,7 @@ const Users = () => {
 
         </div>
 
-
-        {/* ACTIVE */}
-
+        {/* Employees */}
         <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
 
           <div className="flex items-center justify-between">
@@ -271,53 +254,24 @@ const Users = () => {
             <div>
 
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Active Users
+                Employees
               </p>
 
               <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">
-                {activeUsers}
+                {employeeUsers}
               </p>
 
             </div>
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-green-50 text-xl dark:bg-green-950">
-              ✓
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-xl dark:bg-blue-950">
+              👨‍💼
             </div>
 
           </div>
 
         </div>
 
-
-        {/* BLOCKED */}
-
-        <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-
-          <div className="flex items-center justify-between">
-
-            <div>
-
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Blocked Users
-              </p>
-
-              <p className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">
-                {blockedUsers}
-              </p>
-
-            </div>
-
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-red-50 text-xl dark:bg-red-950">
-              🚫
-            </div>
-
-          </div>
-
-        </div>
-
-
-        {/* ADMINS */}
-
+        {/* Administrators */}
         <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
 
           <div className="flex items-center justify-between">
@@ -344,24 +298,21 @@ const Users = () => {
 
       </div>
 
-
-      {/* =========================================================
-          USER TABLE
-      ========================================================== */}
+      {/* =====================================================
+          USERS TABLE
+      ====================================================== */}
 
       <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
 
-        {/* =======================================================
-            TABLE HEADER
-        ======================================================== */}
+        {/* Search + Filter */}
 
         <div className="border-b border-gray-200 p-5 dark:border-gray-800">
 
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-            {/* SEARCH */}
+            {/* Search */}
 
-            <div className="relative w-full xl:max-w-md">
+            <div className="relative w-full sm:max-w-md">
 
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                 🔍
@@ -397,98 +348,55 @@ const Users = () => {
 
             </div>
 
+            {/* Role Filter */}
 
-            {/* FILTERS */}
+            <select
+              value={roleFilter}
+              onChange={(event) =>
+                setRoleFilter(event.target.value)
+              }
+              className="
+                h-11
+                rounded-lg
+                border
+                border-gray-200
+                bg-white
+                px-4
+                text-sm
+                outline-none
+                dark:border-gray-700
+                dark:bg-gray-800
+                dark:text-white
+              "
+            >
 
-            <div className="flex flex-col gap-3 sm:flex-row">
+              <option value="All">
+                All Roles
+              </option>
 
-              <select
-                value={roleFilter}
-                onChange={(event) =>
-                  setRoleFilter(event.target.value)
-                }
-                className="
-                  h-11
-                  rounded-lg
-                  border
-                  border-gray-200
-                  bg-white
-                  px-4
-                  text-sm
-                  outline-none
-                  dark:border-gray-700
-                  dark:bg-gray-800
-                  dark:text-white
-                "
-              >
+              <option value="user">
+                Customer
+              </option>
 
-                <option value="All">
-                  All Roles
-                </option>
+              <option value="admin">
+                Admin
+              </option>
 
-                <option value="Customer">
-                  Customer
-                </option>
+              <option value="employee">
+                Employee
+              </option>
 
-                <option value="Admin">
-                  Admin
-                </option>
-
-              </select>
-
-
-              <select
-                value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(event.target.value)
-                }
-                className="
-                  h-11
-                  rounded-lg
-                  border
-                  border-gray-200
-                  bg-white
-                  px-4
-                  text-sm
-                  outline-none
-                  dark:border-gray-700
-                  dark:bg-gray-800
-                  dark:text-white
-                "
-              >
-
-                <option value="All">
-                  All Status
-                </option>
-
-                <option value="Active">
-                  Active
-                </option>
-
-                <option value="Blocked">
-                  Blocked
-                </option>
-
-                <option value="Inactive">
-                  Inactive
-                </option>
-
-              </select>
-
-            </div>
+            </select>
 
           </div>
 
         </div>
 
-
-        {/* =======================================================
-            TABLE
-        ======================================================== */}
+        {/* Table */}
 
         <div className="overflow-x-auto">
 
-          <table className="w-full min-w-[950px]">
+          <table className="w-full min-w-[650px]">
 
             <thead>
 
@@ -499,27 +407,7 @@ const Users = () => {
                 </th>
 
                 <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                  Phone
-                </th>
-
-                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                   Role
-                </th>
-
-                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                  Orders
-                </th>
-
-                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                  Total Spent
-                </th>
-
-                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                  Status
-                </th>
-
-                <th className="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                  Joined
                 </th>
 
                 <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
@@ -530,7 +418,6 @@ const Users = () => {
 
             </thead>
 
-
             <tbody>
 
               {filteredUsers.length === 0 ? (
@@ -538,7 +425,7 @@ const Users = () => {
                 <tr>
 
                   <td
-                    colSpan="8"
+                    colSpan="3"
                     className="px-6 py-12 text-center text-sm text-gray-500 dark:text-gray-400"
                   >
                     No users found.
@@ -555,7 +442,7 @@ const Users = () => {
                     className="border-b border-gray-100 transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800/40"
                   >
 
-                    {/* USER */}
+                    {/* User */}
 
                     <td className="px-6 py-4">
 
@@ -581,78 +468,31 @@ const Users = () => {
 
                     </td>
 
-
-                    {/* PHONE */}
-
-                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-                      {user.phone}
-                    </td>
-
-
-                    {/* ROLE */}
+                    {/* Role */}
 
                     <td className="px-6 py-4">
 
                       <span
                         className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
-                          user.role === "Admin"
+                          user.role === "admin"
                             ? "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300"
+                            : user.role === "employee"
+                            ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
                             : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
                         }`}
                       >
-                        {user.role}
+                        {getRoleLabel(user.role)}
                       </span>
 
                     </td>
 
-
-                    {/* ORDERS */}
-
-                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-                      {user.orders}
-                    </td>
-
-
-                    {/* SPENT */}
-
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                      ৳{user.spent.toLocaleString()}
-                    </td>
-
-
-                    {/* STATUS */}
-
-                    <td className="px-6 py-4">
-
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
-                          user.status === "Active"
-                            ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                            : user.status === "Blocked"
-                            ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
-                            : "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300"
-                        }`}
-                      >
-                        {user.status}
-                      </span>
-
-                    </td>
-
-
-                    {/* JOINED */}
-
-                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                      {user.joined}
-                    </td>
-
-
-                    {/* ACTIONS */}
+                    {/* Actions */}
 
                     <td className="px-6 py-4">
 
                       <div className="flex justify-end gap-2">
 
-                        {/* VIEW */}
+                        {/* View */}
 
                         <button
                           type="button"
@@ -668,6 +508,7 @@ const Users = () => {
                             text-xs
                             font-medium
                             text-gray-700
+                            transition
                             hover:bg-gray-100
                             dark:border-gray-700
                             dark:text-gray-300
@@ -677,36 +518,7 @@ const Users = () => {
                           View
                         </button>
 
-
-                        {/* STATUS */}
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            toggleStatus(user.id)
-                          }
-                          className="
-                            rounded-lg
-                            border
-                            border-gray-200
-                            px-3
-                            py-2
-                            text-xs
-                            font-medium
-                            text-gray-700
-                            hover:bg-gray-100
-                            dark:border-gray-700
-                            dark:text-gray-300
-                            dark:hover:bg-gray-800
-                          "
-                        >
-                          {user.status === "Active"
-                            ? "Block"
-                            : "Activate"}
-                        </button>
-
-
-                        {/* DELETE */}
+                        {/* Delete */}
 
                         <button
                           type="button"
@@ -723,6 +535,7 @@ const Users = () => {
                             text-xs
                             font-medium
                             text-red-600
+                            transition
                             hover:bg-red-50
                             dark:border-red-900
                             dark:hover:bg-red-950
@@ -747,23 +560,24 @@ const Users = () => {
 
         </div>
 
-
-        {/* =======================================================
-            TABLE FOOTER
-        ======================================================== */}
+        {/* Footer */}
 
         <div className="flex flex-col gap-3 border-t border-gray-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800">
 
           <p className="text-sm text-gray-500 dark:text-gray-400">
 
             Showing{" "}
+
             <span className="font-medium text-gray-900 dark:text-white">
               {filteredUsers.length}
             </span>{" "}
+
             of{" "}
+
             <span className="font-medium text-gray-900 dark:text-white">
               {users.length}
             </span>{" "}
+
             users
 
           </p>
@@ -772,10 +586,9 @@ const Users = () => {
 
       </div>
 
-
-      {/* =========================================================
-          VIEW USER MODAL
-      ========================================================== */}
+      {/* =====================================================
+          USER DETAILS MODAL
+      ====================================================== */}
 
       {selectedUser && !showDeleteModal && (
 
@@ -785,15 +598,17 @@ const Users = () => {
         >
 
           <div
-            className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl dark:bg-gray-900"
+            className="w-full max-w-sm rounded-xl bg-white p-5 shadow-xl dark:bg-gray-900"
             onClick={(event) =>
               event.stopPropagation()
             }
           >
 
+            {/* Modal Header */}
+
             <div className="flex items-center justify-between">
 
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-white">
                 User Details
               </h2>
 
@@ -802,106 +617,176 @@ const Users = () => {
                 onClick={() =>
                   setSelectedUser(null)
                 }
-                className="text-xl text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="text-lg text-gray-400 transition hover:text-gray-900 dark:hover:text-white"
               >
                 ✕
               </button>
 
             </div>
 
+            {/* User Profile */}
 
-            <div className="mt-6 text-center">
+            <div className="mt-4 text-center">
 
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-900 text-lg font-semibold text-white dark:bg-white dark:text-black">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-900 text-sm font-semibold text-white dark:bg-white dark:text-black">
                 {getInitials(selectedUser.name)}
               </div>
 
-              <h3 className="mt-3 text-lg font-semibold text-gray-900 dark:text-white">
+              <h3 className="mt-2 text-base font-semibold text-gray-900 dark:text-white">
                 {selectedUser.name}
               </h3>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
                 {selectedUser.email}
               </p>
 
             </div>
 
+            {/* Details */}
 
-            <div className="mt-6 space-y-4">
+            <div className="mt-5 space-y-3">
 
-              <div className="flex justify-between border-b border-gray-100 pb-3 dark:border-gray-800">
+              {/* User ID */}
 
-                <span className="text-sm text-gray-500">
+              <div className="flex items-center justify-between gap-4 border-b border-gray-100 pb-2.5 dark:border-gray-800">
+
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  User ID
+                </span>
+
+                <span className="text-xs font-medium text-gray-900 dark:text-white">
+                  #{selectedUser.id}
+                </span>
+
+              </div>
+
+              {/* Email */}
+
+              <div className="flex items-start justify-between gap-4 border-b border-gray-100 pb-2.5 dark:border-gray-800">
+
+                <span className="flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
+                  Email
+                </span>
+
+                <span className="max-w-[200px] break-all text-right text-xs font-medium text-gray-900 dark:text-white">
+                  {selectedUser.email || "N/A"}
+                </span>
+
+              </div>
+
+              {/* Phone */}
+
+              <div className="flex items-center justify-between gap-4 border-b border-gray-100 pb-2.5 dark:border-gray-800">
+
+                <span className="text-xs text-gray-500 dark:text-gray-400">
                   Phone
                 </span>
 
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {selectedUser.phone}
+                <span className="text-right text-xs font-medium text-gray-900 dark:text-white">
+                  {selectedUser.phone_number || "N/A"}
                 </span>
 
               </div>
 
+              {/* Address */}
 
-              <div className="flex justify-between border-b border-gray-100 pb-3 dark:border-gray-800">
+              <div className="flex items-start justify-between gap-4 border-b border-gray-100 pb-2.5 dark:border-gray-800">
 
-                <span className="text-sm text-gray-500">
+                <span className="flex-shrink-0 text-xs text-gray-500 dark:text-gray-400">
+                  Address
+                </span>
+
+                <span className="max-w-[200px] text-right text-xs font-medium text-gray-900 dark:text-white">
+                  {selectedUser.address || "N/A"}
+                </span>
+
+              </div>
+
+              {/* Role */}
+
+              <div className="flex items-center justify-between gap-4 border-b border-gray-100 pb-2.5 dark:border-gray-800">
+
+                <span className="text-xs text-gray-500 dark:text-gray-400">
                   Role
                 </span>
 
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {selectedUser.role}
+                <span className="text-xs font-medium text-gray-900 dark:text-white">
+                  {getRoleLabel(selectedUser.role)}
                 </span>
 
               </div>
 
+              {/* Orders */}
 
-              <div className="flex justify-between border-b border-gray-100 pb-3 dark:border-gray-800">
+              <div className="flex items-center justify-between gap-4 border-b border-gray-100 pb-2.5 dark:border-gray-800">
 
-                <span className="text-sm text-gray-500">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
                   Orders
                 </span>
 
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {selectedUser.orders}
+                <span className="text-xs font-medium text-gray-900 dark:text-white">
+                  {selectedUser.orders_count ?? 0}
                 </span>
 
               </div>
 
+              {/* Total Spent */}
 
-              <div className="flex justify-between border-b border-gray-100 pb-3 dark:border-gray-800">
+              <div className="flex items-center justify-between gap-4 border-b border-gray-100 pb-2.5 dark:border-gray-800">
 
-                <span className="text-sm text-gray-500">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
                   Total Spent
                 </span>
 
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  ৳{selectedUser.spent.toLocaleString()}
+                <span className="text-xs font-medium text-gray-900 dark:text-white">
+                  ৳
+                  {formatMoney(
+                    selectedUser.orders_sum_total
+                  )}
                 </span>
 
               </div>
 
+              {/* Joined */}
 
-              <div className="flex justify-between">
+              <div className="flex items-center justify-between gap-4">
 
-                <span className="text-sm text-gray-500">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
                   Joined
                 </span>
 
-                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {selectedUser.joined}
+                <span className="text-xs font-medium text-gray-900 dark:text-white">
+                  {formatDate(
+                    selectedUser.created_at
+                  )}
                 </span>
 
               </div>
 
             </div>
 
+            {/* Close Button */}
 
             <button
               type="button"
               onClick={() =>
                 setSelectedUser(null)
               }
-              className="mt-6 h-11 w-full rounded-lg bg-black text-sm font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+              className="
+                mt-5
+                h-10
+                w-full
+                rounded-lg
+                bg-black
+                text-xs
+                font-medium
+                text-white
+                transition
+                hover:bg-gray-800
+                dark:bg-white
+                dark:text-black
+                dark:hover:bg-gray-200
+              "
             >
               Close
             </button>
@@ -909,13 +794,11 @@ const Users = () => {
           </div>
 
         </div>
-
       )}
 
-
-      {/* =========================================================
-          DELETE MODAL
-      ========================================================== */}
+      {/* =====================================================
+          DELETE CONFIRMATION MODAL
+      ====================================================== */}
 
       {showDeleteModal && selectedUser && (
 
@@ -934,6 +817,8 @@ const Users = () => {
             }
           >
 
+            {/* Delete Icon */}
+
             <div className="text-center">
 
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-xl dark:bg-red-950">
@@ -945,15 +830,24 @@ const Users = () => {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
+
                 Are you sure you want to delete{" "}
+
                 <span className="font-medium text-gray-900 dark:text-white">
                   {selectedUser.name}
                 </span>
-                ? This action cannot be undone.
+
+                ?
+
+                <br />
+
+                This action cannot be undone.
+
               </p>
 
             </div>
 
+            {/* Buttons */}
 
             <div className="mt-6 grid grid-cols-2 gap-3">
 
@@ -963,7 +857,20 @@ const Users = () => {
                   setShowDeleteModal(false);
                   setSelectedUser(null);
                 }}
-                className="h-11 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                className="
+                  h-11
+                  rounded-lg
+                  border
+                  border-gray-200
+                  text-sm
+                  font-medium
+                  text-gray-700
+                  transition
+                  hover:bg-gray-100
+                  dark:border-gray-700
+                  dark:text-gray-300
+                  dark:hover:bg-gray-800
+                "
               >
                 Cancel
               </button>
@@ -971,7 +878,16 @@ const Users = () => {
               <button
                 type="button"
                 onClick={deleteUser}
-                className="h-11 rounded-lg bg-red-600 text-sm font-medium text-white hover:bg-red-700"
+                className="
+                  h-11
+                  rounded-lg
+                  bg-red-600
+                  text-sm
+                  font-medium
+                  text-white
+                  transition
+                  hover:bg-red-700
+                "
               >
                 Delete
               </button>
@@ -981,7 +897,6 @@ const Users = () => {
           </div>
 
         </div>
-
       )}
 
     </div>

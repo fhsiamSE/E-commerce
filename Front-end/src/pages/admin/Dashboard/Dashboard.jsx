@@ -4,13 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 import { getAdminDashboard } from "../../../store/admin/adminSlice";
 
-
 const Dashboard = () => {
-
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
-
 
   /*
   |--------------------------------------------------------------------------
@@ -18,12 +14,9 @@ const Dashboard = () => {
   |--------------------------------------------------------------------------
   */
 
-  const {
-    dashboard,
-    loading,
-    error,
-  } = useSelector((state) => state.admin);
-
+  const { dashboard, loading, error } = useSelector(
+    (state) => state.admin
+  );
 
   /*
   |--------------------------------------------------------------------------
@@ -35,43 +28,25 @@ const Dashboard = () => {
     dispatch(getAdminDashboard());
   }, [dispatch]);
 
-
   /*
   |--------------------------------------------------------------------------
   | DASHBOARD DATA
   |--------------------------------------------------------------------------
   */
 
-  const totalProducts =
-    dashboard?.totalProducts ?? 0;
+  const totalProducts = dashboard?.totalProducts ?? 0;
 
-  const totalOrders =
-    dashboard?.totalOrders ?? 0;
+  const totalOrders = dashboard?.totalOrders ?? 0;
 
-  const totalUsers =
-    dashboard?.totalUsers ?? 0;
+  const totalUsers = dashboard?.totalUsers ?? 0;
 
-  const totalReviews =
-    dashboard?.totalReviews ?? 0;
+  const totalReviews = dashboard?.totalReviews ?? 0;
 
-  const pendingOrders =
-    dashboard?.pendingOrders ?? 0;
+  const lowStockProducts = dashboard?.lowStockProducts ?? 0;
 
-  const completedOrders =
-    dashboard?.completedOrders ?? 0;
+  const outOfStockProducts = dashboard?.outOfStockProducts ?? 0;
 
-  const cancelledOrders =
-    dashboard?.cancelledOrders ?? 0;
-
-  const lowStockProducts =
-    dashboard?.lowStockProducts ?? 0;
-
-  const outOfStockProducts =
-    dashboard?.outOfStockProducts ?? 0;
-
-  const recentOrders =
-    dashboard?.recentOrders || [];
-
+  const recentOrders = dashboard?.recentOrders || [];
 
   /*
   |--------------------------------------------------------------------------
@@ -105,7 +80,6 @@ const Dashboard = () => {
     },
   ];
 
-
   /*
   |--------------------------------------------------------------------------
   | LOADING
@@ -115,9 +89,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-
         <div className="text-center">
-
           <div
             className="
               mx-auto
@@ -136,13 +108,10 @@ const Dashboard = () => {
           <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
             Loading dashboard...
           </p>
-
         </div>
-
       </div>
     );
   }
-
 
   /*
   |--------------------------------------------------------------------------
@@ -153,7 +122,6 @@ const Dashboard = () => {
   if (error) {
     return (
       <div className="rounded-xl border border-red-200 bg-red-50 p-6 dark:border-red-900 dark:bg-red-950/20">
-
         <h2 className="font-semibold text-red-600 dark:text-red-400">
           Failed to load dashboard
         </h2>
@@ -181,11 +149,9 @@ const Dashboard = () => {
         >
           Try Again
         </button>
-
       </div>
     );
   }
-
 
   /*
   |--------------------------------------------------------------------------
@@ -194,9 +160,7 @@ const Dashboard = () => {
   */
 
   const getStatusStyle = (status) => {
-
     switch (status?.toLowerCase()) {
-
       case "completed":
         return "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400";
 
@@ -212,7 +176,6 @@ const Dashboard = () => {
     }
   };
 
-
   /*
   |--------------------------------------------------------------------------
   | RENDER
@@ -221,13 +184,11 @@ const Dashboard = () => {
 
   return (
     <div>
-
       {/* =====================================================
           TITLE
       ====================================================== */}
 
       <div>
-
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Dashboard
         </h1>
@@ -235,18 +196,14 @@ const Dashboard = () => {
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
           Welcome back. Here's what's happening with your store.
         </p>
-
       </div>
-
 
       {/* =====================================================
           STAT CARDS
       ====================================================== */}
 
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-
         {cards.map((card) => (
-
           <div
             key={card.title}
             className="
@@ -262,11 +219,8 @@ const Dashboard = () => {
               dark:bg-gray-900
             "
           >
-
             <div className="flex items-center justify-between">
-
               <div>
-
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {card.title}
                 </p>
@@ -274,9 +228,7 @@ const Dashboard = () => {
                 <h2 className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
                   {Number(card.value).toLocaleString()}
                 </h2>
-
               </div>
-
 
               <div
                 className="
@@ -293,106 +245,16 @@ const Dashboard = () => {
               >
                 {card.icon}
               </div>
-
             </div>
-
           </div>
-
         ))}
-
       </div>
-
-
-      {/* =====================================================
-          ORDER STATUS
-      ====================================================== */}
-
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-
-        {/* Pending */}
-
-        <div
-          className="
-            rounded-xl
-            border
-            border-gray-200
-            bg-white
-            p-5
-            dark:border-gray-800
-            dark:bg-gray-900
-          "
-        >
-
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Pending Orders
-          </p>
-
-          <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">
-            {pendingOrders}
-          </p>
-
-        </div>
-
-
-        {/* Completed */}
-
-        <div
-          className="
-            rounded-xl
-            border
-            border-gray-200
-            bg-white
-            p-5
-            dark:border-gray-800
-            dark:bg-gray-900
-          "
-        >
-
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Completed Orders
-          </p>
-
-          <p className="mt-2 text-2xl font-bold text-green-600">
-            {completedOrders}
-          </p>
-
-        </div>
-
-
-        {/* Cancelled */}
-
-        <div
-          className="
-            rounded-xl
-            border
-            border-gray-200
-            bg-white
-            p-5
-            dark:border-gray-800
-            dark:bg-gray-900
-          "
-        >
-
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Cancelled Orders
-          </p>
-
-          <p className="mt-2 text-2xl font-bold text-red-600">
-            {cancelledOrders}
-          </p>
-
-        </div>
-
-      </div>
-
 
       {/* =====================================================
           LOWER SECTION
       ====================================================== */}
 
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
-
-
         {/* ===================================================
             RECENT ORDERS
         ==================================================== */}
@@ -408,9 +270,7 @@ const Dashboard = () => {
             dark:bg-gray-900
           "
         >
-
           <div className="flex items-center justify-between">
-
             <h2 className="font-semibold text-gray-900 dark:text-white">
               Recent Orders
             </h2>
@@ -428,32 +288,20 @@ const Dashboard = () => {
             >
               View all
             </button>
-
           </div>
 
-
           <div className="mt-5">
-
             {recentOrders.length === 0 ? (
-
               <div className="py-10 text-center">
-
-                <div className="text-3xl">
-                  📦
-                </div>
+                <div className="text-3xl">📦</div>
 
                 <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
                   No recent orders
                 </p>
-
               </div>
-
             ) : (
-
               <div className="space-y-4">
-
                 {recentOrders.map((order) => (
-
                   <div
                     key={order.id}
                     className="
@@ -468,11 +316,9 @@ const Dashboard = () => {
                       dark:border-gray-800
                     "
                   >
-
                     {/* Customer */}
 
                     <div className="min-w-0">
-
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
                         Order #{order.id}
                       </p>
@@ -480,14 +326,11 @@ const Dashboard = () => {
                       <p className="mt-1 truncate text-xs text-gray-500 dark:text-gray-400">
                         {order.user?.name || "Unknown customer"}
                       </p>
-
                     </div>
-
 
                     {/* Amount */}
 
                     <div className="text-right">
-
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
                         ৳{Number(order.total || 0).toLocaleString()}
                       </p>
@@ -506,21 +349,13 @@ const Dashboard = () => {
                       >
                         {order.status || "Unknown"}
                       </span>
-
                     </div>
-
                   </div>
-
                 ))}
-
               </div>
-
             )}
-
           </div>
-
         </div>
-
 
         {/* ===================================================
             STORE OVERVIEW
@@ -537,21 +372,15 @@ const Dashboard = () => {
             dark:bg-gray-900
           "
         >
-
           <h2 className="font-semibold text-gray-900 dark:text-white">
             Store Overview
           </h2>
 
-
           <div className="mt-6 space-y-6">
-
-
             {/* Products */}
 
             <div>
-
               <div className="flex items-center justify-between text-sm">
-
                 <span className="text-gray-600 dark:text-gray-400">
                   Products
                 </span>
@@ -559,32 +388,22 @@ const Dashboard = () => {
                 <span className="font-medium text-gray-900 dark:text-white">
                   {Number(totalProducts).toLocaleString()}
                 </span>
-
               </div>
 
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-
                 <div
                   className="h-full rounded-full bg-black dark:bg-white"
                   style={{
-                    width:
-                      totalProducts > 0
-                        ? "100%"
-                        : "0%",
+                    width: totalProducts > 0 ? "100%" : "0%",
                   }}
                 />
-
               </div>
-
             </div>
-
 
             {/* Orders */}
 
             <div>
-
               <div className="flex items-center justify-between text-sm">
-
                 <span className="text-gray-600 dark:text-gray-400">
                   Orders
                 </span>
@@ -592,32 +411,22 @@ const Dashboard = () => {
                 <span className="font-medium text-gray-900 dark:text-white">
                   {Number(totalOrders).toLocaleString()}
                 </span>
-
               </div>
 
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-
                 <div
                   className="h-full rounded-full bg-black dark:bg-white"
                   style={{
-                    width:
-                      totalOrders > 0
-                        ? "100%"
-                        : "0%",
+                    width: totalOrders > 0 ? "100%" : "0%",
                   }}
                 />
-
               </div>
-
             </div>
-
 
             {/* Users */}
 
             <div>
-
               <div className="flex items-center justify-between text-sm">
-
                 <span className="text-gray-600 dark:text-gray-400">
                   Users
                 </span>
@@ -625,32 +434,22 @@ const Dashboard = () => {
                 <span className="font-medium text-gray-900 dark:text-white">
                   {Number(totalUsers).toLocaleString()}
                 </span>
-
               </div>
 
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-
                 <div
                   className="h-full rounded-full bg-black dark:bg-white"
                   style={{
-                    width:
-                      totalUsers > 0
-                        ? "100%"
-                        : "0%",
+                    width: totalUsers > 0 ? "100%" : "0%",
                   }}
                 />
-
               </div>
-
             </div>
-
 
             {/* Reviews */}
 
             <div>
-
               <div className="flex items-center justify-between text-sm">
-
                 <span className="text-gray-600 dark:text-gray-400">
                   Reviews
                 </span>
@@ -658,33 +457,22 @@ const Dashboard = () => {
                 <span className="font-medium text-gray-900 dark:text-white">
                   {Number(totalReviews).toLocaleString()}
                 </span>
-
               </div>
 
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-
                 <div
                   className="h-full rounded-full bg-black dark:bg-white"
                   style={{
-                    width:
-                      totalReviews > 0
-                        ? "100%"
-                        : "0%",
+                    width: totalReviews > 0 ? "100%" : "0%",
                   }}
                 />
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
     </div>
   );
 };
-
 
 export default Dashboard;

@@ -13,6 +13,7 @@ use App\Http\Controllers\API\Admin\DashboardController;
 use App\Http\Controllers\API\Admin\AdminProductController;
 use App\Http\Controllers\API\Admin\AdminOrderController;
 use App\Http\Controllers\API\Admin\AdminUserController;
+use App\Http\Controllers\API\Admin\AdminReviewController;
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -99,5 +100,9 @@ Route::middleware(['auth:sanctum', 'admin']) ->prefix('admin') ->group(function 
 
     //AdminUser routes
     Route::get('/users', [AdminUserController::class, 'index']);
+
+    //AdminReview routes
+    Route::get('/reviews', [AdminReviewController::class, 'index']);
+    Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy']);
 
 });
