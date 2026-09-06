@@ -136,7 +136,7 @@ function Profile() {
 
   if (authLoading && !user) {
     return (
-      <div className="min-h-screen bg-stone-50 pt-28 pb-16">
+      <div className="min-h-screen bg-stone-50 pb-16">
         <div className="container mx-auto px-4">
           <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-stone-200">
             <p className="text-sm text-stone-500">
@@ -150,7 +150,7 @@ function Profile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-stone-50 pt-28 pb-16">
+      <div className="min-h-screen bg-stone-50 pb-16">
         <div className="container mx-auto px-4">
           <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-stone-200">
             <h2 className="text-xl font-semibold text-stone-900">
@@ -168,7 +168,7 @@ function Profile() {
 
   return (
     <>
-      <div className="min-h-screen bg-stone-50 pt-28 pb-16">
+      <div className="min-h-screen bg-stone-50  pb-16">
         <div className="container mx-auto px-4">
 
           {/* Profile Header */}
