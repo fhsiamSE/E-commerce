@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
@@ -18,6 +19,7 @@ class AdminOrderController extends Controller
     {
         $orders = Order::with([
             'user',
+            'assignee',
             'items.product.images',
             'items.variant',
         ])
@@ -42,6 +44,7 @@ class AdminOrderController extends Controller
     {
         $order = Order::with([
             'user',
+            'assignee',
             'items.product.images',
             'items.variant',
         ])->find($id);
@@ -57,6 +60,36 @@ class AdminOrderController extends Controller
             'success' => true,
             'message' => 'Order fetched successfully.',
             'data' => $order,
+        ]);
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Get Assignees
+    |--------------------------------------------------------------------------
+    | Only Admin and Employee users will be returned.
+    */
+
+    public function assignees()
+    {
+        $users = User::whereIn('role', [
+            'admin',
+            'employee',
+        ])
+        ->select(
+            'id',
+            'name',
+            'email',
+            'role'
+        )
+        ->orderBy('name')
+        ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Assignees fetched successfully.',
+            'data' => $users,
         ]);
     }
 
@@ -88,6 +121,7 @@ class AdminOrderController extends Controller
 
         $order->load([
             'user',
+            'assignee',
             'items.product.images',
             'items.variant',
         ]);
@@ -95,6 +129,84 @@ class AdminOrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Order status updated successfully.',
+            'data' => $order,
+        ]);
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Update Order Assignee
+    |--------------------------------------------------------------------------
+    */
+
+    public function updateAssignee(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'assigned_to' => [
+                'nullable',
+                'integer',
+                'exists:users,id',
+            ],
+        ]);
+
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found.',
+            ], 404);
+        }
+
+        /*
+        |----------------------------------------------------------------------
+        | If an assignee is selected
+        |----------------------------------------------------------------------
+        */
+
+        if ($validated['assigned_to'] !== null) {
+
+            $assignee = User::whereIn('role', [
+                'admin',
+                'employee',
+            ])
+            ->find($validated['assigned_to']);
+
+            if (!$assignee) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Selected user is not an admin or employee.',
+                ], 422);
+            }
+
+            $order->assigned_to = $assignee->id;
+
+        } else {
+
+            /*
+            |------------------------------------------------------------------
+            | Unassign order
+            |------------------------------------------------------------------
+            */
+
+            $order->assigned_to = null;
+        }
+
+        $order->save();
+
+        $order->load([
+            'user',
+            'assignee',
+            'items.product.images',
+            'items.variant',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => $order->assigned_to
+                ? 'Order assigned successfully.'
+                : 'Order unassigned successfully.',
             'data' => $order,
         ]);
     }

@@ -233,7 +233,7 @@ const OrderDetails = () => {
             setError("");
             setSuccess("");
 
-            const response = await api.put(
+            const response = await api.patch(
                 `/admin/orders/${id}/assignee`,
                 {
                     assigned_to:

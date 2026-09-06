@@ -91,6 +91,9 @@ Route::middleware(['auth:sanctum', 'admin']) ->prefix('admin') ->group(function 
     Route::get('/orders', [AdminOrderController::class,'index']);
     Route::get('/orders/{id}', [AdminOrderController::class,'show']); 
     Route::patch('/orders/{id}/status', [AdminOrderController::class,'updateStatus']);
+    Route::patch('/orders/{id}/assignee',[AdminOrderController::class, 'updateAssignee']);
+    Route::get('/assignees', [AdminOrderController::class, 'assignees']);
+    Route::patch('/orders/{id}/status', [AdminOrderController::class, 'updateStatus']);
     Route::delete('/orders/{id}', [AdminOrderController::class,'destroy']);
 
 });
