@@ -1,23 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import api from "../../api/axios";
+import api from "../../api/axios.js";
 
 /*
 |--------------------------------------------------------------------------
 | GET ADMIN PRODUCTS
 |--------------------------------------------------------------------------
-|
-| Supports:
-|   search
-|   category
-|   stock
-|   sort
-|   page
-|   per_page
-|
 */
 
 export const getAdminProducts = createAsyncThunk(
   "adminProducts/getAdminProducts",
+
   async (params = {}, { rejectWithValue }) => {
     try {
       const response = await api.get("/admin/products", {
@@ -28,7 +20,7 @@ export const getAdminProducts = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
-          "Failed to load admin products."
+          "Failed to fetch products."
       );
     }
   }
@@ -43,6 +35,7 @@ export const getAdminProducts = createAsyncThunk(
 
 export const deleteAdminProduct = createAsyncThunk(
   "adminProducts/deleteAdminProduct",
+
   async (id, { rejectWithValue }) => {
     try {
       const response = await api.delete(
@@ -77,14 +70,29 @@ const initialState = {
     last_page: 1,
     per_page: 10,
     total: 0,
-    from: null,
-    to: null,
+    from: 0,
+    to: 0,
+  },
+
+  /*
+  |--------------------------------------------------------------------------
+  | GLOBAL STATISTICS
+  |--------------------------------------------------------------------------
+  */
+
+  statistics: {
+    total_products: 0,
+    in_stock_products: 0,
+    out_of_stock_products: 0,
+    total_stock: 0,
   },
 
   loading: false,
+
   deleteLoading: false,
 
   error: null,
+
   deleteError: null,
 };
 
@@ -102,214 +110,154 @@ const adminProductSlice = createSlice({
 
   reducers: {
 
-    /*
-    |--------------------------------------------------------------------------
-    | CLEAR ERROR
-    |--------------------------------------------------------------------------
-    */
-
     clearAdminProductError: (state) => {
       state.error = null;
     },
-
-    /*
-    |--------------------------------------------------------------------------
-    | CLEAR DELETE ERROR
-    |--------------------------------------------------------------------------
-    */
 
     clearDeleteProductError: (state) => {
       state.deleteError = null;
     },
 
-    /*
-    |--------------------------------------------------------------------------
-    | RESET PRODUCTS
-    |--------------------------------------------------------------------------
-    */
-
-    resetAdminProducts: (state) => {
-      state.products = [];
-
-      state.pagination = {
-        current_page: 1,
-        last_page: 1,
-        per_page: 10,
-        total: 0,
-        from: null,
-        to: null,
-      };
-
-      state.error = null;
-    },
   },
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | ASYNC ACTIONS
-  |--------------------------------------------------------------------------
-  */
 
   extraReducers: (builder) => {
 
     /*
     |--------------------------------------------------------------------------
-    | GET PRODUCTS
+    | GET PRODUCTS - PENDING
     |--------------------------------------------------------------------------
     */
 
-    builder
-
-      .addCase(
-        getAdminProducts.pending,
-        (state) => {
-          state.loading = true;
-          state.error = null;
-        }
-      )
-
-      .addCase(
-        getAdminProducts.fulfilled,
-        (state, action) => {
-
-          state.loading = false;
-          state.error = null;
-
-          /*
-          |--------------------------------------------------------------------------
-          | Laravel response:
-          |
-          | {
-          |   success: true,
-          |   data: {
-          |     current_page: 1,
-          |     data: [...]
-          |   }
-          | }
-          |--------------------------------------------------------------------------
-          */
-
-          const data = action.payload?.data;
-
-          state.products = data?.data || [];
-
-          state.pagination = {
-            current_page: data?.current_page || 1,
-            last_page: data?.last_page || 1,
-            per_page: data?.per_page || 10,
-            total: data?.total || 0,
-            from: data?.from || null,
-            to: data?.to || null,
-          };
-        }
-      )
-
-      .addCase(
-        getAdminProducts.rejected,
-        (state, action) => {
-
-          state.loading = false;
-
-          state.error =
-            action.payload ||
-            "Failed to load admin products.";
-        }
-      );
+    builder.addCase(
+      getAdminProducts.pending,
+      (state) => {
+        state.loading = true;
+        state.error = null;
+      }
+    );
 
 
     /*
     |--------------------------------------------------------------------------
-    | DELETE PRODUCT
+    | GET PRODUCTS - FULFILLED
     |--------------------------------------------------------------------------
     */
 
-    builder
+    builder.addCase(
+      getAdminProducts.fulfilled,
+      (state, action) => {
 
-      .addCase(
-        deleteAdminProduct.pending,
-        (state) => {
+        state.loading = false;
 
-          state.deleteLoading = true;
-          state.deleteError = null;
-        }
-      )
+        state.products =
+          action.payload.data || [];
 
-      .addCase(
-        deleteAdminProduct.fulfilled,
-        (state, action) => {
+        state.pagination =
+          action.payload.pagination || {
+            current_page: 1,
+            last_page: 1,
+            per_page: 10,
+            total: 0,
+            from: 0,
+            to: 0,
+          };
 
-          state.deleteLoading = false;
-          state.deleteError = null;
+        /*
+        |--------------------------------------------------------------------------
+        | GLOBAL STATISTICS
+        |--------------------------------------------------------------------------
+        */
 
-          /*
-          |--------------------------------------------------------------------------
-          | Remove deleted product from Redux immediately
-          |--------------------------------------------------------------------------
-          */
+        state.statistics =
+          action.payload.statistics || {
+            total_products: 0,
+            in_stock_products: 0,
+            out_of_stock_products: 0,
+            total_stock: 0,
+          };
+      }
+    );
 
-          state.products = state.products.filter(
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET PRODUCTS - REJECTED
+    |--------------------------------------------------------------------------
+    */
+
+    builder.addCase(
+      getAdminProducts.rejected,
+      (state, action) => {
+        state.loading = false;
+
+        state.error =
+          action.payload ||
+          "Failed to fetch products.";
+      }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE PRODUCT - PENDING
+    |--------------------------------------------------------------------------
+    */
+
+    builder.addCase(
+      deleteAdminProduct.pending,
+      (state) => {
+        state.deleteLoading = true;
+        state.deleteError = null;
+      }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE PRODUCT - FULFILLED
+    |--------------------------------------------------------------------------
+    */
+
+    builder.addCase(
+      deleteAdminProduct.fulfilled,
+      (state, action) => {
+
+        state.deleteLoading = false;
+
+        state.products =
+          state.products.filter(
             (product) =>
               product.id !== action.payload.id
           );
+      }
+    );
 
-          /*
-          |--------------------------------------------------------------------------
-          | Update total
-          |--------------------------------------------------------------------------
-          */
 
-          if (state.pagination.total > 0) {
-            state.pagination.total -= 1;
-          }
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE PRODUCT - REJECTED
+    |--------------------------------------------------------------------------
+    */
 
-          /*
-          |--------------------------------------------------------------------------
-          | Update displayed range
-          |--------------------------------------------------------------------------
-          */
+    builder.addCase(
+      deleteAdminProduct.rejected,
+      (state, action) => {
 
-          if (
-            state.pagination.to !== null &&
-            state.pagination.to > 0
-          ) {
-            state.pagination.to -= 1;
-          }
-        }
-      )
+        state.deleteLoading = false;
 
-      .addCase(
-        deleteAdminProduct.rejected,
-        (state, action) => {
-
-          state.deleteLoading = false;
-
-          state.deleteError =
-            action.payload ||
-            "Failed to delete product.";
-        }
-      );
+        state.deleteError =
+          action.payload ||
+          "Failed to delete product.";
+      }
+    );
   },
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| ACTIONS
-|--------------------------------------------------------------------------
-*/
-
 export const {
   clearAdminProductError,
   clearDeleteProductError,
-  resetAdminProducts,
 } = adminProductSlice.actions;
 
-
-/*
-|--------------------------------------------------------------------------
-| REDUCER
-|--------------------------------------------------------------------------
-*/
 
 export default adminProductSlice.reducer;
