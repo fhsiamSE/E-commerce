@@ -12,6 +12,7 @@ use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\Admin\DashboardController;
 use App\Http\Controllers\API\Admin\AdminProductController;
 use App\Http\Controllers\API\Admin\AdminOrderController;
+use App\Http\Controllers\API\Admin\AdminUserController;
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -95,5 +96,8 @@ Route::middleware(['auth:sanctum', 'admin']) ->prefix('admin') ->group(function 
     Route::get('/assignees', [AdminOrderController::class, 'assignees']);
     Route::patch('/orders/{id}/status', [AdminOrderController::class, 'updateStatus']);
     Route::delete('/orders/{id}', [AdminOrderController::class,'destroy']);
+
+    //AdminUser routes
+    Route::get('/users', [AdminUserController::class, 'index']);
 
 });
