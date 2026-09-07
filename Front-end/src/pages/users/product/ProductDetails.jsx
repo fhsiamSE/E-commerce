@@ -135,16 +135,16 @@ const ProductDetails = () => {
   ] = useState(false);
 
 
-  /*
-  |--------------------------------------------------------------------------
-  | BUY NOW
-  |--------------------------------------------------------------------------
-  */
+  // /*
+  // |--------------------------------------------------------------------------
+  // | BUY NOW
+  // |--------------------------------------------------------------------------
+  // */
 
-  const [
-    buyLoading,
-    setBuyLoading,
-  ] = useState(false);
+  // const [
+  //   buyLoading,
+  //   setBuyLoading,
+  // ] = useState(false);
 
 
   /*
@@ -1261,9 +1261,9 @@ const ProductDetails = () => {
             </div>
 
 
-            {/* CART / BUY */}
+            {/* CART */}
 
-            <div className="mt-6 grid grid-cols-2 gap-2">
+            <div className="mt-6">
 
               <button
                 type="button"
@@ -1273,25 +1273,11 @@ const ProductDetails = () => {
                 disabled={
                   cartLoading
                 }
-                className="h-12 border border-black bg-white text-sm font-medium transition hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-12 w-full border border-black bg-white text-sm font-medium transition hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {cartLoading
                   ? "Adding..."
                   : "Add to cart"}
-              </button>
-
-
-              <button
-                type="button"
-                onClick={buyNow}
-                disabled={
-                  buyLoading
-                }
-                className="h-12 bg-black text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {buyLoading
-                  ? "Loading..."
-                  : "Buy it now"}
               </button>
 
             </div>
