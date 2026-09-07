@@ -582,18 +582,6 @@ const ProductDetails = () => {
   const handleAddToCart =
     async () => {
 
-      if (!isAuthenticated) {
-
-        alert(
-          "Please login to add products to your cart."
-        );
-
-        navigate("/login");
-
-        return;
-      }
-
-
       if (!product?.id) {
 
         alert(
@@ -661,6 +649,50 @@ const ProductDetails = () => {
 
 
       try {
+
+        if (!isAuthenticated) {
+          const guestCartKey = "guest_cart";
+          const storedCart = JSON.parse(
+            localStorage.getItem(guestCartKey) || "[]"
+          );
+
+          const cartItemId = `${product.id}-${selectedVariant.id}`;
+          const existingIndex = storedCart.findIndex(
+            (item) => item.id === cartItemId
+          );
+
+          const itemPayload = {
+            id: cartItemId,
+            product_id: product.id,
+            variant_id: selectedVariant.id,
+            quantity,
+            product: {
+              ...product,
+              name: product.name || product.product_name,
+              product_name: product.name || product.product_name,
+              images: product.images || [],
+            },
+            variant: selectedVariant,
+          };
+
+          if (existingIndex >= 0) {
+            storedCart[existingIndex] = {
+              ...storedCart[existingIndex],
+              quantity:
+                Number(storedCart[existingIndex].quantity || 0) + quantity,
+            };
+          } else {
+            storedCart.push(itemPayload);
+          }
+
+          localStorage.setItem(
+            guestCartKey,
+            JSON.stringify(storedCart)
+          );
+
+          alert("Product added to cart successfully.");
+          return;
+        }
 
         await dispatch(
           addToCartAction({

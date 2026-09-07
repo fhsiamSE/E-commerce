@@ -18,6 +18,8 @@ use App\Http\Controllers\API\Admin\AdminReviewController;
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/orders', [OrderController::class, 'store']);
+Route::post('/guest-orders', [OrderController::class, 'storeGuest']);
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/products/{productId}/reviews',[ReviewController::class, 'index']);
 
@@ -58,7 +60,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/wishlist/{productId}', [WishlistController::class, 'destroy']);
     
     //order routes
-    Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders', [OrderController::class, 'index']);
 
     //review routes

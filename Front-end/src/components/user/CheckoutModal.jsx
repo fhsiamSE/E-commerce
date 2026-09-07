@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 function CheckoutModal({
   isOpen,
   onClose,
@@ -13,12 +15,43 @@ function CheckoutModal({
   getColor,
   getSize,
   onConfirm,
+  onRegister,
+  isAuthenticated = false,
   placingOrder = false,
   orderSuccess = false,
 }) {
+  const [guestChoice, setGuestChoice] = useState(false);
+  const [guestEmail, setGuestEmail] = useState("");
+  const [guestAddress, setGuestAddress] = useState("");
+
+  useEffect(() => {
+    if (!isOpen) {
+      setGuestChoice(false);
+      setGuestEmail("");
+      setGuestAddress("");
+    }
+  }, [isOpen]);
+
   if (!isOpen) {
     return null;
   }
+
+  const handleConfirm = () => {
+    if (!isAuthenticated && guestChoice) {
+      if (!guestEmail.trim() || !guestAddress.trim()) {
+        alert("Please enter your email and delivery address.");
+        return;
+      }
+
+      onConfirm({
+        guest_email: guestEmail.trim(),
+        delivery_address: guestAddress.trim(),
+      });
+      return;
+    }
+
+    onConfirm();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
@@ -26,7 +59,6 @@ function CheckoutModal({
 
         {!orderSuccess ? (
           <>
-            {/* Modal Header */}
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm uppercase tracking-[0.3em] text-stone-500">
@@ -38,7 +70,9 @@ function CheckoutModal({
                 </h2>
 
                 <p className="mt-2 text-sm text-stone-500">
-                  Please review your order before placing it.
+                  {!isAuthenticated
+                    ? "Choose how you want to proceed with this order."
+                    : "Please review your order before placing it."}
                 </p>
               </div>
 
@@ -52,7 +86,73 @@ function CheckoutModal({
               </button>
             </div>
 
-            {/* Items */}
+            {!isAuthenticated && !guestChoice && (
+              <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+                <h3 className="text-base font-semibold text-stone-900">
+                  Want to register or buy as a guest?
+                </h3>
+                <p className="mt-2 text-sm text-stone-600">
+                  If you buy as a guest, you will not be able to track your order later.
+                </p>
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={onRegister}
+                    className="rounded-full border border-black bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-stone-100"
+                  >
+                    Register
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setGuestChoice(true)}
+                    className="rounded-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-900"
+                  >
+                    Buy as guest
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {!isAuthenticated && guestChoice && (
+              <div className="mt-6 space-y-4 rounded-2xl border border-stone-200 bg-stone-50 p-5">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-stone-700">
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    value={guestEmail}
+                    onChange={(event) => setGuestEmail(event.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full rounded-xl border border-stone-200 bg-white px-3 py-3 text-sm outline-none focus:border-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-stone-700">
+                    Delivery address
+                  </label>
+                  <textarea
+                    value={guestAddress}
+                    onChange={(event) => setGuestAddress(event.target.value)}
+                    placeholder="Enter delivery address"
+                    rows={3}
+                    className="w-full resize-none rounded-xl border border-stone-200 bg-white px-3 py-3 text-sm outline-none focus:border-black"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setGuestChoice(false)}
+                  className="text-sm font-medium text-stone-600 underline"
+                >
+                  Back to options
+                </button>
+              </div>
+            )}
+
             <div className="mt-6 rounded-2xl border border-stone-200">
               <div className="bg-stone-100 px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-stone-600">
                 Your order
@@ -105,10 +205,8 @@ function CheckoutModal({
               </div>
             </div>
 
-            {/* Summary */}
             <div className="mt-6 rounded-2xl bg-stone-50 p-5">
               <div className="space-y-3">
-
                 <div className="flex justify-between text-sm text-stone-600">
                   <span>Subtotal</span>
                   <span>${subtotal.toFixed(2)}</span>
@@ -130,13 +228,10 @@ function CheckoutModal({
                   <span>Total</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
-
               </div>
             </div>
 
-            {/* Buttons */}
             <div className="mt-6 flex gap-3">
-
               <button
                 onClick={onClose}
                 disabled={placingOrder}
@@ -147,20 +242,23 @@ function CheckoutModal({
               </button>
 
               <button
-                onClick={onConfirm}
-                disabled={placingOrder}
+                onClick={handleConfirm}
+                disabled={placingOrder || (!isAuthenticated && !guestChoice)}
                 className="w-full rounded-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-900 disabled:cursor-not-allowed disabled:opacity-60"
                 type="button"
               >
-                {placingOrder ? "Placing order..." : "Confirm order"}
+                {placingOrder
+                  ? "Placing order..."
+                  : isAuthenticated
+                    ? "Confirm order"
+                    : guestChoice
+                      ? "Confirm as guest"
+                      : "Continue"}
               </button>
-
             </div>
           </>
         ) : (
-          /* Success */
           <div className="py-12 text-center">
-
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl">
               ✓
             </div>
@@ -172,10 +270,8 @@ function CheckoutModal({
             <p className="mt-2 text-sm text-stone-500">
               Thank you for your order.
             </p>
-
           </div>
         )}
-
       </div>
     </div>
   );

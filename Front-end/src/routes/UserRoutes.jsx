@@ -77,31 +77,19 @@ function UserRoutes() {
 
       <Route
         path="/products"
-        element={
-          <ProtectedRoute>
-            <AllProducts />
-          </ProtectedRoute>
-        }
+        element={<AllProducts />}
       />
 
 
       <Route
         path="/category/:category"
-        element={
-          <ProtectedRoute>
-            <CategoryProducts />
-          </ProtectedRoute>
-        }
+        element={<CategoryProducts />}
       />
 
 
       <Route
         path="/products/:id"
-        element={
-          <ProtectedRoute>
-            <ProductDetails />
-          </ProtectedRoute>
-        }
+        element={<ProductDetails />}
       />
 
 
@@ -153,11 +141,7 @@ function UserRoutes() {
 
       <Route
         path="/cart"
-        element={
-          <ProtectedRoute>
-            <Cart />
-          </ProtectedRoute>
-        }
+        element={<Cart />}
       />
 
 

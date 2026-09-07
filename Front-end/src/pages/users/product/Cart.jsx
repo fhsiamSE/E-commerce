@@ -1,11 +1,30 @@
 ﻿import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {getCart,updateCart, removeFromCart,} from "../../../store/cartSlice.js";
+import { useNavigate } from "react-router-dom";
+import { getCart, updateCart, removeFromCart } from "../../../store/cartSlice.js";
 import api from "../../../api/axios.js";
 import CheckoutModal from "../../../components/user/CheckoutModal.jsx";
 
+const GUEST_CART_KEY = "guest_cart";
+
+const getGuestCart = () => {
+  try {
+    const raw = localStorage.getItem(GUEST_CART_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (error) {
+    return [];
+  }
+};
+
+const setGuestCart = (items) => {
+  localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
+};
+
 function Cart() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const {
     items: cartItems,
@@ -13,13 +32,21 @@ function Cart() {
     error,
   } = useSelector((state) => state.cart);
 
+  const [guestCartItems, setGuestCartItems] = useState([]);
   const [showCheckout, setShowCheckout] = useState(false);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
 
+  const activeCartItems = isAuthenticated ? cartItems : guestCartItems;
+
   useEffect(() => {
-    dispatch(getCart());
-  }, [dispatch]);
+    if (isAuthenticated) {
+      dispatch(getCart());
+      return;
+    }
+
+    setGuestCartItems(getGuestCart());
+  }, [dispatch, isAuthenticated]);
 
   const getProductName = (item) => {
     return (
@@ -80,15 +107,32 @@ function Cart() {
     );
   };
 
-  const subtotal = cartItems.reduce((sum, item) => {
+  const subtotal = activeCartItems.reduce((sum, item) => {
     return sum + getProductPrice(item) * getQuantity(item);
   }, 0);
 
-  const shipping = cartItems.length > 0 ? 100 : 0;
+  const shipping = activeCartItems.length > 0 ? 100 : 0;
   const discount = 0;
   const total = subtotal + shipping - discount;
 
+  const updateGuestCart = (updatedItems) => {
+    setGuestCartItems(updatedItems);
+    setGuestCart(updatedItems);
+  };
+
   const handleIncrease = (item) => {
+    if (!isAuthenticated) {
+      const updated = guestCartItems.map((cartItem) => {
+        if (cartItem.id === item.id) {
+          return { ...cartItem, quantity: getQuantity(cartItem) + 1 };
+        }
+        return cartItem;
+      });
+
+      updateGuestCart(updated);
+      return;
+    }
+
     dispatch(
       updateCart({
         id: item.id,
@@ -104,6 +148,18 @@ function Cart() {
       return;
     }
 
+    if (!isAuthenticated) {
+      const updated = guestCartItems.map((cartItem) => {
+        if (cartItem.id === item.id) {
+          return { ...cartItem, quantity: quantity - 1 };
+        }
+        return cartItem;
+      });
+
+      updateGuestCart(updated);
+      return;
+    }
+
     dispatch(
       updateCart({
         id: item.id,
@@ -113,11 +169,17 @@ function Cart() {
   };
 
   const handleRemove = (item) => {
+    if (!isAuthenticated) {
+      const updated = guestCartItems.filter((cartItem) => cartItem.id !== item.id);
+      updateGuestCart(updated);
+      return;
+    }
+
     dispatch(removeFromCart(item.id));
   };
 
   const handleProceedToCheckout = () => {
-    if (!cartItems.length) {
+    if (!activeCartItems.length) {
       return;
     }
 
@@ -132,21 +194,46 @@ function Cart() {
     setShowCheckout(false);
   };
 
-  const handleConfirmOrder = async () => {
-    if (!cartItems.length) {
+  const handleConfirmOrder = async (guestData = null) => {
+    if (!activeCartItems.length) {
       return;
     }
 
     try {
       setPlacingOrder(true);
 
-      const response = await api.post("/orders");
+      if (isAuthenticated) {
+        const response = await api.post("/orders");
+        console.log("Order response:", response.data);
+      } else {
+        if (!guestData?.guest_email || !guestData?.delivery_address) {
+          alert("Please provide your email and delivery address to continue as guest.");
+          return;
+        }
 
-      console.log("Order response:", response.data);
+        const guestItems = activeCartItems.map((item) => ({
+          product_id: item.product_id || item.product?.id,
+          variant_id: item.variant_id || item.variant?.id,
+          quantity: getQuantity(item),
+        }));
+
+        const response = await api.post("/guest-orders", {
+          guest_email: guestData.guest_email,
+          delivery_address: guestData.delivery_address,
+          items: guestItems,
+        });
+
+        console.log("Guest order response:", response.data);
+      }
 
       setOrderSuccess(true);
 
-      await dispatch(getCart());
+      if (isAuthenticated) {
+        await dispatch(getCart());
+      } else {
+        setGuestCart([]);
+        setGuestCartItems([]);
+      }
 
       setTimeout(() => {
         setShowCheckout(false);
@@ -187,7 +274,7 @@ function Cart() {
               </div>
 
               <span className="inline-flex rounded-full bg-sky-100 px-4 py-2 text-sm font-semibold text-sky-700">
-                {cartItems.length} items in cart
+                {activeCartItems.length} items in cart
               </span>
             </div>
           </div>
@@ -200,13 +287,13 @@ function Cart() {
           )}
 
           {/* Loading */}
-          {loading && cartItems.length === 0 ? (
+          {loading && activeCartItems.length === 0 ? (
             <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-stone-200">
               <p className="text-sm text-stone-500">
                 Loading your cart...
               </p>
             </div>
-          ) : cartItems.length === 0 ? (
+          ) : activeCartItems.length === 0 ? (
             /* Empty Cart */
             <div className="rounded-[2rem] bg-white p-12 text-center shadow-sm ring-1 ring-stone-200">
               <h2 className="text-2xl font-semibold text-stone-900">
@@ -229,7 +316,7 @@ function Cart() {
                   </div>
 
                   <div className="divide-y divide-stone-200">
-                    {cartItems.map((item) => {
+                    {activeCartItems.map((item) => {
                       const price = getProductPrice(item);
                       const quantity = getQuantity(item);
                       const color = getColor(item);
@@ -400,7 +487,7 @@ function Cart() {
       <CheckoutModal
         isOpen={showCheckout}
         onClose={handleCloseCheckout}
-        cartItems={cartItems}
+        cartItems={activeCartItems}
         subtotal={subtotal}
         shipping={shipping}
         discount={discount}
@@ -412,6 +499,8 @@ function Cart() {
         getColor={getColor}
         getSize={getSize}
         onConfirm={handleConfirmOrder}
+        onRegister={() => navigate("/register")}
+        isAuthenticated={isAuthenticated}
         placingOrder={placingOrder}
         orderSuccess={orderSuccess}
       />
