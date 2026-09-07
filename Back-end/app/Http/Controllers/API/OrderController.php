@@ -499,6 +499,7 @@ class OrderController extends Controller
             'shipping' => 'nullable|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
             'guest_email' => 'required|email|max:255',
+            'guest_phone' => 'required|string|max:30',
             'delivery_address' => 'required|string|max:500',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|integer|exists:products,id',
@@ -516,9 +517,14 @@ class OrderController extends Controller
                 [
                     'name' => 'Guest',
                     'password' => bcrypt(Str::random(24)),
+                    'phone_number' => $validated['guest_phone'],
                     'address' => $validated['delivery_address'],
                 ]
             );
+
+            if ($guestUser->phone_number !== $validated['guest_phone']) {
+                $guestUser->update(['phone_number' => $validated['guest_phone']]);
+            }
 
             if ($guestUser->address !== $validated['delivery_address']) {
                 $guestUser->update(['address' => $validated['delivery_address']]);

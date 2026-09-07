@@ -206,8 +206,8 @@ function Cart() {
         const response = await api.post("/orders");
         console.log("Order response:", response.data);
       } else {
-        if (!guestData?.guest_email || !guestData?.delivery_address) {
-          alert("Please provide your email and delivery address to continue as guest.");
+        if (!guestData?.guest_email || !guestData?.guest_phone || !guestData?.delivery_address) {
+          alert("Please provide your email, phone number, and delivery address to continue as guest.");
           return;
         }
 
@@ -219,6 +219,7 @@ function Cart() {
 
         const response = await api.post("/guest-orders", {
           guest_email: guestData.guest_email,
+          guest_phone: guestData.guest_phone,
           delivery_address: guestData.delivery_address,
           items: guestItems,
         });

@@ -22,12 +22,14 @@ function CheckoutModal({
 }) {
   const [guestChoice, setGuestChoice] = useState(false);
   const [guestEmail, setGuestEmail] = useState("");
+  const [guestPhone, setGuestPhone] = useState("");
   const [guestAddress, setGuestAddress] = useState("");
 
   useEffect(() => {
     if (!isOpen) {
       setGuestChoice(false);
       setGuestEmail("");
+      setGuestPhone("");
       setGuestAddress("");
     }
   }, [isOpen]);
@@ -37,14 +39,15 @@ function CheckoutModal({
   }
 
   const handleConfirm = () => {
-    if (!isAuthenticated && guestChoice) {
-      if (!guestEmail.trim() || !guestAddress.trim()) {
-        alert("Please enter your email and delivery address.");
+    if (!isAuthenticated) {
+      if (!guestEmail.trim() || !guestPhone.trim() || !guestAddress.trim()) {
+        alert("Please enter your email, phone number, and delivery address before confirming the order.");
         return;
       }
 
       onConfirm({
         guest_email: guestEmail.trim(),
+        guest_phone: guestPhone.trim(),
         delivery_address: guestAddress.trim(),
       });
       return;
@@ -126,6 +129,19 @@ function CheckoutModal({
                     value={guestEmail}
                     onChange={(event) => setGuestEmail(event.target.value)}
                     placeholder="you@example.com"
+                    className="w-full rounded-xl border border-stone-200 bg-white px-3 py-3 text-sm outline-none focus:border-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-stone-700">
+                    Phone number
+                  </label>
+                  <input
+                    type="tel"
+                    value={guestPhone}
+                    onChange={(event) => setGuestPhone(event.target.value)}
+                    placeholder="Enter phone number"
                     className="w-full rounded-xl border border-stone-200 bg-white px-3 py-3 text-sm outline-none focus:border-black"
                   />
                 </div>
@@ -243,7 +259,10 @@ function CheckoutModal({
 
               <button
                 onClick={handleConfirm}
-                disabled={placingOrder || (!isAuthenticated && !guestChoice)}
+                disabled={
+                  placingOrder ||
+                  (!isAuthenticated && (!guestChoice || !guestEmail.trim() || !guestPhone.trim() || !guestAddress.trim()))
+                }
                 className="w-full rounded-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-900 disabled:cursor-not-allowed disabled:opacity-60"
                 type="button"
               >
