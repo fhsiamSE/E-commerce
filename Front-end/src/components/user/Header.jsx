@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../store/auth/authSlice.js";
 import { getCart } from "../../store/cartSlice.js";
@@ -8,11 +12,13 @@ const Header = () => {
   const [showHeader, setShowHeader] = useState(true);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [profileMenu, setProfileMenu] = useState(false);
+  const [search, setSearch] = useState("");
 
   const lastScrollY = useRef(0);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   /*
   |--------------------------------------------------------------------------
@@ -139,6 +145,35 @@ const Header = () => {
     navigate("/register");
   };
 
+  /*
+  |--------------------------------------------------------------------------
+  | Search Sync
+  |--------------------------------------------------------------------------
+  */
+
+  useEffect(() => {
+    const searchParam =
+      new URLSearchParams(location.search).get("search") || "";
+
+    setSearch(searchParam);
+  }, [location.search]);
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+
+    const trimmedSearch = search.trim();
+
+    setProfileMenu(false);
+    setMobileMenu(false);
+
+    if (trimmedSearch) {
+      navigate(`/products?search=${encodeURIComponent(trimmedSearch)}`);
+      return;
+    }
+
+    navigate("/products");
+  };
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 bg-white/95 shadow-lg backdrop-blur-md transition-transform duration-300 ${
@@ -215,17 +250,24 @@ const Header = () => {
               SEARCH
           ======================================================= */}
 
-          <label className="hidden items-center gap-2 rounded-full border border-gray-300 bg-gray-50 px-3 py-2 text-sm md:flex">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="hidden items-center gap-2 rounded-full border border-gray-300 bg-gray-50 px-3 py-2 text-sm md:flex"
+          >
 
-            🔍
+            <button type="submit" className="text-base" aria-label="Search products">
+              🔍
+            </button>
 
             <input
               type="text"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
               placeholder="Search"
               className="w-28 bg-transparent outline-none"
             />
 
-          </label>
+          </form>
 
           {/* =======================================================
               WISHLIST
@@ -418,11 +460,15 @@ const Header = () => {
               Mobile Search
           ====================================================== */}
 
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="w-full rounded-lg border p-2 outline-none"
-          />
+          <form onSubmit={handleSearchSubmit} className="w-full">
+            <input
+              type="text"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search products..."
+              className="w-full rounded-lg border p-2 outline-none"
+            />
+          </form>
 
           {/* =====================================================
               Home

@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 import Product from "../../../components/user/product";
 import { getProducts } from "../../../store/productSlice";
 
 function AllProducts() {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const {
     products,
@@ -15,6 +17,9 @@ function AllProducts() {
     lastPage,
   } = useSelector((state) => state.product);
 
+  const activeSearch =
+    new URLSearchParams(location.search).get("search") || "";
+
   /*
   |--------------------------------------------------------------------------
   | Get Products
@@ -22,8 +27,13 @@ function AllProducts() {
   */
 
   useEffect(() => {
-    dispatch(getProducts(1));
-  }, [dispatch]);
+    dispatch(
+      getProducts({
+        page: 1,
+        search: activeSearch,
+      })
+    );
+  }, [dispatch, activeSearch]);
 
   /*
   |--------------------------------------------------------------------------
@@ -36,7 +46,12 @@ function AllProducts() {
       return;
     }
 
-    dispatch(getProducts(page));
+    dispatch(
+      getProducts({
+        page,
+        search: activeSearch,
+      })
+    );
   };
 
   /*
