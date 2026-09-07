@@ -37,7 +37,7 @@ function CategoryProducts() {
 
         const response = await api.get("/products", {
           params: {
-            category: category,
+            category: category.toLowerCase(),
             page: currentPage,
             per_page: 10,
           },

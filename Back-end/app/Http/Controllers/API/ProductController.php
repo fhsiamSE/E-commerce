@@ -32,6 +32,16 @@ class ProductController extends Controller
         }
 
         // Category
+        if ($request->filled('category')) {
+            $categoryValue = trim($request->category);
+            $categoryValue = strtolower($categoryValue);
+
+            $query->where(function ($q) use ($categoryValue) {
+                $q->whereRaw('LOWER(category) = ?', [$categoryValue])
+                    ->orWhereRaw('LOWER(category) = ?', [str_replace('-', ' ', $categoryValue)]);
+            });
+        }
+
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }

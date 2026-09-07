@@ -59,7 +59,7 @@ export const getProducts = createAsyncThunk(
             queryParams.append("per_page", perPage);
 
             if (category) {
-                queryParams.append("category", category);
+                queryParams.append("category", category.toLowerCase());
             }
 
             if (search) {
