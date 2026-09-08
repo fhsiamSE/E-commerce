@@ -21,7 +21,6 @@ return new class extends Migration
             $table->decimal('total', 10, 2);
             $table->foreignId('assigned_to')
                 ->nullable()
-                ->after('user_id')
                 ->constrained('users')
                 ->nullOnDelete();
 

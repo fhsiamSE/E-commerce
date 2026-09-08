@@ -1,667 +1,782 @@
 [
   {
-    "product_name": "Premium Cotton T-Shirt",
-    "description": "Premium quality cotton t-shirt with a comfortable regular fit.",
+    "product_name": "Premium Chicken Breast",
+    "description": "Fresh, tender chicken breast suitable for grilling, curry, and everyday cooking.",
+    "price": 520,
+    "category": "Chicken",
+    "images": [
+      {
+        "image": "product_images/premium_chicken_breast.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/premium_chicken_breast2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Chicken-KG-001",
+        "stock": 45,
+        "price": 520
+      }
+    ]
+  },
+  {
+    "product_name": "Whole Fresh Chicken",
+    "description": "Fresh whole chicken, cleaned and ready for cooking.",
+    "price": 390,
+    "category": "Chicken",
+    "images": [
+      {
+        "image": "product_images/whole_fresh_chicken.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/whole_fresh_chicken2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Chicken-KG-002",
+        "stock": 50,
+        "price": 390
+      }
+    ]
+  },
+  {
+    "product_name": "Chicken Drumstick",
+    "description": "Fresh chicken drumsticks with rich flavor and tender meat.",
+    "price": 450,
+    "category": "Chicken",
+    "images": [
+      {
+        "image": "product_images/chicken_drumstick.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/chicken_drumstick2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Chicken-KG-003",
+        "stock": 40,
+        "price": 450
+      }
+    ]
+  },
+  {
+    "product_name": "Chicken Wings",
+    "description": "Fresh chicken wings, perfect for frying, grilling, or BBQ.",
+    "price": 430,
+    "category": "Chicken",
+    "images": [
+      {
+        "image": "product_images/chicken_wings.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/chicken_wings2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Chicken-KG-004",
+        "stock": 35,
+        "price": 430
+      }
+    ]
+  },
+  {
+    "product_name": "Premium Beef",
+    "description": "Fresh quality beef suitable for curry, steak, and traditional dishes.",
+    "price": 780,
+    "category": "Beef",
+    "images": [
+      {
+        "image": "product_images/premium_beef.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/premium_beef2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Beef-KG-005",
+        "stock": 40,
+        "price": 780
+      }
+    ]
+  },
+  {
+    "product_name": "Beef Minced Meat",
+    "description": "Fresh minced beef prepared for burgers, meatballs, and curry.",
+    "price": 820,
+    "category": "Beef",
+    "images": [
+      {
+        "image": "product_images/beef_minced_meat.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/beef_minced_meat2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Beef-KG-006",
+        "stock": 30,
+        "price": 820
+      }
+    ]
+  },
+  {
+    "product_name": "Beef Curry Cut",
+    "description": "Fresh beef curry-cut pieces for traditional home cooking.",
+    "price": 760,
+    "category": "Beef",
+    "images": [
+      {
+        "image": "product_images/beef_curry_cut.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/beef_curry_cut2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Beef-KG-007",
+        "stock": 45,
+        "price": 760
+      }
+    ]
+  },
+  {
+    "product_name": "Beef Steak Cut",
+    "description": "Premium beef steak cuts with a tender texture.",
+    "price": 950,
+    "category": "Beef",
+    "images": [
+      {
+        "image": "product_images/beef_steak_cut.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/beef_steak_cut2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Beef-KG-008",
+        "stock": 25,
+        "price": 950
+      }
+    ]
+  },
+  {
+    "product_name": "Fresh Mutton",
+    "description": "Tender fresh mutton suitable for curry, roast, and special meals.",
+    "price": 1050,
+    "category": "Mutton",
+    "images": [
+      {
+        "image": "product_images/fresh_mutton.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/fresh_mutton2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Mutton-KG-009",
+        "stock": 30,
+        "price": 1050
+      }
+    ]
+  },
+  {
+    "product_name": "Mutton Curry Cut",
+    "description": "Fresh mutton curry-cut pieces prepared for easy cooking.",
+    "price": 1020,
+    "category": "Mutton",
+    "images": [
+      {
+        "image": "product_images/mutton_curry_cut.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/mutton_curry_cut2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Mutton-KG-010",
+        "stock": 35,
+        "price": 1020
+      }
+    ]
+  },
+  {
+    "product_name": "Mutton Chops",
+    "description": "Premium mutton chops with tender meat and rich flavor.",
+    "price": 1150,
+    "category": "Mutton",
+    "images": [
+      {
+        "image": "product_images/mutton_chops.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/mutton_chops.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Mutton-KG-011",
+        "stock": 20,
+        "price": 1150
+      }
+    ]
+  },
+  {
+    "product_name": "Premium Miniket Rice",
+    "description": "Fine-quality aromatic miniket rice for everyday meals.",
+    "price": 420,
+    "category": "Rice",
+    "images": [
+      {
+        "image": "product_images/premium_miniket_rice.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/premium_miniket_rice2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "5KG",
+        "sku": "Rice-5KG-012",
+        "stock": 60,
+        "price": 420
+      }
+    ]
+  },
+  {
+    "product_name": "Nazirshail Rice",
+    "description": "Popular Bangladeshi rice with a soft texture and excellent taste.",
+    "price": 460,
+    "category": "Rice",
+    "images": [
+      {
+        "image": "product_images/nazirshail_rice.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/nazirshail_rice2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "5KG",
+        "sku": "Rice-5KG-013",
+        "stock": 55,
+        "price": 460
+      }
+    ]
+  },
+  {
+    "product_name": "Basmati Rice",
+    "description": "Long-grain aromatic basmati rice for biryani and special dishes.",
+    "price": 780,
+    "category": "Rice",
+    "images": [
+      {
+        "image": "product_images/basmati_rice.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/basmati_rice2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "5KG",
+        "sku": "Rice-5KG-014",
+        "stock": 35,
+        "price": 780
+      }
+    ]
+  },
+  {
+    "product_name": "Chinigura Rice",
+    "description": "Fragrant premium chinigura rice, ideal for pulao and desserts.",
+    "price": 650,
+    "category": "Rice",
+    "images": [
+      {
+        "image": "product_images/chinigura_rice.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/chinigura_rice2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "2KG",
+        "sku": "Rice-2KG-015",
+        "stock": 40,
+        "price": 650
+      }
+    ]
+  },
+  {
+    "product_name": "Fresh Potato",
+    "description": "Fresh farm potatoes suitable for curry, fries, and mashed dishes.",
+    "price": 55,
+    "category": "Vegetables",
+    "images": [
+      {
+        "image": "product_images/fresh_potato.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/fresh_potato2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Vegetables-KG-016",
+        "stock": 100,
+        "price": 55
+      }
+    ]
+  },
+  {
+    "product_name": "Fresh Onion",
+    "description": "Fresh onions with a strong flavor for everyday cooking.",
+    "price": 85,
+    "category": "Vegetables",
+    "images": [
+      {
+        "image": "product_images/fresh_onion.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/fresh_onion2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Vegetables-KG-017",
+        "stock": 90,
+        "price": 85
+      }
+    ]
+  },
+  {
+    "product_name": "Fresh Tomato",
+    "description": "Juicy fresh tomatoes for salads, sauces, and curries.",
+    "price": 90,
+    "category": "Vegetables",
+    "images": [
+      {
+        "image": "product_images/fresh_tomato.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/fresh_tomato2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Vegetables-KG-018",
+        "stock": 70,
+        "price": 90
+      }
+    ]
+  },
+  {
+    "product_name": "Fresh Carrot",
+    "description": "Crunchy fresh carrots suitable for salads and cooking.",
+    "price": 100,
+    "category": "Vegetables",
+    "images": [
+      {
+        "image": "product_images/fresh_carrot.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/fresh_carrot2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Vegetables-KG-019",
+        "stock": 60,
+        "price": 100
+      }
+    ]
+  },
+  {
+    "product_name": "Fresh Cucumber",
+    "description": "Fresh crisp cucumbers, perfect for salads and healthy meals.",
+    "price": 70,
+    "category": "Vegetables",
+    "images": [
+      {
+        "image": "product_images/fresh_cucumber.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/fresh_cucumber2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Vegetables-KG-020",
+        "stock": 65,
+        "price": 70
+      }
+    ]
+  },
+  {
+    "product_name": "Premium Atta Flour",
+    "description": "Fine wheat flour suitable for roti, paratha, and baking.",
+    "price": 260,
+    "category": "Flour",
+    "images": [
+      {
+        "image": "product_images/premium_atta_flour.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/premium_atta_flour2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "2KG",
+        "sku": "Flour-2KG-021",
+        "stock": 70,
+        "price": 260
+      }
+    ]
+  },
+  {
+    "product_name": "Maida Flour",
+    "description": "Refined flour ideal for baking, snacks, and homemade foods.",
+    "price": 190,
+    "category": "Flour",
+    "images": [
+      {
+        "image": "product_images/maida_flour.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/maida_flour2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "2KG",
+        "sku": "Flour-2KG-022",
+        "stock": 65,
+        "price": 190
+      },
+      {
+        "size": "1KG",
+        "sku": "Flour-1KG-031",
+        "stock": 65,
+        "price": 190
+      }
+
+    ]
+  },
+  {
+    "product_name": "Rice Flour",
+    "description": "Fine rice flour suitable for traditional snacks and desserts.",
+    "price": 220,
+    "category": "Flour",
+    "images": [
+      {
+        "image": "product_images/rice_flour.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/rice_flour2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "1KG",
+        "sku": "Flour-1KG-023",
+        "stock": 55,
+        "price": 220
+      }
+    ]
+  },
+  {
+    "product_name": "Fresh Hilsa Fish",
+    "description": "Fresh hilsa fish with rich flavor, carefully selected for quality.",
     "price": 1200,
-    "category": "Men",
+    "category": "Fish",
     "images": [
       {
-        "image": "product_images/t-shart_black_1.jpg",
+        "image": "product_images/fresh_hilsa_fish.jpg",
         "is_primary": true,
         "sort_order": 0
       },
       {
-        "image": "product_images/t-shart_black_2.jpg",
+        "image": "product_images/fresh_hilsa_fish2.jpg",
         "is_primary": false,
         "sort_order": 1
-      },
-      {
-        "image": "product_images/t-shart_black_3.jpg",
-        "is_primary": true,
-        "sort_order": 2
-      },
-      {
-        "image": "product_images/t-shart_black_4.jpg",
-        "is_primary": false,
-        "sort_order": 3
       }
     ],
     "variants": [
       {
-        "size": "S",
-        "color": "Black",
-        "sku": "TS-BLK-S",
-        "stock": 10,
+        "size": "KG",
+        "sku": "Fish-KG-024",
+        "stock": 25,
         "price": 1200
       },
       {
-        "size": "M",
-        "color": "Black",
-        "sku": "TS-BLK-M",
-        "stock": 15,
-        "price": 1200
-      },
-      {
-        "size": "L",
-        "color": "Black",
-        "sku": "TS-BLK-L",
-        "stock": 12,
-        "price": 1200
-      }
-    ]
-  },
-  {
-    "product_name": "Classic Hoodie",
-    "description": "Soft and warm hoodie designed for everyday casual wear.",
-    "price": 2200,
-    "category": "Men",
-    "images": [
-      {
-        "image": "product_images/hoodie_black-1.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/hoodie_black-2.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      },
-      {
-        "image": "product_images/hoodie_gray-1.jpg",
-        "is_primary": true,
-        "sort_order": 2
-      },
-      {
-        "image": "product_images/hoodie_gray-2.jpg",
-        "is_primary": false,
-        "sort_order": 3
-      }
-    ],
-    "variants": [
-      {
-        "size": "M",
-        "color": "Black",
-        "sku": "HD-BLK-M",
-        "stock": 10,
-        "price": 2200
-      },
-      {
-        "size": "L",
-        "color": "Black",
-        "sku": "HD-BLK-L",
-        "stock": 15,
-        "price": 2200
-      },
-      {
-        "size": "XL",
-        "color": "Black",
-        "sku": "HD-BLK-XL",
-        "stock": 8,
-        "price": 2200
-      },
-      {
-        "size": "L",
-        "color": "Gray",
-        "sku": "HD-GRY-L",
-        "stock": 10,
-        "price": 2300
-      }
-    ]
-  },
-  {
-    "product_name": "Party silk Saree",
-    "description": "A party silk saree is a rich, graceful outfit made from soft and shiny silk.",
-    "price": 4500,
-    "category": "Woman",
-    "images": [
-      {
-        "image": "product_images/party_saree_red-1.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/t-shart_black_1.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      },
-      {
-        "image": "product_images/party_saree_red-2.jpg",
-        "is_primary": true,
-        "sort_order": 2
-      },
-      {
-        "image": "product_images/party_saree_blue-1.jpg",
-        "is_primary": false,
-        "sort_order": 3
-      }
-    ],
-    "variants": [
-      {
-        "size": "40",
-        "color": "Red",
-        "sku": "SN-RED-40",
-        "stock": 5,
-        "price": 4500
-      },
-      {
-        "size": "41",
-        "color": "Red",
-        "sku": "SN-RED-41",
-        "stock": 8,
-        "price": 4500
-      },
-      {
-        "size": "42",
-        "color": "Red",
-        "sku": "SN-RED-42",
-        "stock": 10,
-        "price": 4500
-      },
-      {
-        "size": "43",
-        "color": "Black",
-        "sku": "SN-BLK-43",
-        "stock": 7,
-        "price": 4700
-      },
-      {
-        "size": "43",
-        "color": "Blue",
-        "sku": "SN-BLU-43",
-        "stock": 7,
-        "price": 4700
-      }
-    ]
-  },
-  {
-    "product_name": "Salwar kameez",
-    "description": "Traditional three-piece South Asian outfit",
-    "price": 2800,
-    "category": "Woman",
-    "images": [
-      {
-        "image": "product_images/salwar_kameez-1.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/salwar_kameez-2.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      }
-    ],
-    "variants": [
-      {
-        "size": "30",
-        "color": "Blue",
-        "sku": "JN-BLU-30",
-        "stock": 8,
-        "price": 2800
-      },
-      {
-        "size": "32",
-        "color": "Blue",
-        "sku": "JN-BLU-32",
-        "stock": 12,
-        "price": 2800
-      },
-      {
-        "size": "34",
-        "color": "Blue",
-        "sku": "JN-BLU-34",
-        "stock": 10,
-        "price": 2800
-      }
-    ]
-  },
-  {
-    "product_name": "Stretch",
-    "description": "Women's Stretch Pleated Midi Long Skirt Female Korean Fashion",
-    "price": 1600,
-    "category": "Polo Shirts",
-    "images": [
-      {
-        "image": "product_images/Stretch-1.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/Stretch-2.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      }
-    ],
-    "variants": [
-      {
-        "size": "S",
-        "color": "White",
-        "sku": "PO-WHT-S",
-        "stock": 8,
-        "price": 1600
-      },
-      {
-        "size": "M",
-        "color": "White",
-        "sku": "PO-WHT-M",
-        "stock": 14,
-        "price": 1600
-      },
-      {
-        "size": "L",
-        "color": "White",
-        "sku": "PO-WHT-L",
-        "stock": 10,
-        "price": 1600
-      },
-      {
-        "size": "XL",
-        "color": "White",
-        "sku": "PO-WHT-XL",
-        "stock": 7,
-        "price": 1700
-      }
-    ]
-  },
-  {
-    "product_name": "Oversized Graphic Shirt",
-    "description": "Trendy oversized shirt featuring a minimal graphic print.",
-    "price": 1400,
-    "category": "Men",
-    "images": [
-      {
-        "image": "product_images/shart-1.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/shart-2.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      }
-    ],
-    "variants": [
-      {
-        "size": "M",
-        "color": "Blue",
-        "sku": "OT-BLU-M",
-        "stock": 15,
-        "price": 1400
-      },
-      {
-        "size": "L",
-        "color": "Blue",
-        "sku": "OT-BLU-L",
-        "stock": 12,
-        "price": 1400
-      },
-      {
-        "size": "XL",
-        "color": "Blue",
-        "sku": "OT-BLU-XL",
-        "stock": 10,
-        "price": 1400
-      }
-    ]
-  },
-  {
-    "product_name": "Tops",
-    "description": "Womens Cotton Linen Shirts Tops Oversized 3/4 Roll Sleeve Crewneck Buttoned Pullovers Blouses 2024 Summer Flowy Light Beach Shirts",
-    "price": 2100,
-    "category": "Shirts",
-    "images": [
-      {
-        "image": "product_images/womens_tops_pink.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/womens_tops_red.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      },
-      {
-        "image": "product_images/womens_tops_yellow.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/womens_tops_skyblow.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      }
-    ],
-    "variants": [
-      {
-        "size": "S",
-        "color": "Pink",
-        "sku": "LS-PNK-S",
-        "stock": 7,
-        "price": 2100
-      },
-      {
-        "size": "M",
-        "color": "Blue",
-        "sku": "LS-BLU-M",
-        "stock": 13,
-        "price": 2100
-      },
-      {
-        "size": "L",
-        "color": "Red",
-        "sku": "LS-RED-L",
-        "stock": 9,
-        "price": 2100
-      },
-      {
-        "size": "L",
-        "color": "Yellow",
-        "sku": "LS-YEL-L",
-        "stock": 9,
-        "price": 2100
-      }
-    ]
-  },
-  {
-    "product_name": "Scarp",
-    "description": "HURESON Lightweight Silk Scarf Elegant Soft Shawls and Wraps for Evening Dresses glitter Scarves for Women for All Seasons",
-    "price": 3800,
-    "category": "Woman",
-    "images": [
-      {
-        "image": "product_images/scarp_black.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/scarp_blue.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      },
-      {
-        "image": "product_images/scarp_green.jpg",
-        "is_primary": false,
-        "sort_order": 2
-      }
-    ],
-    "variants": [
-      {
-        "size": "M",
-        "color": "Black",
-        "sku": "BJ-BLK-M",
-        "stock": 6,
-        "price": 3800
-      },
-      {
-        "size": "L",
-        "color": "Black",
-        "sku": "BJ-BLK-L",
-        "stock": 9,
-        "price": 3800
-      },
-      {
-        "size": "XL",
-        "color": "Blue",
-        "sku": "BJ-BLU-XL",
-        "stock": 5,
-        "price": 3900
-      },
-      {
-        "size": "XL",
-        "color": "Green",
-        "sku": "BJ-GRN-XL",
-        "stock": 5,
-        "price": 3900
-      }
-    ]
-  },
-  {
-    "product_name": "Lahanga",
-    "description": "Bollywood Style Wedding Party Wear Designer Fancy New Lehenga Choli And Dupatta",
-    "price": 2600,
-    "category": "Pants",
-    "images": [
-      {
-        "image": "product_images/lahanga-1.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/lahanga-2.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      }
-    ],
-    "variants": [
-      {
-        "size": "30",
-        "color": "Pink",
-        "sku": "CP-PNK-30",
-        "stock": 10,
-        "price": 2600
-      },
-      {
-        "size": "32",
-        "color": "Pink",
-        "sku": "CP-PNK-32",
-        "stock": 14,
-        "price": 2600
-      },
-      {
-        "size": "34",
-        "color": "Pink",
-        "sku": "CP-PNK-34",
-        "stock": 8,
-        "price": 2700
-      }
-    ]
-  },
-  {
-    "product_name": "Borkha",
-    "description": "Dubai Stylish Abaya – Elegant, Comfortable & Premium Quality",
-    "price": 7000,
-    "category": "Woman",
-    "images": [
-      {
-        "image": "product_images/borkha-1.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/borkha-2.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      }
-    ],
-    "variants": [
-      {
-        "size": "30",
-        "color": "Black",
-        "sku": "CH-BLK-30",
-        "stock": 8,
-        "price": 2400
-      },
-      {
-        "size": "32",
-        "color": "Black",
-        "sku": "CH-BLK-32",
-        "stock": 12,
-        "price": 2400
-      },
-      {
-        "size": "34",
-        "color": "Black",
-        "sku": "CH-BLK-34",
-        "stock": 9,
-        "price": 2500
-      }
-    ]
-  },
-  {
-    "product_name": "Hijab",
-    "description": "Women Solid Chiffon Headscarf Ready To Wear Instant Hijab Scarf Muslim Shawl Islamic Hijabs Arab Wrap Head Scarves",
-    "price": 1100,
-    "category": "Woman",
-    "images": [
-      {
-        "image": "product_images/hijab_black.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/hijab_green.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      },
-      {
-        "image": "product_images/hijab_nevyblue.jpg",
-        "is_primary": false,
-        "sort_order": 2
-      }
-    ],
-    "variants": [
-      {
-        "size": "40",
-        "color": "Blue",
-        "sku": "LC-BLU-40",
-        "stock": 5,
-        "price": 5200
-      },
-      {
-        "size": "41",
-        "color": "Black",
-        "sku": "LC-BLK-41",
-        "stock": 8,
-        "price": 5200
-      },
-      {
-        "size": "42",
-        "color": "Blue",
-        "sku": "LC-BLU-42",
-        "stock": 7,
-        "price": 5300
-      }
-    ]
-  },
-  {
-    "product_name": "Canvas Slip-On Shoes",
-    "description": "Comfortable canvas slip-on shoes designed for casual everyday use.",
-    "price": 2200,
-    "category": "Shoes",
-    "images": [
-      {
-        "image": "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "https://images.unsplash.com/photo-1523381210434-271e8be1f52b",
-        "is_primary": false,
-        "sort_order": 1
-      }
-    ],
-    "variants": [
-      {
-        "size": "40",
-        "color": "Black",
-        "sku": "CS-BLK-40",
-        "stock": 9,
-        "price": 2200
-      },
-      {
-        "size": "41",
-        "color": "Black",
-        "sku": "CS-BLK-41",
-        "stock": 11,
-        "price": 2200
-      },
-      {
-        "size": "42",
-        "color": "White",
-        "sku": "CS-WHT-42",
-        "stock": 8,
-        "price": 2200
-      }
-    ]
-  },
-  {
-    "product_name": "Goggles",
-    "description": "Fashion Sunglasses Women Metal Female Vintage Ladies Stylish Design Oversized Square Sunglasses For Women.",
-    "price": 1300,
-    "category": "accessories",
-    "images": [
-      {
-        "image": "product_images/goggles-1.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/goggles-2.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      }
-    ],
-    "variants": [
-      {
-        "size": "M",
-        "color": "Black",
-        "sku": "RS-BLK-M",
-        "stock": 12,
-        "price": 1300
-      },
-      {
-        "size": "L",
-        "color": "Black",
-        "sku": "RS-BLK-L",
-        "stock": 15,
-        "price": 1300
-      },
-      {
-        "size": "XL",
-        "color": "Gray",
-        "sku": "RS-GRY-XL",
-        "stock": 9,
-        "price": 1400
-      }
-    ]
-  },
-  {
-    "product_name": "Activewear Joggers",
-    "description": "Stretchable joggers made for workouts, travel, and everyday comfort.",
-    "price": 1900,
-    "category": "Shoes",
-    "images": [
-      {
-        "image": "product_images/shoes-1.jpg",
-        "is_primary": true,
-        "sort_order": 0
-      },
-      {
-        "image": "product_images/shoes-2.jpg",
-        "is_primary": false,
-        "sort_order": 1
-      }
-    ],
-    "variants": [
-      {
-        "size": "M",
-        "color": "Blue",
-        "sku": "AJ-BLU-M",
-        "stock": 10,
-        "price": 1900
-      },
-      {
-        "size": "L",
-        "color": "Blue",
-        "sku": "AJ-BLU-L",
-        "stock": 13,
-        "price": 1900
-      },
-      {
-        "size": "XL",
-        "color": "Blue",
-        "sku": "AJ-BLU-XL",
-        "stock": 8,
+        "size": "2KG",
+        "sku": "Fish-KG-033",
+        "stock": 21,
         "price": 2000
+      },
+      {
+        "size": "3KG +",
+        "sku": "Fish-KG-032",
+        "stock": 25,
+        "price": 3000
+      }
+
+    ]
+  },
+  {
+    "product_name": "Rohu Fish",
+    "description": "Fresh rohu fish suitable for traditional curry and frying.",
+    "price": 520,
+    "category": "Fish",
+    "images": [
+      {
+        "image": "product_images/rohu_fish.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/rohu_fish2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Fish-KG-025",
+        "stock": 40,
+        "price": 520
+      }
+    ]
+  },
+  {
+    "product_name": "Katla Fish",
+    "description": "Fresh katla fish with tender meat for everyday meals.",
+    "price": 560,
+    "category": "Fish",
+    "images": [
+      {
+        "image": "product_images/katla_fish.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/katla_fish2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "KG",
+        "sku": "Fish-KG-026",
+        "stock": 38,
+        "price": 560
+      }
+    ]
+  },
+  {
+    "product_name": "Mineral Drinking Water",
+    "description": "Pure packaged drinking water for daily hydration.",
+    "price": 25,
+    "category": "Drinks",
+    "images": [
+      {
+        "image": "product_images/mineral_drinking_water.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/mineral_drinking_water2.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "250ML",
+        "sku": "Drinks-250ML-028",
+        "stock": 200,
+        "price": 20
+      },
+      {
+        "size": "1L",
+        "sku": "Drinks-1L-028",
+        "stock": 200,
+        "price": 25
+      },
+      {
+        "size": "5L",
+        "sku": "Drinks-5L-028",
+        "stock": 200,
+        "price": 35
+      }
+    ]
+  },
+  {
+    "product_name": "Mango Fruit Drink",
+    "description": "Refreshing mango-flavored fruit drink for the whole family.",
+    "price": 80,
+    "category": "Drinks",
+    "images": [
+      {
+        "image": "product_images/mango_fruit_drink.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      }
+    ],
+    "variants": [
+      {
+        "size": "250ML",
+        "sku": "Drinks-250ML-029",
+        "stock": 100,
+        "price": 80
+      }
+    ]
+  },
+  {
+    "product_name": "Red Kidney Beans",
+    "description": "Premium red kidney beans, cleaned and packed for easy cooking.",
+    "price": 240,
+    "category": "Beans",
+    "images": [
+      {
+        "image": "product_images/red_kidney_beans.jpg",
+        "is_primary": true,
+        "sort_order": 0
+      },
+      {
+        "image": "product_images/red_kidney_beans.jpg",
+        "is_primary": false,
+        "sort_order": 1
+      }
+    ],
+    "variants": [
+      {
+        "size": "1KG",
+        "sku": "Beans-1KG-030",
+        "stock": 60,
+        "price": 240
       }
     ]
   }

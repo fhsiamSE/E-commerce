@@ -60,9 +60,9 @@ function Banner() {
                   {slide.title}
                 </h2>
                 <p className="mt-2 text-sm sm:text-base">{slide.subtitle}</p>
-                <button className="mt-5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-gray-900 transition hover:bg-gray-400 pointer-events-auto relative z-10">
+                {/* <button className="mt-5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-gray-900 transition hover:bg-gray-400 pointer-events-auto relative z-10">
                   Shop Now
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
