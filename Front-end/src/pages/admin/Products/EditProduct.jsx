@@ -191,10 +191,6 @@ const EditProduct = () => {
                                       variant.size ??
                                       "",
 
-                                  color:
-                                      variant.color ??
-                                      "",
-
                                   sku:
                                       variant.sku ??
                                       "",
@@ -417,8 +413,6 @@ const EditProduct = () => {
                     id: null,
 
                     size: "",
-
-                    color: "",
 
                     sku: "",
 
@@ -716,11 +710,6 @@ const EditProduct = () => {
 
 
                     data.append(
-                        `variants[${index}][color]`,
-                        variant.color || ""
-                    );
-
-
                     data.append(
                         `variants[${index}][sku]`,
                         variant.sku.trim()
@@ -1275,7 +1264,7 @@ const EditProduct = () => {
                             </h2>
 
                             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                Manage size, color, SKU, stock and variant price.
+                                Manage size, SKU, stock and variant price.
                             </p>
 
                         </div>
@@ -1335,7 +1324,7 @@ const EditProduct = () => {
                                     </div>
 
 
-                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
 
                                         {/* Size */}
 
@@ -1358,33 +1347,6 @@ const EditProduct = () => {
                                                     )
                                                 }
                                                 placeholder="M"
-                                                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
-                                            />
-
-                                        </div>
-
-
-                                        {/* Color */}
-
-                                        <div>
-
-                                            <label className="mb-2 block text-xs font-medium text-gray-600 dark:text-gray-400">
-                                                Color
-                                            </label>
-
-                                            <input
-                                                type="text"
-                                                value={
-                                                    variant.color
-                                                }
-                                                onChange={(e) =>
-                                                    handleVariantChange(
-                                                        index,
-                                                        "color",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="Black"
                                                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                                             />
 

@@ -12,7 +12,6 @@ function CheckoutModal({
   getProductImage,
   getProductPrice,
   getQuantity,
-  getColor,
   getSize,
   onConfirm,
   onRegister,
@@ -178,7 +177,6 @@ function CheckoutModal({
                 {cartItems.map((item) => {
                   const price = getProductPrice(item);
                   const quantity = getQuantity(item);
-                  const color = getColor(item);
                   const size = getSize(item);
 
                   return (
@@ -198,11 +196,9 @@ function CheckoutModal({
                             {getProductName(item)}
                           </p>
 
-                          {(color || size) && (
+                          {size && (
                             <p className="mt-1 text-xs text-stone-500">
-                              {color && `Color: ${color}`}
-                              {color && size && " · "}
-                              {size && `Size: ${size}`}
+                              {`Size: ${size}`}
                             </p>
                           )}
 

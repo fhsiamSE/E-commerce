@@ -433,15 +433,6 @@ const OrderDetails = () => {
         );
     };
 
-    const getItemColor = (item) => {
-        return (
-            item?.color ||
-            item?.variant?.color ||
-            item?.product_variant?.color ||
-            "-"
-        );
-    };
-
     const getItemSku = (item) => {
         return (
             item?.sku ||
@@ -838,13 +829,6 @@ const OrderDetails = () => {
                                                             <span className="rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">
                                                                 Size:{" "}
                                                                 {getItemSize(
-                                                                    item
-                                                                )}
-                                                            </span>
-
-                                                            <span className="rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">
-                                                                Color:{" "}
-                                                                {getItemColor(
                                                                     item
                                                                 )}
                                                             </span>

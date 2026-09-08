@@ -66,7 +66,6 @@ class AuthControllerTest extends TestCase
             'variants' => [
                 [
                     'size' => '5kg',
-                    'color' => 'White',
                     'sku' => 'RICE-5KG-001',
                     'stock' => 25,
                     'price' => 1200,

@@ -103,11 +103,6 @@ const ProductDetails = () => {
   ] = useState(0);
 
   const [
-    selectedColor,
-    setSelectedColor,
-  ] = useState(null);
-
-  const [
     selectedSize,
     setSelectedSize,
   ] = useState(null);
@@ -187,11 +182,6 @@ const ProductDetails = () => {
         */
 
         setSelectedImage(0);
-
-        setSelectedColor(
-          productData.variants?.[0]
-            ?.color || null
-        );
 
         setSelectedSize(null);
 
@@ -339,28 +329,6 @@ const ProductDetails = () => {
 
   /*
   |--------------------------------------------------------------------------
-  | UNIQUE COLORS
-  |--------------------------------------------------------------------------
-  */
-
-  const colors = useMemo(() => {
-
-    return [
-      ...new Set(
-        variants
-          .map(
-            (variant) =>
-              variant.color
-          )
-          .filter(Boolean)
-      ),
-    ];
-
-  }, [variants]);
-
-
-  /*
-  |--------------------------------------------------------------------------
   | UNIQUE SIZES
   |--------------------------------------------------------------------------
   */
@@ -397,15 +365,12 @@ const ProductDetails = () => {
       return variants.find(
         (variant) =>
           variant.size ===
-          selectedSize &&
-          variant.color ===
-          selectedColor
+          selectedSize
       );
 
     }, [
       variants,
       selectedSize,
-      selectedColor,
     ]);
 
 
@@ -462,39 +427,6 @@ const ProductDetails = () => {
 
   /*
   |--------------------------------------------------------------------------
-  | COLOR SELECTION
-  |--------------------------------------------------------------------------
-  */
-
-  const handleColorChange = (
-    color
-  ) => {
-
-    setSelectedColor(color);
-
-
-    const matchingVariant =
-      variants.find(
-        (variant) =>
-          variant.color ===
-          color &&
-          variant.size ===
-          selectedSize
-      );
-
-
-    if (!matchingVariant) {
-      setSelectedSize(null);
-    }
-
-
-    setQuantity(1);
-
-  };
-
-
-  /*
-  |--------------------------------------------------------------------------
   | SIZE SELECTION
   |--------------------------------------------------------------------------
   */
@@ -523,9 +455,7 @@ const ProductDetails = () => {
     return variants.find(
       (variant) =>
         variant.size ===
-        size &&
-        variant.color ===
-        selectedColor
+        size
     );
 
   };
@@ -592,16 +522,6 @@ const ProductDetails = () => {
       }
 
 
-      if (!selectedColor) {
-
-        alert(
-          "Please select a color."
-        );
-
-        return;
-      }
-
-
       if (!selectedSize) {
 
         alert(
@@ -615,7 +535,7 @@ const ProductDetails = () => {
       if (!selectedVariant) {
 
         alert(
-          "This color and size combination is not available."
+          "This size option is not available."
         );
 
         return;
@@ -760,16 +680,6 @@ const ProductDetails = () => {
     }
 
 
-    if (!selectedColor) {
-
-      alert(
-        "Please select a color."
-      );
-
-      return;
-    }
-
-
     if (!selectedSize) {
 
       alert(
@@ -783,7 +693,7 @@ const ProductDetails = () => {
     if (!selectedVariant) {
 
       alert(
-        "This color and size combination is not available."
+        "This size option is not available."
       );
 
       return;
@@ -1126,55 +1036,13 @@ const ProductDetails = () => {
               ) : (
 
                 <p className="text-sm text-gray-500">
-                  Select color and size
+                  Select size
                   to see availability.
                 </p>
 
               )}
 
             </div>
-
-
-            {/* COLOR */}
-
-            {colors.length > 0 && (
-
-              <div className="mt-9">
-
-                <p className="mb-3 text-sm font-medium">
-                  Select Color
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-
-                  {colors.map(
-                    (color) => (
-
-                      <button
-                        key={color}
-                        type="button"
-                        onClick={() =>
-                          handleColorChange(
-                            color
-                          )
-                        }
-                        className={`rounded-full border px-4 py-2 text-sm transition ${selectedColor ===
-                            color
-                            ? "border-black bg-black text-white"
-                            : "border-gray-300 hover:border-black"
-                          }`}
-                      >
-                        {color}
-                      </button>
-
-                    )
-                  )}
-
-                </div>
-
-              </div>
-
-            )}
 
 
             {/* SIZE */}

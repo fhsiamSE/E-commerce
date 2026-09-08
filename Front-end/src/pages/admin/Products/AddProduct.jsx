@@ -34,7 +34,6 @@ const AddProduct = () => {
 
   const [variants, setVariants] = useState([
     {
-      color: "",
       size: "",
       sku: "",
       price: "",
@@ -131,7 +130,6 @@ const AddProduct = () => {
     setVariants((current) => [
       ...current,
       {
-        color: "",
         size: "",
         sku: "",
         price: "",
@@ -215,7 +213,6 @@ const AddProduct = () => {
 
       variants.forEach((variant, index) => {
         formData.append(`variants[${index}][size]`, variant.size || "");
-        formData.append(`variants[${index}][color]`, variant.color || "");
         formData.append(`variants[${index}][sku]`, variant.sku?.trim() || "");
         formData.append(`variants[${index}][stock]`, variant.stock ?? 0);
         formData.append(`variants[${index}][price]`, variant.price ?? "");
@@ -659,7 +656,7 @@ const AddProduct = () => {
                   </h2>
 
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Add color, size, SKU and stock variations.
+                    Add size, SKU and stock variations.
                   </p>
 
                 </div>
@@ -712,35 +709,7 @@ const AddProduct = () => {
                       </div>
 
 
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-
-                        {/* COLOR */}
-
-                        <div>
-
-                          <label className="mb-2 block text-xs font-medium text-gray-600 dark:text-gray-400">
-                            Color
-                          </label>
-
-                          <input
-                            type="text"
-                            value={
-                              variant.color
-                            }
-                            onChange={(event) =>
-                              updateVariant(
-                                index,
-                                "color",
-                                event.target
-                                  .value
-                              )
-                            }
-                            placeholder="Black"
-                            className="h-10 w-full rounded-lg border border-gray-300 bg-white px-3 text-sm outline-none focus:border-black dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:focus:border-white"
-                          />
-
-                        </div>
-
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
                         {/* SIZE */}
 

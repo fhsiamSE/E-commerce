@@ -89,15 +89,6 @@ function Cart() {
     return Number(item.quantity || item.qty || 1);
   };
 
-  const getColor = (item) => {
-    return (
-      item.variant?.color ||
-      item.variant?.color_name ||
-      item.color ||
-      null
-    );
-  };
-
   const getSize = (item) => {
     return (
       item.variant?.size ||
@@ -320,7 +311,6 @@ function Cart() {
                     {activeCartItems.map((item) => {
                       const price = getProductPrice(item);
                       const quantity = getQuantity(item);
-                      const color = getColor(item);
                       const size = getSize(item);
 
                       return (
@@ -342,11 +332,9 @@ function Cart() {
                                 {getProductName(item)}
                               </h2>
 
-                              {(color || size) && (
+                              {size && (
                                 <p className="mt-2 text-sm text-stone-500">
-                                  {color && `Color: ${color}`}
-                                  {color && size && " · "}
-                                  {size && `Size: ${size}`}
+                                  {`Size: ${size}`}
                                 </p>
                               )}
 
@@ -497,7 +485,6 @@ function Cart() {
         getProductImage={getProductImage}
         getProductPrice={getProductPrice}
         getQuantity={getQuantity}
-        getColor={getColor}
         getSize={getSize}
         onConfirm={handleConfirmOrder}
         onRegister={() => navigate("/register")}

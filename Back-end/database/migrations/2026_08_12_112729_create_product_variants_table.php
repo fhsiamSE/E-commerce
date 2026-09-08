@@ -19,7 +19,6 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->string('size')->nullable();
-            $table->string('color')->nullable();
             $table->string('sku')->unique();
             $table->unsignedInteger('stock')->default(0);
             $table->decimal('price', 10, 2)->nullable();

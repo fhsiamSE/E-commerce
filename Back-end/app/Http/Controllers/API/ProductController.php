@@ -120,8 +120,6 @@ class ProductController extends Controller
 
             'variants.*.size' => 'nullable|string|max:100',
 
-            'variants.*.color' => 'nullable|string|max:100',
-
             'variants.*.sku' => [
                 'required',
                 'string',
@@ -192,7 +190,6 @@ class ProductController extends Controller
 
                 $variant = $product->variants()->create([
                     'size' => $variantData['size'] ?? null,
-                    'color' => $variantData['color'] ?? null,
                     'sku' => $variantData['sku'],
                     'stock' => $variantData['stock'],
                     'price' => $variantData['price'] ?? null,
@@ -338,8 +335,6 @@ class ProductController extends Controller
             'variants.*.id' => 'nullable|integer',
 
             'variants.*.size' => 'nullable|string|max:100',
-
-            'variants.*.color' => 'nullable|string|max:100',
 
             'variants.*.sku' => [
                 'required',
@@ -568,9 +563,6 @@ class ProductController extends Controller
                             'size' =>
                                 $variantData['size'] ?? null,
 
-                            'color' =>
-                                $variantData['color'] ?? null,
-
                             'sku' =>
                                 $variantData['sku'],
 
@@ -599,9 +591,6 @@ class ProductController extends Controller
                         $product->variants()->create([
                             'size' =>
                                 $variantData['size'] ?? null,
-
-                            'color' =>
-                                $variantData['color'] ?? null,
 
                             'sku' =>
                                 $variantData['sku'],
