@@ -1,39 +1,38 @@
 import { useEffect, useState } from 'react';
-
-const slides = [
-  {
-    id: 1,
-    image:
-      'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80',
-    title: 'New Season Collection',
-    subtitle: 'Discover fresh fashion for every style',
-  },
-  {
-    id: 2,
-    image:
-      'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1400&q=80',
-    title: 'Big Deals This Week',
-    subtitle: 'Save up to 40% on trending items',
-  },
-  {
-    id: 3,
-    image:
-      'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1400&q=80',
-    title: 'Shop Premium Styles',
-    subtitle: 'Elegant essentials for modern living',
-  },
-];
+import api from '../../api/axios.js';
 
 function Banner() {
   const [current, setCurrent] = useState(0);
+  const [slides, setSlides] = useState([]);
 
   useEffect(() => {
+    const getAds = async () => {
+      try {
+        const response = await api.get('/ads');
+        setSlides(response.data?.data || []);
+      } catch (error) {
+        console.error('Failed to load ads:', error);
+      }
+    };
+
+    getAds();
+  }, []);
+
+  useEffect(() => {
+    if (slides.length < 2) {
+      return undefined;
+    }
+
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 4000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
+
+  if (slides.length === 0) {
+    return null;
+  }
 
   return (
     <div className="relative mb-8 overflow-hidden rounded-3xl bg-gray-100 shadow-md w-full">
@@ -47,7 +46,7 @@ function Banner() {
             style={{ zIndex: index === current ? 1 : 0 }}
           >
             <img
-              src={slide.image}
+              src={slide.image_url}
               alt={slide.title}
               className="h-full w-full object-cover"
             />

@@ -14,6 +14,7 @@ use App\Http\Controllers\API\Admin\AdminProductController;
 use App\Http\Controllers\API\Admin\AdminOrderController;
 use App\Http\Controllers\API\Admin\AdminUserController;
 use App\Http\Controllers\API\Admin\AdminReviewController;
+use App\Http\Controllers\API\AdController;
 
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -21,6 +22,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/orders', [OrderController::class, 'store']);
 Route::post('/guest-orders', [OrderController::class, 'storeGuest']);
 Route::get('/home', [HomeController::class, 'index']);
+Route::get('/ads', [AdController::class, 'index']);
 Route::get('/products/{productId}/reviews',[ReviewController::class, 'index']);
 
 Route::prefix('products')->group(function () {
@@ -81,6 +83,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
             'user' => $request->user(),
         ]);
     });
+
+    Route::post('/admin/ads', [AdController::class, 'store']);
+    Route::get('/admin/ads', [AdController::class, 'adminIndex']);
+    Route::post('/admin/ads/{ad}', [AdController::class, 'update']);
+    Route::delete('/admin/ads/{ad}', [AdController::class, 'destroy']);
 
 });
 

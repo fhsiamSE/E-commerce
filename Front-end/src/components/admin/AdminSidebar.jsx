@@ -352,6 +352,47 @@ const AdminSidebar = ({
 
             </NavLink>
 
+            <NavLink
+              to="/admin/ads/add"
+              onClick={handleNavigation}
+              className={({ isActive }) =>
+                `
+                  flex
+                  items-center
+                  gap-3
+                  rounded-lg
+                  px-3
+                  py-3
+                  text-sm
+                  font-medium
+                  transition
+                  ${
+                    isActive
+                      ? "bg-black text-white dark:bg-white dark:text-black"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
+                  }
+                `
+              }
+            >
+              <span className="w-5 text-center">📣</span>
+              <span>Add Ads</span>
+            </NavLink>
+
+            <NavLink
+              to="/admin/ads"
+              onClick={handleNavigation}
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition ${
+                  isActive
+                    ? "bg-black text-white dark:bg-white dark:text-black"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
+                }`
+              }
+            >
+              <span className="w-5 text-center">🗂️</span>
+              <span>Manage Ads</span>
+            </NavLink>
+
           </div>
 
 

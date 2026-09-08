@@ -34,6 +34,8 @@ import AdminUsers from "../pages/admin/Users/Users";
 import AdminReviews from "../pages/admin/Reviews/Reviews";
 
 import AdminSettings from "../pages/admin/Settings/Settings";
+import AddAd from "../pages/admin/Ads/AddAd";
+import Ads from "../pages/admin/Ads/Ads";
 
 
 
@@ -133,6 +135,27 @@ function AdminRoutes() {
           path="products/add"
           element={
             <AddProduct />
+          }
+        />
+
+        <Route
+          path="ads"
+          element={
+            <Ads />
+          }
+        />
+
+        <Route
+          path="ads/add"
+          element={
+            <AddAd />
+          }
+        />
+
+        <Route
+          path="ads/edit/:id"
+          element={
+            <AddAd />
           }
         />
 

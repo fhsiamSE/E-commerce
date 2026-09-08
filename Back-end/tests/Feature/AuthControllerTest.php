@@ -4,7 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Ad;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
@@ -101,5 +104,64 @@ class AuthControllerTest extends TestCase
             'product_name' => 'Rice 5kg',
             'category' => 'Rice',
         ]);
+    }
+
+    public function test_admin_can_create_an_ad(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->create(['role' => 'admin']);
+        $png = base64_decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
+        );
+
+        $response = $this->actingAs($admin, 'sanctum')->post('/api/admin/ads', [
+            'image' => UploadedFile::fake()->createWithContent('banner.png', $png),
+            'title' => 'Fresh deals',
+            'subtitle' => 'Save on everyday essentials',
+        ]);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('message', 'Ad created successfully.');
+
+        $this->assertDatabaseHas('ads', [
+            'title' => 'Fresh deals',
+            'subtitle' => 'Save on everyday essentials',
+        ]);
+    }
+
+    public function test_admin_can_update_and_delete_an_ad(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->create(['role' => 'admin']);
+        $ad = Ad::create([
+            'image' => 'ads/old.png',
+            'title' => 'Old title',
+            'subtitle' => 'Old subtitle',
+        ]);
+        $png = base64_decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
+        );
+
+        $updateResponse = $this->actingAs($admin, 'sanctum')->post(
+            "/api/admin/ads/{$ad->id}",
+            [
+                'image' => UploadedFile::fake()->createWithContent('updated.png', $png),
+                'title' => 'New title',
+                'subtitle' => 'New subtitle',
+            ]
+        );
+
+        $updateResponse->assertOk();
+        $this->assertDatabaseHas('ads', [
+            'id' => $ad->id,
+            'title' => 'New title',
+        ]);
+
+        $deleteResponse = $this->actingAs($admin, 'sanctum')->delete(
+            "/api/admin/ads/{$ad->id}"
+        );
+
+        $deleteResponse->assertOk();
+        $this->assertDatabaseMissing('ads', ['id' => $ad->id]);
     }
 }

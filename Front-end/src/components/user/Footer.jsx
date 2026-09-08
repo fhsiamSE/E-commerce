@@ -57,7 +57,7 @@ export default function Footer() {
         {/* Left Content */}
         <div style={{ flex: 1, color: 'white', minWidth: 220 }}>
           <h2 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '0px', lineHeight: 1.2 }}>
-            JOIN OUR KICKSPLUS<br />CLUB & GET 15% OFF
+            JOIN US<br />TO GET A BETTER SHOPPING EXPERIENCE
           </h2>
           <p style={{ fontSize: '16px', marginBottom: '24px', opacity: 0.95 }}>
             Sign up for free! Join the community.
@@ -137,7 +137,7 @@ export default function Footer() {
         
       </div>
        <div className='items-center bg-black py-4 text-center text-sm text-stone-400'>
-          all rights reserved @ 2026 KICKS. Designed by Siam.
+          all rights reserved @ 2026 Sarima supper mart. Designed by Siam.
         </div>
     </footer>
   );
