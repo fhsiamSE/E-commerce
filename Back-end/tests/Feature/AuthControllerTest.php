@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -50,5 +51,35 @@ class AuthControllerTest extends TestCase
         $response->assertOk();
         $this->assertCount(1, $response->json('data.data'));
         $this->assertSame('Men Shirt', $response->json('data.data.0.product_name'));
+    }
+
+    public function test_authenticated_user_can_create_product_with_category_string_and_variants(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'sanctum')->postJson('/api/products', [
+            'product_name' => 'Rice 5kg',
+            'description' => 'Premium rice',
+            'price' => 1200,
+            'category' => 'Rice',
+            'stock' => 25,
+            'variants' => [
+                [
+                    'size' => '5kg',
+                    'color' => 'White',
+                    'sku' => 'RICE-5KG-001',
+                    'stock' => 25,
+                    'price' => 1200,
+                ],
+            ],
+        ]);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('message', 'Product created successfully');
+
+        $this->assertDatabaseHas('products', [
+            'product_name' => 'Rice 5kg',
+            'category' => 'Rice',
+        ]);
     }
 }

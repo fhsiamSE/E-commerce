@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../api/axios";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -197,36 +198,40 @@ const AddProduct = () => {
     try {
       setLoading(true);
 
-      /*
-      |--------------------------------------------------------------------------
-      | TEMPORARY
-      |--------------------------------------------------------------------------
-      | Backend API will be connected later.
-      */
+      const formData = new FormData();
 
-      const productData = {
-        product_name: productName,
-        description,
-        price,
-        category,
-        stock,
-        images,
-        primaryImage,
-        variants,
-      };
+      formData.append("product_name", productName.trim());
+      formData.append("description", description || "");
+      formData.append("price", price);
+      formData.append("category", category);
 
-      console.log(
-        "Product data:",
-        productData
-      );
+      if (stock !== "" && stock !== null) {
+        formData.append("stock", stock);
+      }
 
-      await new Promise((resolve) =>
-        setTimeout(resolve, 700)
-      );
+      images.forEach((image) => {
+        formData.append("images[]", image.file);
+      });
 
-      alert(
-        "Product created successfully."
-      );
+      variants.forEach((variant, index) => {
+        formData.append(`variants[${index}][size]`, variant.size || "");
+        formData.append(`variants[${index}][color]`, variant.color || "");
+        formData.append(`variants[${index}][sku]`, variant.sku?.trim() || "");
+        formData.append(`variants[${index}][stock]`, variant.stock ?? 0);
+        formData.append(`variants[${index}][price]`, variant.price ?? "");
+      });
+
+      const response = await api.post("/products", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (!response.data?.success) {
+        throw new Error(response.data?.message || "Product creation failed");
+      }
+
+      alert(response.data.message || "Product created successfully.");
 
       navigate("/admin/products");
     } catch (error) {
