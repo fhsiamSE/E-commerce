@@ -282,37 +282,6 @@ function Profile() {
                 </div>
               </section>
 
-              {/* Recent Activity */}
-              <section className="rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-stone-200">
-
-                <div>
-                  <h2 className="text-xl font-semibold text-stone-900">
-                    Recent activity
-                  </h2>
-
-                  <p className="mt-2 text-sm text-stone-500">
-                    Your recent account activity will appear here.
-                  </p>
-                </div>
-
-                <div className="mt-6 rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5">
-
-                  <p className="text-sm font-semibold text-stone-900">
-                    Account created
-                  </p>
-
-                  <p className="mt-1 text-sm text-stone-500">
-                    {getMemberSince(user.created_at)}
-                  </p>
-
-                  <span className="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-stone-600 ring-1 ring-stone-200">
-                    Account
-                  </span>
-
-                </div>
-
-              </section>
-
             </div>
 
             {/* Sidebar */}
@@ -373,26 +342,6 @@ function Profile() {
                   </div>
 
                 </div>
-              </div>
-
-              {/* Saved Address */}
-              <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-stone-200">
-
-                <h3 className="text-lg font-semibold text-stone-900">
-                  Saved address
-                </h3>
-
-                <p className="mt-4 text-sm text-stone-600">
-                  {user.address || "No address has been added yet."}
-                </p>
-
-                <button
-                  onClick={handleEdit}
-                  className="mt-6 w-full rounded-full bg-black px-4 py-3 text-sm font-semibold text-white transition hover:bg-stone-900"
-                >
-                  Manage address
-                </button>
-
               </div>
 
             </aside>

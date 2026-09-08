@@ -7,6 +7,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../store/auth/authSlice.js";
 import { getCart } from "../../store/cartSlice.js";
+import shopLogo from "../../assets/images/shopLogo.png";
 
 const Header = () => {
   const [showHeader, setShowHeader] = useState(true);
@@ -188,17 +189,21 @@ const Header = () => {
             LOGO
         ========================================================== */}
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center">
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-lg font-bold text-white">
-            E
-          </div>
+          <Link to="/" className="flex items-center">
+            <img
+              src={shopLogo}
+              alt="Shop logo"
+              className="h-14 w-16"
+            />
+          </Link>
 
           <Link
             to="/"
-            className="text-lg font-bold tracking-wide text-gray-900 sm:text-xl"
+            className="text-xs font-bold tracking-wide text-gray-900 sm:text-base"
           >
-            E-Commerce
+            Sarima Super Mart
           </Link>
 
         </div>

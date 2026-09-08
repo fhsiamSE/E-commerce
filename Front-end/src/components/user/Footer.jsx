@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import shopLogo from "../../assets/images/shopLogo.png";
 
 export default function Footer() {
   const [email, setEmail] = useState('');
@@ -61,58 +63,27 @@ export default function Footer() {
             Sign up for free! Join the community.
           </p>
 
-          {/* Email Form */}
-          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '12px' }}>
-            <input
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={{
-                flex: 1,
-                padding: '12px 16px',
-                borderRadius: '4px',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                color: 'white',
-                fontSize: '14px',
-                maxWidth: '280px'
-              }}
-            />
-            <button
-              type="submit"
-              style={{
-                backgroundColor: '#1a202c',
-                color: 'white',
-                padding: '12px 24px',
-                borderRadius: '4px',
-                border: 'none',
-                fontWeight: 'bold',
-                fontSize: '14px',
-                cursor: 'pointer',
-                transition: 'background-color 0.3s'
-              }}
-            >
-              SUBMIT
-            </button>
-          </form>
         </div>
 
         {/* Right - Logo */}
-        <div className="footer-logo" style={{ fontSize: '48px', fontWeight: 'bold', color: 'white', position: 'relative', minWidth: 120, textAlign: 'center' }}>
-          KICKS
-          <span style={{
-            position: 'absolute',
-            top: '-8px',
-            right: '-16px',
-            width: '24px',
-            height: '24px',
-            backgroundColor: '#f59e0b',
-            borderRadius: '50%',
-            display: 'inline-block'
-          }}></span>
-        </div>
+        <div className="flex items-center">
+        
+                  <Link to="/" className="flex items-center">
+                    <img
+                      src={shopLogo}
+                      alt="Shop logo"
+                      className="h-48 w-64"
+                    />
+                  </Link>
+        
+                  {/* <Link
+                    to="/"
+                    className="text-xs font-bold tracking-wide text-gray-900 sm:text-base"
+                  >
+                    Sarima Super Mart
+                  </Link> */}
+        
+                </div>
       </div>
       {/* Footer Links Section */}
       <div className="footer-links" style={{
