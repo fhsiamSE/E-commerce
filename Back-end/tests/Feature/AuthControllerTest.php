@@ -51,6 +51,27 @@ class AuthControllerTest extends TestCase
         $response->assertOk();
         $this->assertCount(1, $response->json('data.data'));
         $this->assertSame('Men Shirt', $response->json('data.data.0.product_name'));
+
+        Product::create([
+            'product_name' => 'Chicken Breast',
+            'description' => 'Fresh chicken',
+            'price' => 299.99,
+            'category' => 'Chicken',
+            'stock' => 10,
+        ]);
+
+        Product::create([
+            'product_name' => 'Beef Steak',
+            'description' => 'Fresh beef',
+            'price' => 499.99,
+            'category' => 'Beef',
+            'stock' => 10,
+        ]);
+
+        $groupedResponse = $this->getJson('/api/products?category[]=chicken&category[]=beef&category[]=mutton');
+
+        $groupedResponse->assertOk();
+        $this->assertCount(2, $groupedResponse->json('data.data'));
     }
 
     public function test_authenticated_user_can_create_product_with_category_string_and_variants(): void

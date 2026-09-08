@@ -33,13 +33,19 @@ class ProductController extends Controller
 
         // Category
         if ($request->filled('category')) {
-            $categoryValue = trim($request->category);
-            $categoryValue = strtolower($categoryValue);
+            $categoryValues = is_array($request->category)
+                ? $request->category
+                : [$request->category];
 
-            $query->where(function ($q) use ($categoryValue) {
-                $q->whereRaw('LOWER(category) = ?', [$categoryValue])
-                    ->orWhereRaw('LOWER(category) = ?', [str_replace('-', ' ', $categoryValue)]);
-            });
+            $categoryValues = collect($categoryValues)
+                ->map(fn ($value) => strtolower(trim($value)))
+                ->filter()
+                ->values()
+                ->all();
+
+            if ($categoryValues) {
+                $query->whereIn(DB::raw('LOWER(category)'), $categoryValues);
+            }
         }
 
         if ($request->filled('category_id')) {
