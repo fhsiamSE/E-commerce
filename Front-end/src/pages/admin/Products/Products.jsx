@@ -330,7 +330,7 @@ const Products = () => {
 
         <button
           onClick={() =>
-            navigate("/admin/products/create")
+            navigate("/admin/products/add")
           }
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
         >

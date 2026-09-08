@@ -732,7 +732,7 @@ const AddProduct = () => {
                                   .value
                               )
                             }
-                            placeholder="M"
+                            placeholder="5 KG"
                             className="h-10 w-full rounded-lg border border-gray-300 bg-white px-3 text-sm outline-none focus:border-black dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:focus:border-white"
                           />
 
@@ -760,8 +760,8 @@ const AddProduct = () => {
                                   .value
                               )
                             }
-                            placeholder="SKU-001"
-                            className="h-10 w-full rounded-lg border border-gray-300 bg-white px-3 text-sm outline-none focus:border-black dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:focus:border-white"
+                            placeholder="RICE-5KG-001"
+                            className="h-10 w-full rounded-lg border border-gray-300 bg-white px-3 text-[11px] outline-none focus:border-black dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:focus:border-white"
                           />
 
                         </div>

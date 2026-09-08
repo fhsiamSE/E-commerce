@@ -710,7 +710,6 @@ const EditProduct = () => {
 
 
                     data.append(
-                    data.append(
                         `variants[${index}][sku]`,
                         variant.sku.trim()
                     );
@@ -1346,7 +1345,7 @@ const EditProduct = () => {
                                                         e.target.value
                                                     )
                                                 }
-                                                placeholder="M"
+                                                placeholder="5 KG"
                                                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                                             />
 
@@ -1373,7 +1372,7 @@ const EditProduct = () => {
                                                         e.target.value
                                                     )
                                                 }
-                                                placeholder="SKU-001"
+                                                placeholder="RICE-5KG-001"
                                                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                                             />
 
