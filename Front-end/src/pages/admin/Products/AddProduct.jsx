@@ -157,9 +157,9 @@ const AddProduct = () => {
       current.map((variant, variantIndex) =>
         variantIndex === index
           ? {
-              ...variant,
-              [field]: value,
-            }
+            ...variant,
+            [field]: value,
+          }
           : variant
       )
     );
@@ -441,20 +441,46 @@ const AddProduct = () => {
                       Select category
                     </option>
 
-                    <option value="Men">
-                      Men
+                    <option value="Rice">
+                      Rice
                     </option>
 
-                    <option value="Woman">
-                      Woman
+                    <option value="Flour">
+                      Flour
                     </option>
 
-                    <option value="Kids">
-                      Kids
+                    <optgroup label="Meat">
+                      <option value="Chicken">
+                        Chicken
+                      </option>
+
+                      <option value="Beef">
+                        Beef
+                      </option>
+
+                      <option value="Mutton">
+                        Mutton
+                      </option>
+                    </optgroup>
+
+                    <option value="Vegetables">
+                      Vegetables
                     </option>
 
-                    <option value="Accessories">
-                      Accessories
+                    <option value="Spice">
+                      Spice
+                    </option>
+
+                     <option value="Oil">
+                      Oil
+                    </option>
+
+                    <option value="Snacks">
+                      Snacks
+                    </option>
+
+                    <option value="Drinks">
+                      Drinks
                     </option>
 
                   </select>
@@ -551,11 +577,10 @@ const AddProduct = () => {
 
                       <div
                         key={`${image.preview}-${index}`}
-                        className={`group relative overflow-hidden rounded-lg border-2 ${
-                          primaryImage === index
+                        className={`group relative overflow-hidden rounded-lg border-2 ${primaryImage === index
                             ? "border-black dark:border-white"
                             : "border-gray-200 dark:border-gray-700"
-                        }`}
+                          }`}
                       >
 
                         <div className="aspect-square bg-gray-100 dark:bg-gray-800">
@@ -578,11 +603,10 @@ const AddProduct = () => {
                               index
                             )
                           }
-                          className={`absolute left-2 top-2 rounded-md px-2 py-1 text-[10px] font-semibold ${
-                            primaryImage === index
+                          className={`absolute left-2 top-2 rounded-md px-2 py-1 text-[10px] font-semibold ${primaryImage === index
                               ? "bg-black text-white dark:bg-white dark:text-black"
                               : "bg-white/90 text-gray-700 dark:bg-black/80 dark:text-gray-200"
-                          }`}
+                            }`}
                         >
                           {primaryImage === index
                             ? "Primary"
@@ -896,8 +920,8 @@ const AddProduct = () => {
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
                     {price
                       ? `৳${Number(
-                          price
-                        ).toFixed(2)}`
+                        price
+                      ).toFixed(2)}`
                       : "৳0.00"}
                   </span>
 

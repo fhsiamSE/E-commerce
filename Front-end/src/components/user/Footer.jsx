@@ -67,23 +67,23 @@ export default function Footer() {
 
         {/* Right - Logo */}
         <div className="flex items-center">
-        
-                  <Link to="/" className="flex items-center">
-                    <img
-                      src={shopLogo}
-                      alt="Shop logo"
-                      className="h-48 w-64"
-                    />
-                  </Link>
-        
-                  {/* <Link
+
+          <Link to="/" className="flex items-center">
+            <img
+              src={shopLogo}
+              alt="Shop logo"
+              className="h-48 w-64"
+            />
+          </Link>
+
+          {/* <Link
                     to="/"
                     className="text-xs font-bold tracking-wide text-gray-900 sm:text-base"
                   >
                     Sarima Super Mart
                   </Link> */}
-        
-                </div>
+
+        </div>
       </div>
       {/* Footer Links Section */}
       <div className="footer-links" style={{
@@ -103,23 +103,10 @@ export default function Footer() {
             About us
           </h3>
           <p style={{ fontSize: '14px', lineHeight: '1.6', opacity: 0.8 }}>
-            We are the biggest hyperstore in the universe. We got you all cover with our exclusive collections and latest drops.
-          </p>
+            We are dedicated to providing quality products at affordable prices with a simple and reliable shopping experience.          </p>
         </div>
 
-        {/* Categories */}
-        <div>
-          <h3 style={{ color: '#f59e0b', fontSize: '18px', fontWeight: 'bold', marginBottom: '20px' }}>
-            Categories
-          </h3>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {['Runners', 'Sneakers', 'Basketball', 'Outdoor', 'Golf', 'Hiking'].map((category) => (
-              <li key={category} style={{ marginBottom: '12px', fontSize: '14px', cursor: 'pointer', opacity: 0.8 }}>
-                {category}
-              </li>
-            ))}
-          </ul>
-        </div>
+
 
         {/* Company */}
         <div>
@@ -147,10 +134,11 @@ export default function Footer() {
             <a href="#" style={{ color: 'white', cursor: 'pointer', opacity: 0.8 }}>♪</a>
           </div>
         </div>
-        <div className='items-center'>
+        
+      </div>
+       <div className='items-center bg-black py-4 text-center text-sm text-stone-400'>
           all rights reserved @ 2026 KICKS. Designed by Siam.
         </div>
-      </div>
     </footer>
   );
 }
