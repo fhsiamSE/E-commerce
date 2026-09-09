@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getCart, updateCart, removeFromCart } from "../../../store/cartSlice.js";
 import api from "../../../api/axios.js";
 import CheckoutModal from "../../../components/user/CheckoutModal.jsx";
+import { getImageUrl } from "../../../utils/imageUrl.js";
 
 const GUEST_CART_KEY = "guest_cart";
 
@@ -73,7 +74,7 @@ function Cart() {
       return image;
     }
 
-    return `http://127.0.0.1:8000/storage/${image}`;
+    return getImageUrl(image);
   };
 
   const getProductPrice = (item) => {

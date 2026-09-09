@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import api from "../../../api/axios.js";
+import { getImageUrl } from "../../../utils/imageUrl.js";
 
 const OrderDetails = () => {
     const navigate = useNavigate();
@@ -43,7 +44,7 @@ const OrderDetails = () => {
             return image;
         }
 
-        return `http://127.0.0.1:8000/storage/${image.replace(
+        return getImageUrl(image.replace(
             /^\/+/,
             ""
         )}`;

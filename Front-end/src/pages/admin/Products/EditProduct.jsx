@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 
 import api from "../../../api/axios.js";
+import { getImageUrl } from "../../../utils/imageUrl.js";
 
 
 const EditProduct = () => {
@@ -93,7 +94,7 @@ const EditProduct = () => {
         }
 
 
-        return `http://127.0.0.1:8000/storage/${image}`;
+        return getImageUrl(image);
     };
 
 

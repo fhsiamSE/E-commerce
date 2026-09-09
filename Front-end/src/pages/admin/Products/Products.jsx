@@ -8,6 +8,7 @@ import {
   clearAdminProductError,
   clearDeleteProductError,
 } from "../../../store/admin/adminProductSlice";
+import { getImageUrl } from "../../../utils/imageUrl";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -234,7 +235,7 @@ const Products = () => {
           return image;
         }
 
-        return `http://127.0.0.1:8000/storage/${image}`;
+        return getImageUrl(image);
       }
 
       if (image?.image) {
@@ -242,7 +243,7 @@ const Products = () => {
           return image.image;
         }
 
-        return `http://127.0.0.1:8000/storage/${image.image}`;
+        return getImageUrl(image.image);
       }
     }
 
