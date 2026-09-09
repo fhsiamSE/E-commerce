@@ -5,7 +5,7 @@ import Beans from "../../assets/CatagoryImages/Beans.jpg";
 import Fish from "../../assets/CatagoryImages/Fish.png";
 import Snacks from "../../assets/CatagoryImages/Snacks.jpg";
 import Drinks from "../../assets/CatagoryImages/Drinks.jpg";
-import Vegetables from "../../assets/CatagoryImages/Vegetables.jpg";
+import Vegetables from "../../assets/CatagoryImages/vegetables.jpg";
 import spices from "../../assets/CatagoryImages/Cooking&Spices.jpg";
 import Rice from "../../assets/CatagoryImages/Rice&Flour.jpg";
 
