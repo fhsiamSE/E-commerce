@@ -22,6 +22,6 @@ class Ad extends Model
             return $this->image;
         }
 
-        return asset('storage/' . $this->image);
+        return secure_asset('storage/' . $this->image);
     }
 }
