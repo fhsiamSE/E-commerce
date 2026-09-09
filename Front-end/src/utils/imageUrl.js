@@ -9,7 +9,10 @@ export const getImageUrl = (image) => {
   }
 
   if (image.startsWith("http://") || image.startsWith("https://")) {
-    return image;
+    return image.replace(
+      "http://e-commerce-bankend.onrender.com",
+      "https://e-commerce-bankend.onrender.com"
+    );
   }
 
   return `${API_ORIGIN}/storage/${image.replace(/^\/+/, "")}`;
