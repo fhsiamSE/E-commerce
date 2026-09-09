@@ -32,24 +32,6 @@ const OrderDetails = () => {
     |--------------------------------------------------------------------------
     */
 
-    const getImageUrl = (image) => {
-        if (!image) {
-            return null;
-        }
-
-        if (
-            image.startsWith("http://") ||
-            image.startsWith("https://")
-        ) {
-            return image;
-        }
-
-        return getImageUrl(image.replace(
-            /^\/+/,
-            ""
-        )}`;
-    };
-
     /*
     |--------------------------------------------------------------------------
     | Fetch Order
