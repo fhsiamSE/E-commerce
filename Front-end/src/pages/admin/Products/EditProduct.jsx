@@ -1,4 +1,4 @@
-import React, {
+import {
     useEffect,
     useState,
 } from "react";
@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 
 import api from "../../../api/axios.js";
-import { getImageUrl } from "../../../utils/imageUrl.js";
+import { getImageUrl as resolveImageUrl } from "../../../utils/imageUrl.js";
 
 
 const EditProduct = () => {
@@ -94,7 +94,7 @@ const EditProduct = () => {
         }
 
 
-        return getImageUrl(image);
+        return resolveImageUrl(image);
     };
 
 
