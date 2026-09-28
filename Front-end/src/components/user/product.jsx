@@ -426,7 +426,7 @@ function Product({
                   sm:text-base
                 "
               >
-                $
+                ¥
                 {Number(
                   product.price || 0
                 ).toFixed(2)}
@@ -442,7 +442,7 @@ function Product({
                     sm:text-xs
                   "
                 >
-                  $
+                  ¥
                   {Number(
                     product.originalPrice
                   ).toFixed(2)}

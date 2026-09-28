@@ -334,7 +334,7 @@ function Cart() {
                               )}
 
                               <p className="mt-2 text-sm font-semibold text-stone-900">
-                                ${price.toFixed(2)}
+                                ¥{price.toFixed(2)}
                               </p>
                             </div>
                           </div>
@@ -398,25 +398,25 @@ function Cart() {
 
                     <div className="flex items-center justify-between text-sm text-stone-600">
                       <span>Subtotal</span>
-                      <span>${subtotal.toFixed(2)}</span>
+                      <span>¥{subtotal.toFixed(2)}</span>
                     </div>
 
                     <div className="flex items-center justify-between text-sm text-stone-600">
                       <span>Shipping</span>
-                      <span>${shipping.toFixed(2)}</span>
+                      <span>¥{shipping.toFixed(2)}</span>
                     </div>
 
                     <div className="flex items-center justify-between text-sm text-stone-600">
                       <span>Discount</span>
 
                       <span className="text-emerald-700">
-                        -${discount.toFixed(2)}
+                        -¥{discount.toFixed(2)}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between border-t border-stone-200 pt-4 text-lg font-semibold text-stone-900">
                       <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
+                      <span>¥{total.toFixed(2)}</span>
                     </div>
 
                   </div>

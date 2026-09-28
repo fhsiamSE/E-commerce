@@ -1005,7 +1005,7 @@ const ProductDetails = () => {
             <div className="mt-5">
 
               <span className="text-xl font-medium">
-                ৳
+                ¥
                 {Number(
                   currentPrice
                 ).toFixed(2)}
@@ -1445,7 +1445,7 @@ const ProductDetails = () => {
                           </h3>
 
                           <span className="flex-shrink-0 text-sm font-medium">
-                            ৳
+                            ¥
                             {Number(
                               item.price ||
                               0

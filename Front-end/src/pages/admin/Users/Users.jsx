@@ -739,7 +739,7 @@ const Users = () => {
                 </span>
 
                 <span className="text-xs font-medium text-gray-900 dark:text-white">
-                  ৳
+                  ¥
                   {formatMoney(
                     selectedUser.orders_sum_total
                   )}

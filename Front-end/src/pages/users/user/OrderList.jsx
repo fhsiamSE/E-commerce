@@ -138,7 +138,7 @@ function OrderList() {
   */
 
   const formatPrice = (price) => {
-    return `$${Number(price || 0).toFixed(2)}`;
+    return `¥${Number(price || 0).toFixed(2)}`;
   };
 
 

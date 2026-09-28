@@ -796,7 +796,7 @@ const OrderDetails = () => {
                                                             </div>
 
                                                             <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                                                ৳
+                                                                ¥
                                                                 {itemTotal.toLocaleString()}
                                                             </p>
 
@@ -823,7 +823,7 @@ const OrderDetails = () => {
                                                             Unit price:{" "}
 
                                                             <span className="font-medium text-gray-700 dark:text-gray-300">
-                                                                ৳
+                                                                ¥
                                                                 {price.toLocaleString()}
                                                             </span>
 
@@ -1109,7 +1109,7 @@ const OrderDetails = () => {
                                 </span>
 
                                 <span className="font-medium text-gray-900 dark:text-white">
-                                    ৳
+                                    ¥
                                     {subtotal.toLocaleString()}
                                 </span>
 
@@ -1124,7 +1124,7 @@ const OrderDetails = () => {
                                 </span>
 
                                 <span className="font-medium text-gray-900 dark:text-white">
-                                    - ৳
+                                    - ¥
                                     {discount.toLocaleString()}
                                 </span>
 
@@ -1141,7 +1141,7 @@ const OrderDetails = () => {
                                     </span>
 
                                     <span className="text-lg font-semibold text-gray-900 dark:text-white">
-                                        ৳
+                                        ¥
                                         {total.toLocaleString()}
                                     </span>
 

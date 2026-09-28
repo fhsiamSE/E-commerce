@@ -529,7 +529,7 @@ function WishList() {
 
                     <p className="mt-3 text-lg font-semibold text-stone-900">
 
-                      $
+                      ¥
                       {getProductPrice(item).toFixed(2)}
 
                     </p>

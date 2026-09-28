@@ -766,7 +766,7 @@ const Products = () => {
                       <td className="px-5 py-4">
 
                         <span className="font-medium text-gray-900 dark:text-white">
-                          ৳{" "}
+                          ¥{" "}
                           {Number(
                             product.price || 0
                           ).toLocaleString()}
@@ -887,7 +887,7 @@ const Products = () => {
                       </p>
 
                       <p className="mt-2 font-semibold text-gray-900 dark:text-white">
-                        ৳{" "}
+                        ¥{" "}
                         {Number(
                           product.price || 0
                         ).toLocaleString()}
