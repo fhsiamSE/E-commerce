@@ -7,6 +7,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../store/auth/authSlice.js";
 import { getCart } from "../../store/cartSlice.js";
+import { getWishlist } from "../../store/wishlistSlice.js";
 import shopLogo from "../../assets/images/shopLogo.png";
 
 const Header = () => {
@@ -41,6 +42,9 @@ const Header = () => {
   const cartItems = useSelector(
     (state) => state.cart.items
   );
+  const wishlistIds = useSelector(
+    (state) => state.wishlist.wishlistIds
+  );
 
   /*
   |--------------------------------------------------------------------------
@@ -51,6 +55,7 @@ const Header = () => {
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(getCart());
+      dispatch(getWishlist());
     }
   }, [dispatch, isAuthenticated]);
 
@@ -98,6 +103,9 @@ const Header = () => {
   const cartCount = isAuthenticated
     ? authenticatedCartCount
     : guestCartCount;
+  const wishlistCount = isAuthenticated
+    ? wishlistIds.length
+    : 0;
 
   /*
   |--------------------------------------------------------------------------
@@ -313,9 +321,17 @@ const Header = () => {
 
           <Link
             to="/wishlist"
-            className="rounded-full p-2 hover:bg-gray-100"
+            className="relative rounded-full p-2 hover:bg-gray-100"
+            aria-label={`Wishlist${wishlistCount ? `, ${wishlistCount} items` : ""}`}
           >
             ❤
+            {wishlistCount > 0 && (
+              <span
+                className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white"
+              >
+                {wishlistCount > 99 ? "99+" : wishlistCount}
+              </span>
+            )}
           </Link>
 
           {/* =======================================================

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/axios.js";
 import { getImageUrl } from "../../../utils/imageUrl.js";
+import { getWishlist as refreshWishlist } from "../../../store/wishlistSlice.js";
 
 function WishList() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   /*
   |--------------------------------------------------------------------------
@@ -152,6 +155,8 @@ function WishList() {
       await api.delete(
         `/wishlist/${productId}`
       );
+
+      dispatch(refreshWishlist());
 
       /*
        * Remove the wishlist row from UI.
