@@ -262,8 +262,8 @@ const Header = () => {
           </Link>
 
           <a
-            href="#"
-            className="flex items-center gap-1 hover:text-black"
+            href="/HotDeals"
+            className="flex items-center gap-1 hover:text-black "
           >
             <span>Hot Deals</span>
             <span>🔥</span>
