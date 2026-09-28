@@ -19,6 +19,7 @@ const getGuestCart = () => {
 
 const setGuestCart = (items) => {
   localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
+  window.dispatchEvent(new Event("guest-cart-updated"));
 };
 
 function Cart() {
@@ -103,7 +104,7 @@ function Cart() {
     return sum + getProductPrice(item) * getQuantity(item);
   }, 0);
 
-  const shipping = activeCartItems.length > 0 ? 100 : 0;
+  const shipping = activeCartItems.length > 0 ? 0 : 0;
   const discount = 0;
   const total = subtotal + shipping - discount;
 

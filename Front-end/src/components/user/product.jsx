@@ -12,6 +12,7 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "../../store/wishlistSlice.js";
+import { getImageUrl } from "../../utils/imageUrl.js";
 
 
 function Product({
@@ -220,10 +221,10 @@ function Product({
       product.id
     );
 
-    const image =
-      product.images?.[0]?.image_url ||
+    const image = getImageUrl(
       product.images?.[0]?.image ||
-      "https://via.placeholder.com/500";
+        product.images?.[0]?.image_url
+    );
 
 
     return (

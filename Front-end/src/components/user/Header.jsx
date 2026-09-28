@@ -14,6 +14,7 @@ const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [profileMenu, setProfileMenu] = useState(false);
   const [search, setSearch] = useState("");
+  const [guestCartCount, setGuestCartCount] = useState(0);
 
   const lastScrollY = useRef(0);
 
@@ -53,18 +54,50 @@ const Header = () => {
     }
   }, [dispatch, isAuthenticated]);
 
+  useEffect(() => {
+    const updateGuestCartCount = () => {
+      try {
+        const items = JSON.parse(
+          localStorage.getItem("guest_cart") || "[]"
+        );
+        const count = Array.isArray(items)
+          ? items.reduce(
+              (total, item) => total + Number(item.quantity || item.qty || 0),
+              0
+            )
+          : 0;
+
+        setGuestCartCount(count);
+      } catch {
+        setGuestCartCount(0);
+      }
+    };
+
+    updateGuestCartCount();
+    window.addEventListener("guest-cart-updated", updateGuestCartCount);
+    window.addEventListener("storage", updateGuestCartCount);
+
+    return () => {
+      window.removeEventListener("guest-cart-updated", updateGuestCartCount);
+      window.removeEventListener("storage", updateGuestCartCount);
+    };
+  }, []);
+
   /*
   |--------------------------------------------------------------------------
   | Cart Count
   |--------------------------------------------------------------------------
   */
 
-  const cartCount = cartItems.reduce(
+  const authenticatedCartCount = cartItems.reduce(
     (total, item) => {
       return total + Number(item.quantity || 0);
     },
     0
   );
+  const cartCount = isAuthenticated
+    ? authenticatedCartCount
+    : guestCartCount;
 
   /*
   |--------------------------------------------------------------------------
