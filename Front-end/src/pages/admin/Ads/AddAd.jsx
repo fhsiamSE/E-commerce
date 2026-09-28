@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../api/axios.js";
+import { getImageUrl } from "../../../utils/imageUrl.js";
 
 function AddAd() {
   const navigate = useNavigate();
@@ -118,7 +119,7 @@ function AddAd() {
           />
           {isEditing && currentImage && (
             <img
-              src={currentImage}
+              src={getImageUrl(currentImage)}
               alt="Current ad"
               className="mt-3 h-32 w-full rounded-lg object-cover"
             />

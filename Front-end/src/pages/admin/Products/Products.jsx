@@ -224,30 +224,9 @@ const Products = () => {
   // --------------------------------------------------
 
   const getProductImage = (product) => {
-    if (
-      product?.images &&
-      product.images.length > 0
-    ) {
-      const image = product.images[0];
+    const image = product?.images?.[0] || product?.image;
 
-      if (typeof image === "string") {
-        if (image.startsWith("http")) {
-          return image;
-        }
-
-        return getImageUrl(image);
-      }
-
-      if (image?.image) {
-        if (image.image.startsWith("http")) {
-          return image.image;
-        }
-
-        return getImageUrl(image.image);
-      }
-    }
-
-    return "https://via.placeholder.com/80";
+    return getImageUrl(image, "https://via.placeholder.com/80");
   };
 
   // --------------------------------------------------

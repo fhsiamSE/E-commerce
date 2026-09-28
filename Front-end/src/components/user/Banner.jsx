@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios.js';
 import defaultAdsImage from '../../assets/adsImages/defaultAdsImage.jpg';
+import { getImageUrl } from '../../utils/imageUrl.js';
 
 function Banner() {
   const [current, setCurrent] = useState(0);
@@ -63,7 +64,7 @@ function Banner() {
             style={{ zIndex: index === current ? 1 : 0 }}
           >
             <img
-              src={slide.image_url}
+              src={getImageUrl(slide.image || slide.image_url)}
               alt={slide.title}
               className="h-full w-full object-cover"
             />

@@ -79,21 +79,6 @@ const EditProduct = () => {
     ------------------------------------------------------- */
 
     const getImageUrl = (image) => {
-
-        if (!image) {
-            return "";
-        }
-
-
-        if (
-            image.startsWith("http://") ||
-            image.startsWith("https://")
-        ) {
-
-            return image;
-        }
-
-
         return resolveImageUrl(image);
     };
 

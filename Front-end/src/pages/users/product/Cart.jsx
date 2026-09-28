@@ -61,19 +61,12 @@ function Cart() {
 
   const getProductImage = (item) => {
     const image =
-      item.product?.images?.find((img) => img.is_primary)?.image_url ||
-      item.product?.images?.[0]?.image_url ||
+      item.product?.images?.find((img) => img.is_primary) ||
+      item.product?.images?.[0] ||
+      item.product?.image ||
       item.product?.images?.[0]?.image ||
       item.image_url ||
       item.image;
-
-    if (!image) {
-      return "https://via.placeholder.com/500";
-    }
-
-    if (image.startsWith("http")) {
-      return image;
-    }
 
     return getImageUrl(image);
   };

@@ -283,25 +283,6 @@ function WishList() {
      * No image
      */
 
-    if (!image) {
-      return "https://via.placeholder.com/500";
-    }
-
-    /*
-     * Complete URL
-     */
-
-    if (
-      image.startsWith("http://") ||
-      image.startsWith("https://")
-    ) {
-      return image;
-    }
-
-    /*
-     * Laravel storage image
-     */
-
     return getImageUrl(image);
   };
 
