@@ -21,6 +21,7 @@ import {
 } from "../../../store/cartSlice.js";
 
 import ReviewSection from "../../../components/user/ReviewSection.jsx";
+import { getImageUrl } from "../../../utils/imageUrl.js";
 
 
 const ProductDetails = () => {
@@ -609,6 +610,7 @@ const ProductDetails = () => {
             guestCartKey,
             JSON.stringify(storedCart)
           );
+          window.dispatchEvent(new Event("guest-cart-updated"));
 
           alert("Product added to cart successfully.");
           return;
@@ -861,7 +863,10 @@ const ProductDetails = () => {
 
                   <img
                     src={
-                      image.image_url
+                      getImageUrl(
+                        image.image ||
+                          image.image_url
+                      )
                     }
                     alt={`${product.product_name} ${index + 1
                       }`}
@@ -888,9 +893,14 @@ const ProductDetails = () => {
 
                 <img
                   src={
-                    images[
-                      selectedImage
-                    ]?.image_url
+                    getImageUrl(
+                      images[
+                        selectedImage
+                      ]?.image ||
+                        images[
+                          selectedImage
+                        ]?.image_url
+                    )
                   }
                   alt={
                     product.product_name
@@ -1361,6 +1371,7 @@ const ProductDetails = () => {
                 (item) => {
 
                   const image =
+                    item.images?.[0]?.image ||
                     item.images?.[0]
                       ?.image_url ||
                     item.image_url ||
@@ -1384,7 +1395,7 @@ const ProductDetails = () => {
                         {image ? (
 
                           <img
-                            src={image}
+                            src={getImageUrl(image)}
                             alt={
                               item.product_name ||
                               item.name ||
