@@ -19,6 +19,7 @@ const getGuestCart = () => {
 
 const setGuestCart = (items) => {
   localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
+  window.dispatchEvent(new Event("guest-cart-updated"));
 };
 
 function Cart() {
@@ -60,19 +61,12 @@ function Cart() {
 
   const getProductImage = (item) => {
     const image =
-      item.product?.images?.find((img) => img.is_primary)?.image_url ||
-      item.product?.images?.[0]?.image_url ||
+      item.product?.images?.find((img) => img.is_primary) ||
+      item.product?.images?.[0] ||
+      item.product?.image ||
       item.product?.images?.[0]?.image ||
       item.image_url ||
       item.image;
-
-    if (!image) {
-      return "https://via.placeholder.com/500";
-    }
-
-    if (image.startsWith("http")) {
-      return image;
-    }
 
     return getImageUrl(image);
   };
@@ -103,7 +97,7 @@ function Cart() {
     return sum + getProductPrice(item) * getQuantity(item);
   }, 0);
 
-  const shipping = activeCartItems.length > 0 ? 100 : 0;
+  const shipping = activeCartItems.length > 0 ? 0 : 0;
   const discount = 0;
   const total = subtotal + shipping - discount;
 
@@ -340,7 +334,7 @@ function Cart() {
                               )}
 
                               <p className="mt-2 text-sm font-semibold text-stone-900">
-                                ${price.toFixed(2)}
+                                ¥{price.toFixed(2)}
                               </p>
                             </div>
                           </div>
@@ -404,25 +398,25 @@ function Cart() {
 
                     <div className="flex items-center justify-between text-sm text-stone-600">
                       <span>Subtotal</span>
-                      <span>${subtotal.toFixed(2)}</span>
+                      <span>¥{subtotal.toFixed(2)}</span>
                     </div>
 
                     <div className="flex items-center justify-between text-sm text-stone-600">
                       <span>Shipping</span>
-                      <span>${shipping.toFixed(2)}</span>
+                      <span>¥{shipping.toFixed(2)}</span>
                     </div>
 
                     <div className="flex items-center justify-between text-sm text-stone-600">
                       <span>Discount</span>
 
                       <span className="text-emerald-700">
-                        -${discount.toFixed(2)}
+                        -¥{discount.toFixed(2)}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between border-t border-stone-200 pt-4 text-lg font-semibold text-stone-900">
                       <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
+                      <span>¥{total.toFixed(2)}</span>
                     </div>
 
                   </div>

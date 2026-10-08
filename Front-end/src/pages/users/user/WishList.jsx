@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/axios.js";
 import { getImageUrl } from "../../../utils/imageUrl.js";
+import { getWishlist as refreshWishlist } from "../../../store/wishlistSlice.js";
 
 function WishList() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   /*
   |--------------------------------------------------------------------------
@@ -153,6 +156,8 @@ function WishList() {
         `/wishlist/${productId}`
       );
 
+      dispatch(refreshWishlist());
+
       /*
        * Remove the wishlist row from UI.
        *
@@ -276,25 +281,6 @@ function WishList() {
 
     /*
      * No image
-     */
-
-    if (!image) {
-      return "https://via.placeholder.com/500";
-    }
-
-    /*
-     * Complete URL
-     */
-
-    if (
-      image.startsWith("http://") ||
-      image.startsWith("https://")
-    ) {
-      return image;
-    }
-
-    /*
-     * Laravel storage image
      */
 
     return getImageUrl(image);
@@ -543,7 +529,7 @@ function WishList() {
 
                     <p className="mt-3 text-lg font-semibold text-stone-900">
 
-                      $
+                      ¥
                       {getProductPrice(item).toFixed(2)}
 
                     </p>

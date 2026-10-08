@@ -332,7 +332,7 @@ const Dashboard = () => {
 
                     <div className="text-right">
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        ৳{Number(order.total || 0).toLocaleString()}
+                        ¥{Number(order.total || 0).toLocaleString()}
                       </p>
 
                       <span

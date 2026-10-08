@@ -505,13 +505,13 @@ const Orders = () => {
                         </p>
 
                         <span className="text-lg">
-                            ৳
+                            ¥
                         </span>
 
                     </div>
 
                     <p className="mt-3 text-2xl font-semibold text-gray-900 dark:text-white">
-                        ৳{statistics.revenue.toLocaleString()}
+                        ¥{statistics.revenue.toLocaleString()}
                     </p>
 
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -730,7 +730,7 @@ const Orders = () => {
 
                                         <td className="whitespace-nowrap px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
 
-                                            ৳{total.toLocaleString()}
+                                            ¥{total.toLocaleString()}
 
                                         </td>
 
@@ -930,7 +930,7 @@ const Orders = () => {
                                         </p>
 
                                         <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-                                            ৳{total.toLocaleString()}
+                                            ¥{total.toLocaleString()}
                                         </p>
 
                                     </div>

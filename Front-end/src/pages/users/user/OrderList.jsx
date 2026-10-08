@@ -105,31 +105,6 @@ function OrderList() {
     |--------------------------------------------------------------------------
     */
 
-    if (!image) {
-      return "https://via.placeholder.com/500";
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Already Complete URL
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-      image.startsWith("http://") ||
-      image.startsWith("https://")
-    ) {
-      return image;
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Laravel Storage Image
-    |--------------------------------------------------------------------------
-    */
-
     return getImageUrl(image);
   };
 
@@ -163,7 +138,7 @@ function OrderList() {
   */
 
   const formatPrice = (price) => {
-    return `$${Number(price || 0).toFixed(2)}`;
+    return `¥${Number(price || 0).toFixed(2)}`;
   };
 
 

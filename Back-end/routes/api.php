@@ -19,7 +19,7 @@ use App\Http\Controllers\API\AdController;
 //Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/orders', [OrderController::class, 'store']);
+Route::post('/orders', [OrderController::class, 'store'])->middleware('auth:sanctum');
 Route::post('/guest-orders', [OrderController::class, 'storeGuest']);
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/ads', [AdController::class, 'index']);

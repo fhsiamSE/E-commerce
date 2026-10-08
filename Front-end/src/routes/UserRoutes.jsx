@@ -10,6 +10,7 @@ import Home from "../pages/users/landingPage/Home";
 import AllProducts from "../pages/users/product/AllProducts";
 import CategoryProducts from "../pages/users/product/CategoryProducts";
 import ProductDetails from "../pages/users/product/ProductDetails";
+import HotDeals from "../pages/users/product/HotDeals";
 
 import ContactUs from "../pages/users/companyInfo/ContactUs";
 import Profile from "../pages/users/user/Profile";
@@ -78,6 +79,11 @@ function UserRoutes() {
       <Route
         path="/products"
         element={<AllProducts />}
+      />
+
+      <Route
+        path="/HotDeals"
+        element={<HotDeals />}
       />
 
 

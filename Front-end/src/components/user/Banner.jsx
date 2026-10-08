@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/axios.js';
+import defaultAdsImage from '../../assets/adsImages/defaultAdsImage.jpg';
+import { getImageUrl } from '../../utils/imageUrl.js';
 
 function Banner() {
   const [current, setCurrent] = useState(0);
@@ -31,7 +33,23 @@ function Banner() {
   }, [slides.length]);
 
   if (slides.length === 0) {
-    return null;
+    return (
+      <div className="relative mb-8 w-full overflow-hidden rounded-3xl bg-gray-100 shadow-md">
+        <div className="relative h-64 overflow-hidden md:h-96">
+          <img
+            src={defaultAdsImage}
+            alt="Store banner"
+            className="h-full w-full object-cover"
+          />
+           <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+                <p className="mb-2 text-xl font-semibold uppercase tracking-[0.3em] text-black">
+                  Welcome to Our Store
+                </p>
+            </div>
+          
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -46,7 +64,7 @@ function Banner() {
             style={{ zIndex: index === current ? 1 : 0 }}
           >
             <img
-              src={slide.image_url}
+              src={getImageUrl(slide.image || slide.image_url)}
               alt={slide.title}
               className="h-full w-full object-cover"
             />

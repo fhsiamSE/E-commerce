@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/axios.js";
+import { getImageUrl } from "../../../utils/imageUrl.js";
 
 function Ads() {
   const navigate = useNavigate();
@@ -77,7 +78,7 @@ function Ads() {
               className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
             >
               <img
-                src={ad.image_url}
+                src={getImageUrl(ad.image || ad.image_url)}
                 alt={ad.title}
                 className="h-44 w-full object-cover"
               />

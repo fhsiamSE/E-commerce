@@ -1,9 +1,12 @@
+
 // src/api/axios.js
 
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://e-commerce-bankend.onrender.com/api",
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    (import.meta.env.DEV ? "http://127.0.0.1:8000/api" : "/api"),
 
   headers: {
     Accept: "application/json",
@@ -28,3 +31,4 @@ api.interceptors.request.use(
 );
 
 export default api;
+

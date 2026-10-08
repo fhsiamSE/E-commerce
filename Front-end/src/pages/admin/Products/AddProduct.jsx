@@ -396,7 +396,7 @@ const AddProduct = () => {
                   <div className="relative">
 
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-                      ৳
+                      ¥
                     </span>
 
                     <input
@@ -893,10 +893,10 @@ const AddProduct = () => {
 
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
                     {price
-                      ? `৳${Number(
+                      ? `¥${Number(
                         price
                       ).toFixed(2)}`
-                      : "৳0.00"}
+                      : "¥0.00"}
                   </span>
 
                 </div>

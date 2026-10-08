@@ -209,7 +209,7 @@ function CheckoutModal({
                       </div>
 
                       <p className="text-sm font-semibold text-stone-900">
-                        ${(price * quantity).toFixed(2)}
+                        ¥{(price * quantity).toFixed(2)}
                       </p>
                     </div>
                   );
@@ -221,24 +221,24 @@ function CheckoutModal({
               <div className="space-y-3">
                 <div className="flex justify-between text-sm text-stone-600">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>¥{subtotal.toFixed(2)}</span>
                 </div>
 
                 <div className="flex justify-between text-sm text-stone-600">
                   <span>Shipping</span>
-                  <span>${shipping.toFixed(2)}</span>
+                  <span>¥{shipping.toFixed(2)}</span>
                 </div>
 
                 <div className="flex justify-between text-sm text-stone-600">
                   <span>Discount</span>
                   <span className="text-emerald-700">
-                    -${discount.toFixed(2)}
+                    -¥{discount.toFixed(2)}
                   </span>
                 </div>
 
                 <div className="flex justify-between border-t border-stone-200 pt-3 text-lg font-semibold text-stone-900">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>¥{total.toFixed(2)}</span>
                 </div>
               </div>
             </div>

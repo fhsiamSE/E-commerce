@@ -253,6 +253,20 @@ function Login() {
               Sign up
             </a>
           </p>
+
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="
+              mt-4
+              w-full
+              text-sm
+              text-gray-400
+              hover:text-[#ff7357]
+            "
+          >
+            Continue as guest
+          </button>
         </div>
       </div>
 
