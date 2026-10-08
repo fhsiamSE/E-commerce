@@ -1,4 +1,6 @@
 <IfModule mod_rewrite.c>
+    DirectoryIndex index.html index.php
+
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
@@ -18,7 +20,15 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Send Requests To Front Controller...
+    # Route API requests through Laravel before the React fallback.
+    RewriteRule ^api(/.*)?$ index.php [L,QSA,NC]
+
+    # Serve the React app for client-side routes.
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.html [L]
+
+    # Send other requests to Laravel's front controller.
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]

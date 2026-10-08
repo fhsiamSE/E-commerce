@@ -2,7 +2,7 @@ const API_URL =
   import.meta.env.VITE_API_URL ||
   (import.meta.env.DEV
     ? "http://127.0.0.1:8000/api"
-    : "https://e-commerce-bankend.onrender.com/api");
+    : "/api");
 
 const API_ORIGIN = API_URL.replace(/\/api\/?$/, "");
 const PLACEHOLDER_IMAGE = "https://via.placeholder.com/500";
