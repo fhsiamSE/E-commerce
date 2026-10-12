@@ -77,7 +77,7 @@ export default function CategoryBar() {
               <img
                 src={item.image}
                 alt={item.name}
-                className="h-full w-full"
+                className="h-full w-full object-cover"
                 loading="lazy"
               />
 

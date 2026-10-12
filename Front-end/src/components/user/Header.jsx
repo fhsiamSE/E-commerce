@@ -236,7 +236,7 @@ const Header = () => {
             <img
               src={shopLogo}
               alt="Shop logo"
-              className="sm:h-24 sm:w-42 h-16 w-28"
+              className="sm:h-24 sm:w-42 h-18 w-28"
             />
           </Link>
 

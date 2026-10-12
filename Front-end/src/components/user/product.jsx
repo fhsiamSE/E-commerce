@@ -575,6 +575,16 @@ function Product({
 
         <div className="flex items-center gap-1.5 sm:gap-2">
 
+          {slider && (
+            <button
+              type="button"
+              onClick={() => navigate("/products")}
+              className="rounded-full bg-black px-2.5 py-1.5 text-[10px] font-semibold text-white transition hover:bg-gray-800 sm:px-3 sm:text-xs lg:hidden"
+            >
+              See all products
+            </button>
+          )}
+
           {/* Slider Buttons */}
 
           {slider &&
