@@ -487,7 +487,7 @@ function OrderList() {
                         <img
                           src={getProductImage(item)}
                           alt={getProductName(item)}
-                          className="h-28 w-full rounded-2xl object-cover sm:h-24 sm:w-24"
+                          className="h-28 w-full rounded-2xl sm:h-24 sm:w-24"
                           onError={(event) => {
                             event.currentTarget.src =
                               "https://via.placeholder.com/500";

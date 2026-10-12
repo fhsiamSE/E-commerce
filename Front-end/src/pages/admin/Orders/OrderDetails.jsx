@@ -762,7 +762,7 @@ const OrderDetails = () => {
                                                                 alt={getItemProductName(
                                                                     item
                                                                 )}
-                                                                className="h-full w-full object-cover"
+                                                                className="h-full w-full"
                                                             />
                                                         ) : (
                                                             <div className="flex h-full w-full items-center justify-center text-xs text-gray-400">

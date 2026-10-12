@@ -188,7 +188,7 @@ function CheckoutModal({
                         <img
                           src={getProductImage(item)}
                           alt={getProductName(item)}
-                          className="h-16 w-16 rounded-2xl object-cover"
+                          className="h-16 w-16 rounded-2xl"
                         />
 
                         <div>

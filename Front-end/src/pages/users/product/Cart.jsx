@@ -319,7 +319,7 @@ function Cart() {
                             <img
                               src={getProductImage(item)}
                               alt={getProductName(item)}
-                              className="h-24 w-24 rounded-3xl object-cover"
+                              className="h-24 w-24 rounded-3xl"
                             />
 
                             <div>

@@ -122,7 +122,7 @@ export default function ReviewSlider({ title = "What Our Customers Say" }) {
                   <img
                     src={review.avatar}
                     alt={review.name}
-                    className="w-10 h-10 rounded-full object-cover border border-stone-200"
+                    className="w-10 h-10 rounded-full border border-stone-200"
                   />
                   <div className="truncate">
                     <p className="text-sm font-semibold text-stone-900 truncate">

@@ -15,6 +15,8 @@ function Register() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone_number, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [confirm_password, setPasswordConfirmation] = useState("");
 
@@ -26,6 +28,8 @@ function Register() {
         registerUser({
           name,
           email,
+          phone_number,
+          address,
           password,
           confirm_password,
         })
@@ -64,7 +68,7 @@ function Register() {
                 Create your account
               </p>
 
-              <h2 className="mt-2 text-4xl font-bold text-black">
+              <h2 className="mt-2 text-3xl font-bold text-black">
                 Sign up
               </h2>
             </div>
@@ -173,6 +177,50 @@ function Register() {
                   focus:ring-2
                   focus:ring-[#ff7357]
                 "
+              />
+
+            </div>
+
+            {/* Phone Number */}
+
+            <div>
+
+              <label className="text-sm text-gray-700">
+                Phone Number
+              </label>
+
+              <input
+                type="tel"
+                placeholder="Enter your phone number"
+                value={phone_number}
+                onChange={(e) =>
+                  setPhoneNumber(e.target.value)
+                }
+                required
+                autoComplete="tel"
+                className="mt-2 w-full rounded-md bg-[#fff5f2] px-4 py-3 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-[#ff7357]"
+              />
+
+            </div>
+
+            {/* Address */}
+
+            <div>
+
+              <label className="text-sm text-gray-700">
+                Address
+              </label>
+
+              <textarea
+                placeholder="Enter your address"
+                value={address}
+                onChange={(e) =>
+                  setAddress(e.target.value)
+                }
+                required
+                autoComplete="street-address"
+                rows={2}
+                className="mt-2 w-full resize-y rounded-md bg-[#fff5f2] px-4 py-3 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-[#ff7357]"
               />
 
             </div>

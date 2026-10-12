@@ -121,7 +121,7 @@ function AddAd() {
             <img
               src={getImageUrl(currentImage)}
               alt="Current ad"
-              className="mt-3 h-32 w-full rounded-lg object-cover"
+              className="mt-3 h-32 w-full rounded-lg "
             />
           )}
         </div>

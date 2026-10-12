@@ -870,7 +870,7 @@ const ProductDetails = () => {
                     }
                     alt={`${product.product_name} ${index + 1
                       }`}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full "
                   />
 
                 </button>
@@ -905,7 +905,7 @@ const ProductDetails = () => {
                   alt={
                     product.product_name
                   }
-                  className="h-full w-full object-cover"
+                  className="h-full w-full "
                 />
 
               ) : (
@@ -1401,7 +1401,7 @@ const ProductDetails = () => {
                               item.name ||
                               "Product"
                             }
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                            className="h-full w-full  transition duration-500 group-hover:scale-105"
                           />
 
                         ) : (

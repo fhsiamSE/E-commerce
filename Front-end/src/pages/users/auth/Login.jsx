@@ -139,7 +139,7 @@ function Login() {
                     hover:text-[#ff7357]
                   "
                 >
-                  Forgot Password ?
+                  {/* Forgot Password ? */}
                 </a>
               </div>
 

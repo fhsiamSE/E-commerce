@@ -29,8 +29,6 @@ const EditProduct = () => {
 
         description: "",
 
-        price: "",
-
     });
 
 
@@ -135,10 +133,6 @@ const EditProduct = () => {
 
                     description:
                         product.description ??
-                        "",
-
-                    price:
-                        product.price ??
                         "",
                 });
 
@@ -465,21 +459,6 @@ const EditProduct = () => {
         }
 
 
-        /* Price */
-
-        if (
-            formData.price === "" ||
-            Number(formData.price) < 0
-        ) {
-
-            setError(
-                "Please enter a valid product price."
-            );
-
-            return false;
-        }
-
-
         /* Variants */
 
         if (
@@ -525,11 +504,28 @@ const EditProduct = () => {
 
             if (
                 variant.stock === "" ||
+                !Number.isInteger(Number(variant.stock)) ||
                 Number(variant.stock) < 0
             ) {
 
                 setError(
                     `Valid stock is required for variant ${i + 1}.`
+                );
+
+                return false;
+            }
+
+
+            /* Price */
+
+            if (
+                variant.price === "" ||
+                !Number.isFinite(Number(variant.price)) ||
+                Number(variant.price) < 0
+            ) {
+
+                setError(
+                    `Valid price is required for variant ${i + 1}.`
                 );
 
                 return false;
@@ -618,12 +614,6 @@ const EditProduct = () => {
             data.append(
                 "description",
                 formData.description || ""
-            );
-
-
-            data.append(
-                "price",
-                formData.price
             );
 
 
@@ -999,31 +989,6 @@ const EditProduct = () => {
                         </div>
 
 
-                        {/* Price */}
-
-                        <div>
-
-                            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Price
-                            </label>
-
-                            <input
-                                type="number"
-                                name="price"
-                                value={
-                                    formData.price
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                min="0"
-                                step="0.01"
-                                placeholder="0.00"
-                                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:placeholder:text-gray-500"
-                            />
-
-                        </div>
-
                     </div>
 
                 </div>
@@ -1249,7 +1214,7 @@ const EditProduct = () => {
                             </h2>
 
                             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                Manage size, SKU, stock and variant price.
+                                Manage size, SKU, price and stock for each variant.
                             </p>
 
                         </div>
@@ -1375,6 +1340,7 @@ const EditProduct = () => {
 
                                             <input
                                                 type="number"
+                                                required
                                                 min="0"
                                                 value={
                                                     variant.stock
@@ -1403,6 +1369,7 @@ const EditProduct = () => {
 
                                             <input
                                                 type="number"
+                                                required
                                                 min="0"
                                                 step="0.01"
                                                 value={
@@ -1415,7 +1382,7 @@ const EditProduct = () => {
                                                         e.target.value
                                                     )
                                                 }
-                                                placeholder="Optional"
+                                                placeholder="0.00"
                                                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                                             />
 

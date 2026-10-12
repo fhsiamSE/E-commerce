@@ -291,40 +291,12 @@ function Profile() {
               <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-stone-200">
 
                 <h3 className="text-lg font-semibold text-stone-900">
-                  Account summary
+                  Payment methods
                 </h3>
 
-                <div className="mt-6 grid gap-4">
+                <div className="">
 
-                  {/* Orders */}
-                  <div className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5">
-                    <p className="text-sm font-semibold text-stone-900">
-                      Orders
-                    </p>
-
-                    <p className="mt-3 text-3xl font-bold text-stone-900">
-                      —
-                    </p>
-
-                    <p className="mt-1 text-xs text-stone-500">
-                      Order history coming soon
-                    </p>
-                  </div>
-
-                  {/* Wishlist */}
-                  <div className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5">
-                    <p className="text-sm font-semibold text-stone-900">
-                      Wishlist
-                    </p>
-
-                    <p className="mt-3 text-3xl font-bold text-stone-900">
-                      —
-                    </p>
-
-                    <p className="mt-1 text-xs text-stone-500">
-                      Wishlist coming soon
-                    </p>
-                  </div>
+                  
 
                   {/* Saved Cards */}
                   <div className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5">

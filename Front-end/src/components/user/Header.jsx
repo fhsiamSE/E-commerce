@@ -236,13 +236,13 @@ const Header = () => {
             <img
               src={shopLogo}
               alt="Shop logo"
-              className="h-42 w-64"
+              className="sm:h-24 sm:w-42 h-16 w-28"
             />
           </Link>
 
           <Link
             to="/"
-            className="text-6xl font-bold tracking-wide text-gray-900 sm:text-base"
+            className="text-xl font-bold tracking-wide text-gray-900 hidden sm:block"
           >
             Sarima Super Mart
           </Link>
@@ -390,14 +390,14 @@ const Header = () => {
                 onClick={() =>
                   setProfileMenu(!profileMenu)
                 }
-                className="rounded-full p-2 hover:bg-gray-100"
-                aria-label="Profile menu"
+                className="rounded-full p-2 hover:bg-gray-100 hidden sm:block" 
+                aria-label="Profile menu" 
               >
                 👤
               </button>
 
               {profileMenu && (
-                <div className="absolute right-0 mt-2 w-52 rounded-md border bg-white py-2 shadow-lg">
+                <div className="absolute right-0 mt-2 w-52 rounded-md border bg-white py-2 shadow-lg ">
 
                   {/* User name */}
 
@@ -552,45 +552,7 @@ const Header = () => {
             Products
           </Link>
 
-          {/* =====================================================
-              Cart
-          ====================================================== */}
-
-          <Link
-            to="/cart"
-            onClick={() =>
-              setMobileMenu(false)
-            }
-            className="flex items-center justify-between rounded px-2 py-2 hover:bg-gray-100"
-          >
-
-            <span>
-              Cart
-            </span>
-
-            {cartCount > 0 && (
-              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-red-500 px-2 text-xs font-bold text-white">
-                {cartCount > 99
-                  ? "99+"
-                  : cartCount}
-              </span>
-            )}
-
-          </Link>
-
-          {/* =====================================================
-              Wishlist
-          ====================================================== */}
-
-          <Link
-            to="/wishlist"
-            onClick={() =>
-              setMobileMenu(false)
-            }
-            className="block rounded px-2 py-2 hover:bg-gray-100"
-          >
-            Wishlist
-          </Link>
+        
 
           {/* =====================================================
               AUTHENTICATED MOBILE MENU

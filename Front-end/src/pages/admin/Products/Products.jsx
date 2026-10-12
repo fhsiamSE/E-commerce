@@ -727,7 +727,7 @@ const Products = () => {
                             alt={
                               product.product_name
                             }
-                            className="h-14 w-14 rounded-lg border border-gray-200 object-cover dark:border-gray-700"
+                            className="h-14 w-14 rounded-lg border border-gray-200 dark:border-gray-700"
                             onError={(e) => {
                               e.currentTarget.src =
                                 "https://via.placeholder.com/80";
@@ -869,7 +869,7 @@ const Products = () => {
                     <img
                       src={getProductImage(product)}
                       alt={product.product_name}
-                      className="h-20 w-20 flex-shrink-0 rounded-lg border border-gray-200 object-cover dark:border-gray-700"
+                      className="h-20 w-20 flex-shrink-0 rounded-lg border border-gray-200 dark:border-gray-700"
                       onError={(e) => {
                         e.currentTarget.src =
                           "https://via.placeholder.com/80";

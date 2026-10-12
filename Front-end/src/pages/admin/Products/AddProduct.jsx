@@ -13,9 +13,7 @@ const AddProduct = () => {
 
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
-  const [stock, setStock] = useState("");
 
   /*
   |--------------------------------------------------------------------------
@@ -178,13 +176,24 @@ const AddProduct = () => {
       return;
     }
 
-    if (!price) {
-      alert("Please enter product price.");
+    if (!category) {
+      alert("Please select a category.");
       return;
     }
 
-    if (!category) {
-      alert("Please select a category.");
+    const invalidVariantIndex = variants.findIndex(
+      (variant) =>
+        !variant.sku.trim() ||
+        variant.price === "" ||
+        !Number.isFinite(Number(variant.price)) ||
+        Number(variant.price) < 0 ||
+        variant.stock === "" ||
+        !Number.isInteger(Number(variant.stock)) ||
+        Number(variant.stock) < 0
+    );
+
+    if (invalidVariantIndex !== -1) {
+      alert(`Please enter a valid SKU, price, and stock for variant ${invalidVariantIndex + 1}.`);
       return;
     }
 
@@ -200,12 +209,7 @@ const AddProduct = () => {
 
       formData.append("product_name", productName.trim());
       formData.append("description", description || "");
-      formData.append("price", price);
       formData.append("category", category);
-
-      if (stock !== "" && stock !== null) {
-        formData.append("stock", stock);
-      }
 
       images.forEach((image) => {
         formData.append("images[]", image.file);
@@ -254,6 +258,15 @@ const AddProduct = () => {
   const handleCancel = () => {
     navigate("/admin/products");
   };
+
+  const variantPrices = variants
+    .filter((variant) => variant.price !== "")
+    .map((variant) => Number(variant.price))
+    .filter((variantPrice) => Number.isFinite(variantPrice) && variantPrice >= 0);
+
+  const startingPrice = variantPrices.length
+    ? Math.min(...variantPrices)
+    : null;
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 dark:bg-gray-950 sm:p-6 lg:p-8">
@@ -378,49 +391,9 @@ const AddProduct = () => {
               </div>
 
 
-              {/* PRICE / CATEGORY / STOCK */}
+              {/* CATEGORY */}
 
-              <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
-
-                {/* PRICE */}
-
-                <div>
-
-                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Price
-                    <span className="ml-1 text-red-500">
-                      *
-                    </span>
-                  </label>
-
-                  <div className="relative">
-
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-                      ¥
-                    </span>
-
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={price}
-                      onChange={(event) =>
-                        setPrice(
-                          event.target.value
-                        )
-                      }
-                      placeholder="0.00"
-                      className="h-11 w-full rounded-lg border border-gray-300 bg-white pl-8 pr-3 text-sm text-gray-900 outline-none focus:border-black focus:ring-1 focus:ring-black dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:focus:border-white"
-                    />
-
-                  </div>
-
-                </div>
-
-
-                {/* CATEGORY */}
-
-                <div>
+              <div className="mt-5 max-w-md">
 
                   <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Category
@@ -486,32 +459,6 @@ const AddProduct = () => {
                     </option>
 
                   </select>
-
-                </div>
-
-
-                {/* STOCK */}
-
-                <div>
-
-                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Stock
-                  </label>
-
-                  <input
-                    type="number"
-                    min="0"
-                    value={stock}
-                    onChange={(event) =>
-                      setStock(
-                        event.target.value
-                      )
-                    }
-                    placeholder="0"
-                    className="h-11 w-full rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-900 outline-none focus:border-black focus:ring-1 focus:ring-black dark:border-gray-700 dark:bg-gray-950 dark:text-white"
-                  />
-
-                </div>
 
               </div>
 
@@ -590,7 +537,7 @@ const AddProduct = () => {
                           <img
                             src={image.preview}
                             alt={`Product ${index + 1}`}
-                            className="h-full w-full object-cover"
+                            className="h-full w-full "
                           />
 
                         </div>
@@ -656,7 +603,7 @@ const AddProduct = () => {
                   </h2>
 
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Add size, SKU and stock variations.
+                    Add size, SKU, price and stock for each variation.
                   </p>
 
                 </div>
@@ -773,10 +720,12 @@ const AddProduct = () => {
 
                           <label className="mb-2 block text-xs font-medium text-gray-600 dark:text-gray-400">
                             Price
+                            <span className="ml-1 text-red-500">*</span>
                           </label>
 
                           <input
                             type="number"
+                            required
                             min="0"
                             step="0.01"
                             value={
@@ -803,10 +752,12 @@ const AddProduct = () => {
 
                           <label className="mb-2 block text-xs font-medium text-gray-600 dark:text-gray-400">
                             Stock
+                            <span className="ml-1 text-red-500">*</span>
                           </label>
 
                           <input
                             type="number"
+                            required
                             min="0"
                             value={
                               variant.stock
@@ -888,15 +839,13 @@ const AddProduct = () => {
                 <div className="flex items-center justify-between">
 
                   <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Price
+                    Starting price
                   </span>
 
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {price
-                      ? `¥${Number(
-                        price
-                      ).toFixed(2)}`
-                      : "¥0.00"}
+                    {startingPrice !== null
+                      ? `¥${startingPrice.toFixed(2)}`
+                      : "Set variant prices"}
                   </span>
 
                 </div>
@@ -953,7 +902,7 @@ const AddProduct = () => {
                       ]?.preview
                     }
                     alt="Primary product"
-                    className="h-full w-full object-cover"
+                    className="h-full w-full"
                   />
 
                 ) : (

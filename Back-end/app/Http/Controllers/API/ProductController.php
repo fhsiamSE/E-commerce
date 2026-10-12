@@ -106,11 +106,7 @@ class ProductController extends Controller
 
             'description' => 'nullable|string',
 
-            'price' => 'required|numeric|min:0',
-
             'category' => 'required|string|max:255',
-
-            'stock' => 'nullable|integer|min:0',
 
             'images' => 'nullable|array',
 
@@ -136,8 +132,11 @@ class ProductController extends Controller
 
             'variants.*.stock' => 'required|integer|min:0',
 
-            'variants.*.price' => 'nullable|numeric|min:0',
+            'variants.*.price' => 'required|numeric|min:0',
         ]);
+
+        $startingPrice = min(array_column($validated['variants'], 'price'));
+        $totalStock = array_sum(array_column($validated['variants'], 'stock'));
 
         DB::beginTransaction();
 
@@ -152,9 +151,9 @@ class ProductController extends Controller
             $product = Product::create([
                 'product_name' => $validated['product_name'],
                 'description' => $validated['description'] ?? null,
-                'price' => $validated['price'],
+                'price' => $startingPrice,
                 'category' => $validated['category'],
-                'stock' => $validated['stock'] ?? 0,
+                'stock' => $totalStock,
             ]);
 
 
@@ -190,8 +189,6 @@ class ProductController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $totalStock = (int) ($validated['stock'] ?? 0);
-
             foreach ($validated['variants'] as $variantData) {
 
                 $variant = $product->variants()->create([
@@ -201,24 +198,6 @@ class ProductController extends Controller
                     'price' => $variantData['price'] ?? null,
                 ]);
 
-                $totalStock += $variant->stock;
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE PRODUCT STOCK
-            |--------------------------------------------------------------------------
-            */
-
-            if ($request->filled('stock') && (int) $validated['stock'] > 0) {
-                $product->update([
-                    'stock' => (int) $validated['stock'],
-                ]);
-            } else {
-                $product->update([
-                    'stock' => $totalStock,
-                ]);
             }
 
             DB::commit();
@@ -299,8 +278,6 @@ class ProductController extends Controller
 
             'description' => 'nullable|string',
 
-            'price' => 'sometimes|required|numeric|min:0',
-
             'category_id' => 'sometimes|required|integer|exists:categories,id',
 
             /*
@@ -351,7 +328,7 @@ class ProductController extends Controller
 
             'variants.*.stock' => 'required|integer|min:0',
 
-            'variants.*.price' => 'nullable|numeric|min:0',
+            'variants.*.price' => 'required|numeric|min:0',
         ]);
 
 
@@ -406,11 +383,6 @@ class ProductController extends Controller
             if ($request->has('description')) {
                 $productData['description'] =
                     $validated['description'];
-            }
-
-            if ($request->has('price')) {
-                $productData['price'] =
-                    $validated['price'];
             }
 
             if ($request->has('category_id')) {
@@ -642,8 +614,13 @@ class ProductController extends Controller
                 ->variants()
                 ->sum('stock');
 
+            $startingPrice = $product
+                ->variants()
+                ->min('price');
+
             $product->update([
                 'stock' => $totalStock,
+                'price' => $startingPrice,
             ]);
 
 

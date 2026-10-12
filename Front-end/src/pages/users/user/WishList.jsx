@@ -497,7 +497,7 @@ function WishList() {
                   <img
                     src={getProductImage(item)}
                     alt={getProductName(item)}
-                    className="h-36 w-full rounded-3xl object-cover sm:w-40"
+                    className="h-36 w-full rounded-3xl sm:w-40"
                   />
 
 
