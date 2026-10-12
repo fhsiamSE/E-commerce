@@ -224,7 +224,7 @@ const Header = () => {
           : "-translate-y-full"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-2 py-2 lg:px-8">
 
         {/* =========================================================
             LOGO
@@ -236,13 +236,13 @@ const Header = () => {
             <img
               src={shopLogo}
               alt="Shop logo"
-              className="h-14 w-16"
+              className="h-42 w-64"
             />
           </Link>
 
           <Link
             to="/"
-            className="text-xs font-bold tracking-wide text-gray-900 sm:text-base"
+            className="text-6xl font-bold tracking-wide text-gray-900 sm:text-base"
           >
             Sarima Super Mart
           </Link>

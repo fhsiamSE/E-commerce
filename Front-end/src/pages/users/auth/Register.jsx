@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../../store/auth/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import authLogo from "../../../assets/images/authLogo.png";
+import shopLogo from "../../../assets/images/shopLogo.png";
 
 function Register() {
   const dispatch = useDispatch();
@@ -43,52 +44,37 @@ function Register() {
 
       {/* LEFT REGISTER SECTION */}
 
-      <div className="flex w-full items-center justify-center px-6 lg:w-1/2">
+      <div className="flex w-full items-center justify-center px-6 py-8 lg:w-1/2">
 
         <div
           className="
             w-full
-            max-w-md
+            max-w-lg
             rounded-2xl
             bg-white
-            px-10
+            px-12
             py-10
             shadow-xl
           "
         >
 
-          {/* Logo */}
+          <div className="mb-2 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm text-gray-400">
+                Create your account
+              </p>
 
-          <h1
-            className="
-              text-2xl
-              font-bold
-              text-[#ff7357]
-            "
-          >
-            Logo Here
-          </h1>
+              <h2 className="mt-2 text-4xl font-bold text-black">
+                Sign up
+              </h2>
+            </div>
 
-          <p
-            className="
-              mt-8
-              text-sm
-              text-gray-400
-            "
-          >
-            Create your account
-          </p>
-
-          <h2
-            className="
-              mt-3
-              text-4xl
-              font-bold
-              text-black
-            "
-          >
-            Sign up
-          </h2>
+            <img
+              src={shopLogo}
+              alt="Sarima Super Mart"
+              className="h-32 w-auto shrink-0 object-contain"
+            />
+          </div>
 
           {/* Error */}
 

@@ -591,57 +591,6 @@ function WishList() {
 
         )}
 
-
-        {/* =========================================================
-            WISHLIST TIPS
-        ========================================================== */}
-
-        <section className="mt-8 rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-stone-200">
-
-          <h2 className="text-xl font-semibold text-stone-900">
-            Wishlist tips
-          </h2>
-
-          <p className="mt-3 text-sm text-stone-500">
-            Check your favorites before sale events and move items to cart for faster checkout.
-          </p>
-
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-
-            {/* Save Time */}
-
-            <div className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5">
-
-              <h3 className="text-sm font-semibold text-stone-900">
-                Save time
-              </h3>
-
-              <p className="mt-2 text-sm text-stone-600">
-                Keep your preferred items ready for future promotions and restocks.
-              </p>
-
-            </div>
-
-
-            {/* Stay Organized */}
-
-            <div className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5">
-
-              <h3 className="text-sm font-semibold text-stone-900">
-                Stay organized
-              </h3>
-
-              <p className="mt-2 text-sm text-stone-600">
-                Group your wishlist picks by occasion or price range as you browse.
-              </p>
-
-            </div>
-
-          </div>
-
-        </section>
-
       </div>
 
     </div>

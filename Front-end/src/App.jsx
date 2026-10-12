@@ -44,7 +44,7 @@ function App() {
 
   const userPageClass =
     !hideUserLayout
-      ? "mt-18 flex flex-col bg-stone-50"
+      ? "mt-24 flex flex-col bg-stone-50"
       : "";
 
   return (

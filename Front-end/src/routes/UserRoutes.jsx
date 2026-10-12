@@ -13,6 +13,7 @@ import ProductDetails from "../pages/users/product/ProductDetails";
 import HotDeals from "../pages/users/product/HotDeals";
 
 import ContactUs from "../pages/users/companyInfo/ContactUs";
+import FAQ from "../pages/users/companyInfo/FAQ";
 import Profile from "../pages/users/user/Profile";
 import WishList from "../pages/users/user/WishList";
 import Cart from "../pages/users/product/Cart";
@@ -105,11 +106,12 @@ function UserRoutes() {
 
       <Route
         path="/contact"
-        element={
-          <ProtectedRoute>
-            <ContactUs />
-          </ProtectedRoute>
-        }
+        element={<ContactUs />}
+      />
+
+      <Route
+        path="/faq"
+        element={<FAQ />}
       />
 
 

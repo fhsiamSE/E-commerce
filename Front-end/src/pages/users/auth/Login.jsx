@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../../store/auth/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import authLogo from "../../../assets/images/authLogo.png";
+import shopLogo from "../../../assets/images/shopLogo.png";
+
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -37,31 +39,23 @@ function Login() {
       {/* LEFT LOGIN SECTION */}
       <div className="flex w-full items-center justify-center lg:w-1/2">
         <div className="w-full max-w-md px-8 py-10">
-          {/* Logo */}
-          <div>
-            Logo Here
+          <div className="mb-2 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm text-gray-400">
+                Welcome back !!!
+              </p>
+
+              <h2 className="mt-3 text-4xl font-bold text-black">
+                Sign in
+              </h2>
+            </div>
+
+            <img
+              src={shopLogo}
+              alt="Sarima Super Mart"
+              className="h-32 w-auto shrink-0 object-contain"
+            />
           </div>
-
-          <p
-            className="
-              mt-10
-              text-sm
-              text-gray-400
-            "
-          >
-            Welcome back !!!
-          </p>
-
-          <h2
-            className="
-              mt-3
-              text-4xl
-              font-bold
-              text-black
-            "
-          >
-            Sign in
-          </h2>
 
           {/* Error */}
           {error && (

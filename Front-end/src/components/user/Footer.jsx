@@ -59,22 +59,17 @@ export default function Footer() {
           <h2 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '0px', lineHeight: 1.2 }}>
             JOIN US<br />TO GET A BETTER SHOPPING EXPERIENCE
           </h2>
-          <p style={{ fontSize: '16px', marginBottom: '24px', opacity: 0.95 }}>
-            Sign up for free! Join the community.
-          </p>
 
         </div>
 
         {/* Right - Logo */}
         <div className="flex items-center">
 
-          <Link to="/" className="flex items-center">
             <img
               src={shopLogo}
               alt="Shop logo"
               className="h-48 w-64"
             />
-          </Link>
 
           {/* <Link
                     to="/"
@@ -114,11 +109,16 @@ export default function Footer() {
             Company
           </h3>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {['About', 'Contact', 'Blogs'].map((item) => (
-              <li key={item} style={{ marginBottom: '12px', fontSize: '14px', cursor: 'pointer', opacity: 0.8 }}>
-                {item}
-              </li>
-            ))}
+            <li style={{ marginBottom: '12px', fontSize: '14px', opacity: 0.8 }}>
+              <Link to="/contact" style={{ color: 'inherit', textDecoration: 'none' }}>
+                Contact
+              </Link>
+            </li>
+            <li style={{ marginBottom: '12px', fontSize: '14px', opacity: 0.8 }}>
+              <Link to="/faq" style={{ color: 'inherit', textDecoration: 'none' }}>
+                FAQ
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -127,17 +127,30 @@ export default function Footer() {
           <h3 style={{ color: '#f59e0b', fontSize: '18px', fontWeight: 'bold', marginBottom: '20px' }}>
             Follow us
           </h3>
-          <div style={{ display: 'flex', gap: '16px', fontSize: '20px' }}>
-            <a href="#" style={{ color: 'white', cursor: 'pointer', opacity: 0.8 }}>📘</a>
-            <a href="#" style={{ color: 'white', cursor: 'pointer', opacity: 0.8 }}>📷</a>
-            <a href="#" style={{ color: 'white', cursor: 'pointer', opacity: 0.8 }}>𝕏</a>
-            <a href="#" style={{ color: 'white', cursor: 'pointer', opacity: 0.8 }}>♪</a>
+          <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
+            <a href="https://www.facebook.com/p/Sarima-Super-Mart-61595034998336/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="inline-flex transition-all duration-200 hover:scale-110 hover:text-amber-400 hover:opacity-100" style={{ color: 'white', cursor: 'pointer', opacity: 0.8 }}>
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+            </a>
+            <a href="https://www.instagram.com/sarimasupermartjb/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="inline-flex transition-all duration-200 hover:scale-110 hover:text-amber-400 hover:opacity-100" style={{ color: 'white', cursor: 'pointer', opacity: 0.8 }}>
+              <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r=".75" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+            <a href="https://www.tiktok.com/@sarimasupermart" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="inline-flex transition-all duration-200 hover:scale-110 hover:text-amber-400 hover:opacity-100" style={{ color: 'white', cursor: 'pointer', opacity: 0.8 }}>
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.33V2h-3.45v13.67a2.9 2.9 0 0 1-2.9 2.76 2.9 2.9 0 0 1-2.9-2.9 2.9 2.9 0 0 1 2.9-2.9c.3 0 .6.05.88.14V9.25a6.4 6.4 0 0 0-.88-.06A6.35 6.35 0 0 0 3.12 15.54a6.35 6.35 0 0 0 6.35 6.35 6.35 6.35 0 0 0 6.35-6.35V8.58a8.2 8.2 0 0 0 4.8 1.54V6.67a4.8 4.8 0 0 1-1.03.02Z" />
+              </svg>
+            </a>
           </div>
         </div>
         
       </div>
-       <div className='items-center bg-black py-4 text-center text-sm text-stone-400'>
-          all rights reserved @ 2026 Sarima supper mart. Designed by Siam.
+       <div className='items-center bg-black py-1 text-center text-xs text-stone-400'>
+          All rights reserved {new Date().getFullYear()} Sarima Super Mart. Developed by Siam.
         </div>
     </footer>
   );

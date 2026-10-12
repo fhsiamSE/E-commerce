@@ -32,15 +32,16 @@ const categories = [
     href: "/category/vegetables",
   },
   {
+    name: "Spices & oils",
+    image: spices,
+    href: "/category/spices-and-cooking",
+  },
+  {
     name: "Beans",
     image: Beans,
     href: "/category/beans",
   },
-  {
-    name: "Spices & Oils",
-    image: spices,
-    href: "/category/spices-and-cooking",
-  },
+  
   {
     name: "Snacks",
     image: Snacks,

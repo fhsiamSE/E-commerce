@@ -168,7 +168,7 @@ function Profile() {
 
   return (
     <>
-      <div className="min-h-screen bg-stone-50  pb-16">
+      <div className="min-h-screen bg-stone-50  pb-16 mt-8">
         <div className="container mx-auto px-4">
 
           {/* Profile Header */}
