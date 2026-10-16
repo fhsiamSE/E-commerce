@@ -364,6 +364,22 @@ const OrderDetails = () => {
         );
     };
 
+    const formatDeliveryTime = (time) => {
+        if (!time) {
+            return "-";
+        }
+
+        if (time.includes("-")) {
+            return time;
+        }
+
+        const [hours, minutes] = time.slice(0, 5).split(":").map(Number);
+        const period = hours >= 12 ? "PM" : "AM";
+        const displayHours = hours % 12 || 12;
+
+        return `${displayHours}:${String(minutes).padStart(2, "0")} ${period}`;
+    };
+
     /*
     |--------------------------------------------------------------------------
     | Product Information
@@ -1194,6 +1210,30 @@ const OrderDetails = () => {
                                 >
                                     {order?.status ||
                                         "Unknown"}
+                                </span>
+
+                            </div>
+
+                            <div className="flex items-center justify-between">
+
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                    Delivery Date
+                                </span>
+
+                                <span className="text-sm text-gray-900 dark:text-white">
+                                    {formatDate(order?.delivery_date)}
+                                </span>
+
+                            </div>
+
+                            <div className="flex items-center justify-between">
+
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                    Delivery Time
+                                </span>
+
+                                <span className="text-sm text-gray-900 dark:text-white">
+                                    {formatDeliveryTime(order?.delivery_time)}
                                 </span>
 
                             </div>

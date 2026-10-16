@@ -19,10 +19,31 @@ function CheckoutModal({
   placingOrder = false,
   orderSuccess = false,
 }) {
+  const deliveryTimeSlots = [
+    "09:00-12:00",
+    "09:00-21:00",
+    "14:00-16:00",
+    "16:00-18:00",
+    "18:00-20:00",
+    "19:00-21:00",
+  ];
+
   const [guestChoice, setGuestChoice] = useState(false);
   const [guestEmail, setGuestEmail] = useState("");
   const [guestPhone, setGuestPhone] = useState("");
   const [guestAddress, setGuestAddress] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState("");
+  const [deliveryTime, setDeliveryTime] = useState("");
+
+  const getMinimumDeliveryDate = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 2);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
 
   useEffect(() => {
     if (!isOpen) {
@@ -30,6 +51,8 @@ function CheckoutModal({
       setGuestEmail("");
       setGuestPhone("");
       setGuestAddress("");
+      setDeliveryDate("");
+      setDeliveryTime("");
     }
   }, [isOpen]);
 
@@ -38,6 +61,16 @@ function CheckoutModal({
   }
 
   const handleConfirm = () => {
+    if (!deliveryDate || !deliveryTime) {
+      alert("Please select your delivery date and time.");
+      return;
+    }
+
+    const schedule = {
+      delivery_date: deliveryDate,
+      delivery_time: deliveryTime,
+    };
+
     if (!isAuthenticated) {
       if (!guestEmail.trim() || !guestPhone.trim() || !guestAddress.trim()) {
         alert("Please enter your email, phone number, and delivery address before confirming the order.");
@@ -48,11 +81,12 @@ function CheckoutModal({
         guest_email: guestEmail.trim(),
         guest_phone: guestPhone.trim(),
         delivery_address: guestAddress.trim(),
+        ...schedule,
       });
       return;
     }
 
-    onConfirm();
+    onConfirm(schedule);
   };
 
   return (
@@ -168,6 +202,55 @@ function CheckoutModal({
               </div>
             )}
 
+            {(isAuthenticated || guestChoice) && (
+              <div className="mt-6 rounded-2xl border border-stone-200 bg-stone-50 p-5">
+                <h3 className="mb-4 text-sm font-semibold text-stone-900">
+                  Choose delivery date and time
+                </h3>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-stone-700">
+                      Delivery date
+                    </label>
+                    <input
+                      type="date"
+                      value={deliveryDate}
+                      min={getMinimumDeliveryDate()}
+                      onChange={(event) => setDeliveryDate(event.target.value)}
+                      required
+                      className="w-full rounded-xl border border-stone-200 bg-white px-3 py-3 text-sm outline-none focus:border-black"
+                    />
+                    <p className="mt-1 text-xs text-stone-500">
+                      Earliest delivery is 2 days from today.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-stone-700">
+                      Delivery time
+                    </label>
+                    <select
+                      value={deliveryTime}
+                      onChange={(event) => setDeliveryTime(event.target.value)}
+                      required
+                      className="w-full rounded-xl border border-stone-200 bg-white px-3 py-3 text-sm outline-none focus:border-black"
+                    >
+                      <option value="">Select a time slot</option>
+                      {deliveryTimeSlots.map((slot) => (
+                        <option key={slot} value={slot}>
+                          {slot}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="mt-1 text-xs text-stone-500">
+                      Select one of the available delivery time slots.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="mt-6 rounded-2xl border border-stone-200">
               <div className="bg-stone-100 px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-stone-600">
                 Your order
@@ -257,6 +340,8 @@ function CheckoutModal({
                 onClick={handleConfirm}
                 disabled={
                   placingOrder ||
+                  !deliveryDate ||
+                  !deliveryTime ||
                   (!isAuthenticated && (!guestChoice || !guestEmail.trim() || !guestPhone.trim() || !guestAddress.trim()))
                 }
                 className="w-full rounded-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-900 disabled:cursor-not-allowed disabled:opacity-60"
@@ -284,6 +369,9 @@ function CheckoutModal({
 
             <p className="mt-2 text-sm text-stone-500">
               Thank you for your order.
+            </p>
+            <p className="mt-4 text-sm font-medium text-stone-700">
+              Delivery: {deliveryDate} at {deliveryTime}
             </p>
           </div>
         )}

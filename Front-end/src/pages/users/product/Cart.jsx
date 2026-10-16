@@ -180,8 +180,13 @@ function Cart() {
     setShowCheckout(false);
   };
 
-  const handleConfirmOrder = async (guestData = null) => {
+  const handleConfirmOrder = async (orderData = null) => {
     if (!activeCartItems.length) {
+      return;
+    }
+
+    if (!orderData?.delivery_date || !orderData?.delivery_time) {
+      alert("Please select your delivery date and time.");
       return;
     }
 
@@ -189,10 +194,13 @@ function Cart() {
       setPlacingOrder(true);
 
       if (isAuthenticated) {
-        const response = await api.post("/orders");
+        const response = await api.post("/orders", {
+          delivery_date: orderData.delivery_date,
+          delivery_time: orderData.delivery_time,
+        });
         console.log("Order response:", response.data);
       } else {
-        if (!guestData?.guest_email || !guestData?.guest_phone || !guestData?.delivery_address) {
+        if (!orderData?.guest_email || !orderData?.guest_phone || !orderData?.delivery_address) {
           alert("Please provide your email, phone number, and delivery address to continue as guest.");
           return;
         }
@@ -204,9 +212,11 @@ function Cart() {
         }));
 
         const response = await api.post("/guest-orders", {
-          guest_email: guestData.guest_email,
-          guest_phone: guestData.guest_phone,
-          delivery_address: guestData.delivery_address,
+          guest_email: orderData.guest_email,
+          guest_phone: orderData.guest_phone,
+          delivery_address: orderData.delivery_address,
+          delivery_date: orderData.delivery_date,
+          delivery_time: orderData.delivery_time,
           items: guestItems,
         });
 

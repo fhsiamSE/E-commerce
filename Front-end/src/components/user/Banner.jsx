@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import api from '../../api/axios.js';
 import defaultAdsImage from '../../assets/adsImages/defaultAdsImage.jpg';
 import { getImageUrl } from '../../utils/imageUrl.js';
+import { useNavigate } from 'react-router-dom';
 
 function Banner() {
+  const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
   const [slides, setSlides] = useState([]);
 
@@ -35,18 +37,18 @@ function Banner() {
   if (slides.length === 0) {
     return (
       <div className="relative mb-8 w-full overflow-hidden rounded-3xl bg-gray-100 shadow-md">
-        <div className="relative h-64 overflow-hidden md:h-96">
+        <div className="relative h-34 overflow-hidden md:h-64">
           <img
             src={defaultAdsImage}
             alt="Store banner"
-            className="h-full w-full object-cover"
+            className="h-full w-full"
           />
-           <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
-                <p className="mb-2 text-xl font-semibold uppercase tracking-[0.3em] text-black">
-                  Welcome to Our Store
-                </p>
-            </div>
-          
+          <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+            <p className="mb-2 text-xl font-semibold uppercase tracking-[0.3em] text-black">
+              Welcome to Our Store
+            </p>
+          </div>
+
         </div>
       </div>
     );
@@ -54,19 +56,18 @@ function Banner() {
 
   return (
     <div className="relative mb-8 overflow-hidden rounded-3xl bg-gray-100 shadow-md w-full">
-      <div className="relative h-64 overflow-hidden md:h-96">
+      <div className="relative h-34 overflow-hidden md:h-64">
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ${
-              index === current ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`absolute inset-0 transition-opacity duration-700 ${index === current ? 'opacity-100' : 'opacity-0'
+              }`}
             style={{ zIndex: index === current ? 1 : 0 }}
           >
             <img
               src={getImageUrl(slide.image || slide.image_url)}
               alt={slide.title}
-              className="h-full w-full object-cover"
+              className="h-full w-full"
             />
             <div className="absolute inset-0 bg-black/35" />
             <div className="absolute inset-0 flex items-center justify-center px-6 text-center text-white">
@@ -78,9 +79,14 @@ function Banner() {
                   {slide.title}
                 </h2>
                 <p className="mt-2 text-sm sm:text-base">{slide.subtitle}</p>
-                {/* <button className="mt-5 rounded-full bg-white px-5 py-2 text-sm font-semibold text-gray-900 transition hover:bg-gray-400 pointer-events-auto relative z-10">
+                <button
+                  type="button"
+                  onClick={() => navigate('/HotDeals')}
+                  className="mt-3 sm:mt-5 rounded-full bg-white px-3 py-1.5 sm:px-5 sm:py-2 text-xs sm:text-sm font-semibold text-gray-900 transition hover:bg-gray-400 pointer-events-auto relative z-10"
+                >
+                  
                   Shop Now
-                </button> */}
+                </button>
               </div>
             </div>
           </div>
@@ -92,9 +98,8 @@ function Banner() {
           <button
             key={slide.id}
             onClick={() => setCurrent(index)}
-            className={`h-2.5 w-2.5 rounded-full transition ${
-              index === current ? 'bg-white' : 'bg-white/50'
-            }`}
+            className={`h-2.5 w-2.5 rounded-full transition ${index === current ? 'bg-white' : 'bg-white/50'
+              }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}

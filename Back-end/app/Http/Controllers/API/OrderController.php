@@ -14,6 +14,15 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
+    private const DELIVERY_TIME_SLOTS = [
+        '09:00-12:00',
+        '09:00-21:00',
+        '14:00-16:00',
+        '16:00-18:00',
+        '18:00-20:00',
+        '19:00-21:00',
+    ];
+
     /*
     |--------------------------------------------------------------------------
     | Get Logged-in User Orders
@@ -63,6 +72,16 @@ class OrderController extends Controller
         $validated = $request->validate([
             'shipping' => 'nullable|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
+            'delivery_date' => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:' . now()->addDays(2)->toDateString(),
+            ],
+            'delivery_time' => [
+                'required',
+                'string',
+                'in:' . implode(',', self::DELIVERY_TIME_SLOTS),
+            ],
         ]);
 
 
@@ -220,6 +239,8 @@ class OrderController extends Controller
                 'shipping' => $shipping,
                 'discount' => $discount,
                 'total' => $total,
+                'delivery_date' => $validated['delivery_date'],
+                'delivery_time' => $validated['delivery_time'],
                 'status' => 'pending',
             ]);
 
@@ -501,6 +522,16 @@ class OrderController extends Controller
             'guest_email' => 'required|email|max:255',
             'guest_phone' => 'required|string|max:30',
             'delivery_address' => 'required|string|max:500',
+            'delivery_date' => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:' . now()->addDays(2)->toDateString(),
+            ],
+            'delivery_time' => [
+                'required',
+                'string',
+                'in:' . implode(',', self::DELIVERY_TIME_SLOTS),
+            ],
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|integer|exists:products,id',
             'items.*.variant_id' => 'nullable|integer|exists:product_variants,id',
@@ -573,6 +604,8 @@ class OrderController extends Controller
                 'shipping' => $shipping,
                 'discount' => $discount,
                 'total' => $total,
+                'delivery_date' => $validated['delivery_date'],
+                'delivery_time' => $validated['delivery_time'],
                 'status' => 'pending',
             ]);
 
