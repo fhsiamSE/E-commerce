@@ -29,7 +29,7 @@ class AdController extends Controller
     {
         $validated = $request->validate([
             'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-            'title' => ['required', 'string', 'max:255'],
+            'title' => ['nullable', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -48,7 +48,7 @@ class AdController extends Controller
     {
         $validated = $request->validate([
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-            'title' => ['required', 'string', 'max:255'],
+            'title' => ['nullable', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:1000'],
         ]);
 

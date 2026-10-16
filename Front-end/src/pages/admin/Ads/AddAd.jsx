@@ -44,8 +44,8 @@ function AddAd() {
     event.preventDefault();
     setError("");
 
-    if ((!image && !isEditing) || !title.trim()) {
-      setError("Please select an image and enter a title.");
+    if (!image && !isEditing) {
+      setError("Please select an image.");
       return;
     }
 
