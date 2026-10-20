@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
 import Product from "../../../components/user/product";
+import Loader from "../../../components/Loader.jsx";
 import { getProducts } from "../../../store/productSlice";
 
 function AllProducts() {
@@ -61,13 +62,7 @@ function AllProducts() {
   */
 
   if (loading && products.length === 0) {
-    return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <p className="text-sm text-gray-600">
-          Loading products...
-        </p>
-      </div>
-    );
+    return <Loader fullScreen={false} className="min-h-[60vh]" label="Loading products..." />;
   }
 
   /*

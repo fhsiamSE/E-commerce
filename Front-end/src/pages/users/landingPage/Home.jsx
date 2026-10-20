@@ -6,6 +6,7 @@ import CountryFilter from "../../../components/user/CountryFilter";
 import Product from "../../../components/user/product";
 import Banner from "../../../components/user/Banner";
 import Review from "../../../components/user/ReviewSlider";
+import Loader from "../../../components/Loader.jsx";
 
 import { getHomeData } from "../../../store/homeSlice";
 
@@ -25,11 +26,7 @@ function Home() {
   }, [dispatch]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading products...</p>
-      </div>
-    );
+    return <Loader label="Loading products..." />;
   }
 
   if (error) {

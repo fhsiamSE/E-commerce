@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getCart, updateCart, removeFromCart } from "../../../store/cartSlice.js";
 import api from "../../../api/axios.js";
 import CheckoutModal from "../../../components/user/CheckoutModal.jsx";
+import Loader from "../../../components/Loader.jsx";
 import { getImageUrl } from "../../../utils/imageUrl.js";
 
 const GUEST_CART_KEY = "guest_cart";
@@ -285,11 +286,7 @@ function Cart() {
 
           {/* Loading */}
           {loading && activeCartItems.length === 0 ? (
-            <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-stone-200">
-              <p className="text-sm text-stone-500">
-                Loading your cart...
-              </p>
-            </div>
+            <Loader fullScreen={false} size={72} className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-stone-200" label="Loading your cart..." />
           ) : activeCartItems.length === 0 ? (
             /* Empty Cart */
             <div className="rounded-[2rem] bg-white p-12 text-center shadow-sm ring-1 ring-stone-200">

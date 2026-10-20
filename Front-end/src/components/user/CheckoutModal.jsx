@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Loader from "../Loader.jsx";
 
 function CheckoutModal({
   isOpen,
@@ -348,7 +349,7 @@ function CheckoutModal({
                 type="button"
               >
                 {placingOrder
-                  ? "Placing order..."
+                  ? <Loader inline size={22} label="Placing order..." />
                   : isAuthenticated
                     ? "Confirm order"
                     : guestChoice

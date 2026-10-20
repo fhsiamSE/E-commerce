@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Product from "../../../components/user/product";
 import api from "../../../api/axios.js";
+import Loader from "../../../components/Loader.jsx";
 
 function CategoryProducts() {
   const { category } = useParams();
@@ -194,57 +195,7 @@ function CategoryProducts() {
   */
 
   if (loading && products.length === 0) {
-    return (
-      <div className="min-h-screen bg-gray-50 px-4 py-10">
-        <div className="mx-auto max-w-7xl">
-
-          {/* Page Header */}
-
-          <div className="mb-8">
-            <div className="h-8 w-48 animate-pulse rounded bg-gray-200" />
-
-            <div className="mt-3 h-4 w-72 animate-pulse rounded bg-gray-200" />
-          </div>
-
-          {/* Product Skeleton */}
-
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
-
-            {Array.from({ length: 10 }).map((_, index) => (
-              <div
-                key={index}
-                className="rounded-2xl border border-gray-200 bg-white p-3 shadow-sm sm:p-4"
-              >
-
-                {/* Image */}
-
-                <div className="aspect-square w-full animate-pulse rounded-xl bg-gray-200" />
-
-                {/* Name */}
-
-                <div className="mt-4 h-4 w-3/4 animate-pulse rounded bg-gray-200" />
-
-                {/* Description */}
-
-                <div className="mt-2 h-3 w-full animate-pulse rounded bg-gray-200" />
-
-                <div className="mt-2 h-3 w-2/3 animate-pulse rounded bg-gray-200" />
-
-                {/* Price */}
-
-                <div className="mt-4 h-5 w-20 animate-pulse rounded bg-gray-200" />
-
-                {/* Button */}
-
-                <div className="mt-4 h-8 w-full animate-pulse rounded-full bg-gray-200" />
-
-              </div>
-            ))}
-
-          </div>
-        </div>
-      </div>
-    );
+    return <Loader fullScreen={false} className="min-h-[60vh]" label="Loading products..." />;
   }
 
   /*

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/axios.js";
 import { getImageUrl } from "../../../utils/imageUrl.js";
+import Loader from "../../../components/Loader.jsx";
 
 function OrderList() {
   const navigate = useNavigate();
@@ -208,95 +209,7 @@ function OrderList() {
   */
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-stone-50 px-4 py-8 pb-16">
-
-        <div className="mx-auto max-w-7xl">
-
-          {/* Header Skeleton */}
-
-          <div className="mb-8 rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-stone-200">
-
-            <div className="animate-pulse">
-
-              <div className="h-4 w-24 rounded bg-stone-200" />
-
-              <div className="mt-3 h-8 w-64 rounded bg-stone-200" />
-
-              <div className="mt-3 h-4 w-80 max-w-full rounded bg-stone-200" />
-
-            </div>
-
-          </div>
-
-
-          {/* Order Skeleton */}
-
-          <div className="space-y-6">
-
-            {[1, 2].map((item) => (
-
-              <div
-                key={item}
-                className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-stone-200"
-              >
-
-                <div className="animate-pulse">
-
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-                    <div>
-
-                      <div className="h-5 w-32 rounded bg-stone-200" />
-
-                      <div className="mt-2 h-4 w-24 rounded bg-stone-200" />
-
-                    </div>
-
-                    <div className="h-7 w-20 rounded-full bg-stone-200" />
-
-                  </div>
-
-
-                  <div className="mt-6 space-y-4">
-
-                    {[1, 2].map((product) => (
-
-                      <div
-                        key={product}
-                        className="flex gap-4"
-                      >
-
-                        <div className="h-24 w-24 rounded-2xl bg-stone-200" />
-
-                        <div className="flex-1">
-
-                          <div className="h-5 w-48 rounded bg-stone-200" />
-
-                          <div className="mt-3 h-4 w-20 rounded bg-stone-200" />
-
-                          <div className="mt-3 h-4 w-16 rounded bg-stone-200" />
-
-                        </div>
-
-                      </div>
-
-                    ))}
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
-
-      </div>
-    );
+    return <Loader label="Loading your orders..." />;
   }
 
 

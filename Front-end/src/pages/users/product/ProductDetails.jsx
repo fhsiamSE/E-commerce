@@ -21,6 +21,7 @@ import {
 } from "../../../store/cartSlice.js";
 
 import ReviewSection from "../../../components/user/ReviewSection.jsx";
+import Loader from "../../../components/Loader.jsx";
 import { getImageUrl } from "../../../utils/imageUrl.js";
 
 
@@ -760,23 +761,7 @@ const ProductDetails = () => {
   */
 
   if (loading) {
-
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
-
-        <div className="text-center">
-
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-black" />
-
-          <p className="mt-4 text-sm text-gray-500">
-            Loading product...
-          </p>
-
-        </div>
-
-      </div>
-    );
-
+    return <Loader label="Loading product..." />;
   }
 
 
@@ -1186,7 +1171,7 @@ const ProductDetails = () => {
                 className="h-12 w-full border border-black bg-white text-sm font-medium transition hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {cartLoading
-                  ? "Adding..."
+                  ? <Loader inline size={22} label="Adding..." />
                   : "Add to cart"}
               </button>
 
@@ -1242,64 +1227,7 @@ const ProductDetails = () => {
 
             {/* SHIPPING */}
 
-            <div className="border-b border-gray-200">
-
-              <button
-                type="button"
-                onClick={() =>
-                  setOpenShipping(
-                    !openShipping
-                  )
-                }
-                className="flex w-full items-center justify-between py-5 text-left"
-              >
-
-                <span className="text-base font-medium">
-                  Shipping & Returns
-                </span>
-
-                <svg
-                  className={`h-4 w-4 transition-transform ${openShipping
-                      ? "rotate-180"
-                      : ""
-                    }`}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-
-              </button>
-
-
-              {openShipping && (
-
-                <div className="pb-5 text-sm leading-6 text-gray-600">
-
-                  <p>
-                    Free shipping on
-                    eligible orders.
-                  </p>
-
-                  <p className="mt-2">
-                    Orders are processed
-                    within 1–3 business
-                    days.
-                  </p>
-
-                  <p className="mt-2">
-                    Items can be returned
-                    according to our return
-                    policy.
-                  </p>
-
-                </div>
-
-              )}
-
-            </div>
+            
 
           </div>
 
@@ -1351,11 +1279,7 @@ const ProductDetails = () => {
 
 
           {relatedLoading ? (
-
-            <div className="mt-8 py-10 text-center text-sm text-gray-500">
-              Loading related products...
-            </div>
-
+            <Loader fullScreen={false} size={64} className="mt-8" label="Loading related products..." />
           ) : relatedProducts.length ===
             0 ? (
 

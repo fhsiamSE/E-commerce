@@ -2,6 +2,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "../../../store/auth/authSlice.js";
 import api from "../../../api/axios.js";
+import Loader from "../../../components/Loader.jsx";
 
 function Profile() {
   const dispatch = useDispatch();
@@ -135,17 +136,7 @@ function Profile() {
   };
 
   if (authLoading && !user) {
-    return (
-      <div className="min-h-screen bg-stone-50 pb-16">
-        <div className="container mx-auto px-4">
-          <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-stone-200">
-            <p className="text-sm text-stone-500">
-              Loading profile...
-            </p>
-          </div>
-        </div>
-      </div>
-    );
+    return <Loader label="Loading profile..." />;
   }
 
   if (!user) {
@@ -450,7 +441,7 @@ function Profile() {
                   disabled={saving}
                   className="w-full rounded-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-900 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {saving ? "Saving..." : "Save changes"}
+                  {saving ? <Loader inline size={22} label="Saving..." /> : "Save changes"}
                 </button>
 
               </div>

@@ -57,7 +57,7 @@ export default function Footer() {
         {/* Left Content */}
         <div style={{ flex: 1, color: 'white', minWidth: 220 }}>
           <h2 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '0px', lineHeight: 1.2 }}>
-            JOIN US<br />TO GET A BETTER SHOPPING EXPERIENCE
+            SARIMA SUPER MART<br />FIND EVERYTHING YOU NEED AT THE BEST PRICE
           </h2>
 
         </div>

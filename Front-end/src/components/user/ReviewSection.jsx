@@ -9,6 +9,7 @@ import {
   updateReview,
   deleteReview,
 } from "../../store/reviewSlice.js";
+import Loader from "../Loader.jsx";
 
 const ReviewSection = ({ productId }) => {
   const navigate = useNavigate();
@@ -773,9 +774,7 @@ const ReviewSection = ({ productId }) => {
 
         <div>
           {loading ? (
-            <div className="py-10 text-center text-sm text-gray-500">
-              Loading reviews...
-            </div>
+            <Loader fullScreen={false} size={64} className="py-6" label="Loading reviews..." />
           ) : error ? (
             <div className="border border-red-200 bg-red-50 p-4 text-sm text-red-600">
               {error?.message ||

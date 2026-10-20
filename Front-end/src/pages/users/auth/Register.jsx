@@ -4,6 +4,7 @@ import { registerUser } from "../../../store/auth/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import authLogo from "../../../assets/images/authLogo.png";
 import shopLogo from "../../../assets/images/shopLogo.png";
+import Loader from "../../../components/Loader.jsx";
 
 function Register() {
   const dispatch = useDispatch();
@@ -329,7 +330,7 @@ function Register() {
             >
 
               {loading
-                ? "Creating..."
+                ? <Loader inline size={24} label="Creating..." />
                 : "SIGN UP"
               }
 

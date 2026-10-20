@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../api/axios.js";
 import { getImageUrl } from "../../../utils/imageUrl.js";
 import { getWishlist as refreshWishlist } from "../../../store/wishlistSlice.js";
+import Loader from "../../../components/Loader.jsx";
 
 function WishList() {
   const navigate = useNavigate();
@@ -310,65 +311,7 @@ function WishList() {
   */
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-stone-50 pt-8 pb-16">
-
-        <div className="container mx-auto px-4">
-
-          {/* Header Skeleton */}
-
-          <div className="mb-8 rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-stone-200">
-
-            <div className="animate-pulse">
-
-              <div className="h-4 w-24 rounded bg-stone-200" />
-
-              <div className="mt-3 h-8 w-64 rounded bg-stone-200" />
-
-              <div className="mt-3 h-4 w-80 max-w-full rounded bg-stone-200" />
-
-            </div>
-
-          </div>
-
-
-          {/* Product Skeleton */}
-
-          <div className="grid gap-6 lg:grid-cols-2">
-
-            {[1, 2].map((item) => (
-
-              <div
-                key={item}
-                className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-stone-200"
-              >
-
-                <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-
-                  <div className="h-36 w-full animate-pulse rounded-3xl bg-stone-200 sm:w-40" />
-
-                  <div className="flex-1">
-
-                    <div className="h-5 w-24 animate-pulse rounded bg-stone-200" />
-
-                    <div className="mt-4 h-7 w-48 animate-pulse rounded bg-stone-200" />
-
-                    <div className="mt-3 h-6 w-20 animate-pulse rounded bg-stone-200" />
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
-
-      </div>
-    );
+    return <Loader label="Loading wishlist..." />;
   }
 
 
@@ -572,7 +515,7 @@ function WishList() {
                       >
 
                         {removingId === item.id
-                          ? "Removing..."
+                          ? <Loader inline size={20} label="Removing..." />
                           : "Remove"}
 
                       </button>

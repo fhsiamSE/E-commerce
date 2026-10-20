@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../../../api/axios.js";
 import Product from "../../../components/user/product";
+import Loader from "../../../components/Loader.jsx";
 import { COUNTRIES } from "../../../utils/countries.js";
 
 function CountryProducts() {
@@ -112,7 +113,7 @@ function CountryProducts() {
           </div>
         </section>
       ) : loading && products.length === 0 ? (
-        <div className="flex min-h-64 items-center justify-center text-sm text-stone-500">Loading products…</div>
+        <Loader fullScreen={false} className="min-h-64" label="Loading products..." />
       ) : error ? (
         <div className="mx-auto max-w-2xl px-4 py-16 text-center text-sm text-red-600">{error}</div>
       ) : products.length === 0 ? (
