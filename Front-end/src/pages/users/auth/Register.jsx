@@ -330,7 +330,7 @@ function Register() {
             >
 
               {loading
-                ? <Loader inline size={24} label="Creating..." />
+                ? <Loader inline size={24} variant="spinner" label="Creating..." />
                 : "SIGN UP"
               }
 

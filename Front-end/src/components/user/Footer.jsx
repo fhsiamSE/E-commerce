@@ -37,8 +37,13 @@ export default function Footer() {
             gap: 24px !important;
             padding: 24px 8px !important;
           }
-          .footer-logo {
-            font-size: 32px !important;
+          .footer-title {
+            font-size: 26px !important;
+            line-height: 1.1 !important;
+          }
+          .footer-title-tagline {
+            font-size: 12px !important;
+            letter-spacing: 0.12em !important;
           }
         }
       `}</style>
@@ -56,8 +61,13 @@ export default function Footer() {
       }}>
         {/* Left Content */}
         <div style={{ flex: 1, color: 'white', minWidth: 220 }}>
-          <h2 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '0px', lineHeight: 1.2 }}>
-            SARIMA SUPER MART<br />FIND EVERYTHING YOU NEED AT THE BEST PRICE
+          <h2 className="footer-title" style={{ fontSize: '36px', fontWeight: '800', marginBottom: '0px', lineHeight: 1.2, letterSpacing: '0.04em' }}>
+            <span className="block bg-gradient-to-r from-white via-indigo-100 to-indigo-300 bg-clip-text text-transparent">
+              SARIMA SUPER MART
+            </span>
+            <span className="footer-title-tagline mt-3 block text-sm font-medium uppercase tracking-[0.2em] text-indigo-100">
+              Find everything you need at the best price
+            </span>
           </h2>
 
         </div>

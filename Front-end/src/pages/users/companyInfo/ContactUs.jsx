@@ -41,8 +41,8 @@ export default function ContactUs() {
                 <div>
                   <h3 className="text-sm font-semibold text-stone-900">Email Us</h3>
                   <p className="text-xs text-stone-500 mt-0.5">For order & support inquiries</p>
-                  <a href="mailto:sarimasupermartjb@gmail.com" className="text-sm font-medium text-stone-800 hover:underline mt-1 block">
-                    sarimasupermartjb@gmail.com
+                  <a href="mailto:support@sarimasupermart.com" className="text-sm font-medium text-stone-800 hover:underline mt-1 block">
+                    support@sarimasupermart.com
                   </a>
                 </div>
               </div>

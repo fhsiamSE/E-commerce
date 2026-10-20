@@ -6,6 +6,7 @@ const Loader = ({
   size = 150,
   className = "",
   inline = false,
+  variant = "video",
 }) => {
   const [videoFailed, setVideoFailed] = useState(false);
 
@@ -15,13 +16,17 @@ const Loader = ({
     });
   };
 
-  const video = (
-    videoFailed ? (
-      <span
-        className="h-8 w-8 shrink-0 animate-spin rounded-full border-4 border-stone-200 border-t-stone-700"
-        style={{ width: Math.min(size, 32), height: Math.min(size, 32) }}
-        aria-hidden="true"
-      />
+  const spinner = (
+    <span
+      className="h-6 w-6 shrink-0 animate-spin rounded-full border-2 border-stone-200 border-t-stone-700"
+      style={{ width: Math.min(size, 24), height: Math.min(size, 24) }}
+      aria-hidden="true"
+    />
+  );
+
+  const loaderVisual = (
+    variant === "spinner" || videoFailed ? (
+      spinner
     ) : (
       <video
         autoPlay
@@ -49,7 +54,7 @@ const Loader = ({
         role="status"
         aria-live="polite"
       >
-        {video}
+        {loaderVisual}
         {label && <span>{label}</span>}
       </span>
     );
@@ -62,7 +67,7 @@ const Loader = ({
       aria-live="polite"
     >
       <div className="flex flex-col items-center justify-center gap-2">
-        {video}
+        {loaderVisual}
         {label && <p className="text-sm text-stone-500">{label}</p>}
       </div>
     </div>

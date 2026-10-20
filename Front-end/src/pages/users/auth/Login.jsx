@@ -195,7 +195,7 @@ function Login() {
             >
               {loading ? (
                 <>
-                  <Loader inline size={24} label="" />
+                  <Loader inline size={24} variant="spinner" label="" />
                   Loading...
                 </>
               ) : (

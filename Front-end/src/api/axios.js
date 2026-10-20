@@ -30,5 +30,22 @@ api.interceptors.request.use(
   }
 );
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const responseMessage = error.response?.data?.message;
+
+    if (
+      error.response?.status === 401 &&
+      responseMessage === "Unauthenticated."
+    ) {
+      error.response.data.message = "Not logged in";
+      error.message = "Not logged in";
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default api;
 

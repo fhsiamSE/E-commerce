@@ -41,6 +41,10 @@ function Product({
     (state) => state.wishlist
   );
 
+  const isAuthenticated = useSelector(
+    (state) => state.auth.isAuthenticated
+  );
+
 
   /*
   |--------------------------------------------------------------------------
@@ -58,8 +62,10 @@ function Product({
   */
 
   useEffect(() => {
-    dispatch(getWishlist());
-  }, [dispatch]);
+    if (isAuthenticated) {
+      dispatch(getWishlist());
+    }
+  }, [dispatch, isAuthenticated]);
 
 
   /*
@@ -148,6 +154,11 @@ function Product({
         text: "Product ID is missing.",
       });
 
+      return;
+    }
+
+    if (!isAuthenticated) {
+      navigate("/login");
       return;
     }
 
