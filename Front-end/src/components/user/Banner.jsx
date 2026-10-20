@@ -42,6 +42,11 @@ function Banner() {
             src={defaultAdsImage}
             alt="Store banner"
             className="h-full w-full"
+            width="1200"
+            height="256"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
             <p className="mb-2 text-xl font-semibold uppercase tracking-[0.3em] text-black">
@@ -68,6 +73,11 @@ function Banner() {
               src={getImageUrl(slide.image || slide.image_url)}
               alt={slide.title}
               className="h-full w-full"
+              width="1200"
+              height="256"
+              loading={index === current ? "eager" : "lazy"}
+              fetchPriority={index === current ? "high" : "auto"}
+              decoding="async"
             />
             <div className="absolute inset-0 bg-black/35" />
             <div className="absolute inset-0 flex items-center justify-center px-6 text-center text-white">

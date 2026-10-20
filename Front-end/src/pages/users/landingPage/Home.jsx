@@ -25,20 +25,6 @@ function Home() {
     dispatch(getHomeData());
   }, [dispatch]);
 
-  if (loading) {
-    return <Loader label="Loading products..." />;
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-red-500">
-          {error?.message || "Something went wrong"}
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen from-white to-gray-200 bg-gradient-to-b">
 
@@ -49,6 +35,21 @@ function Home() {
         <CategoryBar />
 
         <CountryFilter />
+
+        {loading && (
+          <Loader
+            fullScreen={false}
+            size={48}
+            className="min-h-28"
+            label="Loading products..."
+          />
+        )}
+
+        {error && (
+          <p className="py-6 text-center text-sm text-red-500">
+            {error?.message || "Unable to load products right now."}
+          </p>
+        )}
 
 
         {/* =====================================
