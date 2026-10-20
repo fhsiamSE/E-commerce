@@ -26,6 +26,7 @@ class AdminProductController extends Controller
         $query = Product::with([
             'images',
             'variants',
+            'countries',
         ]);
 
         /*

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import CategoryBar from "../../../components/user/CategoryBar";
+import CountryFilter from "../../../components/user/CountryFilter";
 import Product from "../../../components/user/product";
 import Banner from "../../../components/user/Banner";
 import Review from "../../../components/user/ReviewSlider";
@@ -49,6 +50,8 @@ function Home() {
         <Banner />
 
         <CategoryBar />
+
+        <CountryFilter />
 
 
         {/* =====================================

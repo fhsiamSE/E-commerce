@@ -10,6 +10,7 @@ import {
 
 import api from "../../../api/axios.js";
 import { getImageUrl as resolveImageUrl } from "../../../utils/imageUrl.js";
+import { COUNTRIES } from "../../../utils/countries.js";
 
 
 const EditProduct = () => {
@@ -53,6 +54,25 @@ const EditProduct = () => {
 
     const [variants, setVariants] =
         useState([]);
+
+    const [selectedCountries, setSelectedCountries] =
+        useState([]);
+
+    const allCountriesSelected = selectedCountries.length === COUNTRIES.length;
+
+    const toggleCountry = (countryCode) => {
+        setSelectedCountries((current) =>
+            current.includes(countryCode)
+                ? current.filter((code) => code !== countryCode)
+                : [...current, countryCode]
+        );
+    };
+
+    const toggleAllCountries = () => {
+        setSelectedCountries(
+            allCountriesSelected ? [] : COUNTRIES.map((country) => country.code)
+        );
+    };
 
 
     /* -------------------------------------------------------
@@ -135,6 +155,12 @@ const EditProduct = () => {
                         product.description ??
                         "",
                 });
+
+                setSelectedCountries(
+                    Array.isArray(product.countries)
+                        ? product.countries.map((country) => country.code)
+                        : []
+                );
 
 
                 /* -------------------------------------------
@@ -458,6 +484,11 @@ const EditProduct = () => {
             return false;
         }
 
+        if (selectedCountries.length === 0) {
+            setError("Please select at least one country.");
+            return false;
+        }
+
 
         /* Variants */
 
@@ -615,6 +646,10 @@ const EditProduct = () => {
                 "description",
                 formData.description || ""
             );
+
+            selectedCountries.forEach((countryCode) => {
+                data.append("countries[]", countryCode);
+            });
 
 
             /* -------------------------------------------
@@ -988,9 +1023,67 @@ const EditProduct = () => {
 
                         </div>
 
+                        <div className="md:col-span-2">
+
+                            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Countries <span className="text-red-500">*</span>
+                            </label>
+
+                            <div className="flex flex-wrap gap-2" role="group" aria-label="Select product countries">
+                                <button
+                                    type="button"
+                                    aria-pressed={allCountriesSelected}
+                                    onClick={toggleAllCountries}
+                                    className={`rounded-full border px-3 py-2 text-sm font-semibold transition ${allCountriesSelected ? "border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900" : "border-gray-300 bg-white text-gray-700 hover:border-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"}`}
+                                >
+                                    All Countries
+                                </button>
+                                {COUNTRIES.map((country) => {
+                                    const selected = selectedCountries.includes(country.code);
+
+                                    return (
+                                        <button
+                                            key={country.code}
+                                            type="button"
+                                            aria-pressed={selected}
+                                            onClick={() => toggleCountry(country.code)}
+                                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${selected ? "border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900" : "border-gray-300 bg-white text-gray-700 hover:border-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"}`}
+                                        >
+                                            <img src={country.flag} alt="" className="h-4 w-6 rounded-sm object-cover" />
+                                            {country.name}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                Click one or more countries, or choose All Countries.
+                            </p>
+
+                        </div>
+
 
                     </div>
 
+                </div>
+
+                <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+                    <h2 className="text-lg font-semibold">Product Summary</h2>
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Countries assigned to this product
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                        {selectedCountries.length ? (
+                            COUNTRIES.filter((country) => selectedCountries.includes(country.code)).map((country) => (
+                                <span key={country.code} className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                                    <img src={country.flag} alt="" className="h-3 w-5 rounded-sm object-cover" />
+                                    {country.name}
+                                </span>
+                            ))
+                        ) : (
+                            <span className="text-sm text-gray-400">None selected</span>
+                        )}
+                    </div>
                 </div>
 
 

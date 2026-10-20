@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -19,7 +20,7 @@ class ProductController extends Controller
     */
     public function index(Request $request)
     {
-        $query = Product::with(['images', 'variants']);
+        $query = Product::with(['images', 'variants', 'countries']);
 
         // Search
         if ($request->filled('search')) {
@@ -50,6 +51,12 @@ class ProductController extends Controller
 
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->filled('country') && strtolower($request->country) !== 'all') {
+            $query->whereHas('countries', function ($countryQuery) use ($request) {
+                $countryQuery->where('countries.code', strtolower($request->country));
+            });
         }
 
         // Sorting
@@ -107,6 +114,10 @@ class ProductController extends Controller
             'description' => 'nullable|string',
 
             'category' => 'required|string|max:255',
+
+            'countries' => 'required|array|min:1',
+
+            'countries.*' => 'required|string|distinct|exists:countries,code',
 
             'images' => 'nullable|array',
 
@@ -200,11 +211,16 @@ class ProductController extends Controller
 
             }
 
+            $countryIds = Country::whereIn('code', $validated['countries'])
+                ->pluck('id');
+            $product->countries()->sync($countryIds);
+
             DB::commit();
 
             $product->load([
                 'images',
                 'variants',
+                'countries',
             ]);
 
             return response()->json([
@@ -236,6 +252,7 @@ class ProductController extends Controller
         $product = Product::with([
             'images',
             'variants',
+            'countries',
         ])->findOrFail($id);
 
         $product->increment('views_count');
@@ -277,6 +294,10 @@ class ProductController extends Controller
             'product_name' => 'sometimes|required|string|max:255',
 
             'description' => 'nullable|string',
+
+            'countries' => 'required|array|min:1',
+
+            'countries.*' => 'required|string|distinct|exists:countries,code',
 
             'category_id' => 'sometimes|required|integer|exists:categories,id',
 
@@ -393,6 +414,10 @@ class ProductController extends Controller
             if (!empty($productData)) {
                 $product->update($productData);
             }
+
+            $countryIds = Country::whereIn('code', $validated['countries'])
+                ->pluck('id');
+            $product->countries()->sync($countryIds);
 
 
             /*
@@ -636,6 +661,7 @@ class ProductController extends Controller
             $product->load([
                 'images',
                 'variants',
+                'countries',
             ]);
 
             return response()->json([
@@ -667,6 +693,7 @@ class ProductController extends Controller
         $products = Product::with([
             'images',
             'variants',
+            'countries',
         ])
             ->latest()
             ->take(10)
@@ -689,6 +716,7 @@ class ProductController extends Controller
         $products = Product::with([
             'images',
             'variants',
+            'countries',
         ])
             ->orderByDesc('views_count')
             ->take(10)
@@ -711,6 +739,7 @@ class ProductController extends Controller
         $products = Product::with([
             'images',
             'variants',
+            'countries',
         ])
             ->orderByDesc('sales_count')
             ->take(10)

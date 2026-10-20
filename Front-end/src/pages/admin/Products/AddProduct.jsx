@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../api/axios";
+import { COUNTRIES } from "../../../utils/countries.js";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const AddProduct = () => {
   const [productName, setProductName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [selectedCountries, setSelectedCountries] = useState([]);
 
   /*
   |--------------------------------------------------------------------------
@@ -46,6 +48,22 @@ const AddProduct = () => {
   */
 
   const [loading, setLoading] = useState(false);
+
+  const allCountriesSelected = selectedCountries.length === COUNTRIES.length;
+
+  const toggleCountry = (countryCode) => {
+    setSelectedCountries((current) =>
+      current.includes(countryCode)
+        ? current.filter((code) => code !== countryCode)
+        : [...current, countryCode]
+    );
+  };
+
+  const toggleAllCountries = () => {
+    setSelectedCountries(
+      allCountriesSelected ? [] : COUNTRIES.map((country) => country.code)
+    );
+  };
 
   /*
   |--------------------------------------------------------------------------
@@ -181,6 +199,11 @@ const AddProduct = () => {
       return;
     }
 
+    if (!selectedCountries.length) {
+      alert("Please select at least one country.");
+      return;
+    }
+
     const invalidVariantIndex = variants.findIndex(
       (variant) =>
         !variant.sku.trim() ||
@@ -210,6 +233,9 @@ const AddProduct = () => {
       formData.append("product_name", productName.trim());
       formData.append("description", description || "");
       formData.append("category", category);
+      selectedCountries.forEach((countryCode) => {
+        formData.append("countries[]", countryCode);
+      });
 
       images.forEach((image) => {
         formData.append("images[]", image.file);
@@ -393,7 +419,9 @@ const AddProduct = () => {
 
               {/* CATEGORY */}
 
-              <div className="mt-5 max-w-md">
+              <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+
+                <div>
 
                   <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Category
@@ -459,6 +487,47 @@ const AddProduct = () => {
                     </option>
 
                   </select>
+
+                </div>
+
+                <div>
+
+                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Countries
+                    <span className="ml-1 text-red-500">*</span>
+                  </label>
+
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-2" role="group" aria-label="Select product countries">
+                    <button
+                      type="button"
+                      aria-pressed={allCountriesSelected}
+                      onClick={toggleAllCountries}
+                      className={`col-span-2 rounded-lg border px-3 py-2 text-left text-sm font-semibold transition sm:col-span-2 ${allCountriesSelected ? "border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900" : "border-gray-300 bg-white text-gray-700 hover:border-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"}`}
+                    >
+                      All Countries
+                    </button>
+                    {COUNTRIES.map((country) => {
+                      const selected = selectedCountries.includes(country.code);
+
+                      return (
+                        <button
+                          key={country.code}
+                          type="button"
+                          aria-pressed={selected}
+                          onClick={() => toggleCountry(country.code)}
+                          className={`inline-flex w-full items-center justify-start gap-2 rounded-lg border px-3 py-2 text-left text-sm font-semibold transition ${selected ? "border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900" : "border-gray-300 bg-white text-gray-700 hover:border-gray-900 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"}`}
+                        >
+                          <img src={country.flag} alt="" className="h-3 w-3 rounded-sm object-cover " />
+                          {country.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                    Click one or more countries, or choose All Countries.
+                  </p>
+
+                </div>
 
               </div>
 
@@ -833,6 +902,24 @@ const AddProduct = () => {
                       "Not selected"}
                   </span>
 
+                </div>
+
+                <div className="border-t border-gray-100 pt-4 dark:border-gray-800">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Countries
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {selectedCountries.length ? (
+                      COUNTRIES.filter((country) => selectedCountries.includes(country.code)).map((country) => (
+                        <span key={country.code} className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                          <img src={country.flag} alt="" className="h-3 w-5 rounded-sm object-cover" />
+                          {country.name}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-sm text-gray-400">None selected</span>
+                    )}
+                  </div>
                 </div>
 
 

@@ -24,6 +24,7 @@ class HomeController extends Controller
         $newProducts = Product::with([
             'images',
             'variants',
+            'countries',
         ])
             ->latest('created_at')
             ->take(10)
@@ -42,6 +43,7 @@ class HomeController extends Controller
         $popularProducts = Product::with([
             'images',
             'variants',
+            'countries',
         ])
             ->orderByDesc('views_count')
             ->take(10)
@@ -60,6 +62,7 @@ class HomeController extends Controller
         $topSellingProducts = Product::with([
             'images',
             'variants',
+            'countries',
         ])
             ->orderByDesc('sales_count')
             ->take(10)

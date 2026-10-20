@@ -11,6 +11,7 @@ import AllProducts from "../pages/users/product/AllProducts";
 import CategoryProducts from "../pages/users/product/CategoryProducts";
 import ProductDetails from "../pages/users/product/ProductDetails";
 import HotDeals from "../pages/users/product/HotDeals";
+import CountryProducts from "../pages/users/product/CountryProducts";
 
 import ContactUs from "../pages/users/companyInfo/ContactUs";
 import FAQ from "../pages/users/companyInfo/FAQ";
@@ -85,6 +86,11 @@ function UserRoutes() {
       <Route
         path="/HotDeals"
         element={<HotDeals />}
+      />
+
+      <Route
+        path="/country/:country"
+        element={<CountryProducts />}
       />
 
 
